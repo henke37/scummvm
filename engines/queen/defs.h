@@ -172,15 +172,20 @@ enum {
 enum {
 	ROOM_JUNGLE_INSIDE_PLANE  =   1,
 	ROOM_JUNGLE_OUTSIDE_PLANE =   2,
+	ROOM_JUNGLE_RIVER         =   3,
 	ROOM_JUNGLE_BRIDGE        =   4,
+	ROOM_JUNGLE_VINE          =   5,
 	ROOM_JUNGLE_GORILLA_1     =   6,
 	ROOM_JUNGLE_PINNACLE      =   7,
 	ROOM_JUNGLE_SLOTH         =   8,
 	ROOM_JUNGLE_BUD_SKIP      =   9,
+	ROOM_JUNGLE_SIGN          =  10,
 	ROOM_JUNGLE_BEETLE        =  11,
+	ROOM_JUNGLE_FLOWER        =  12,
 	ROOM_JUNGLE_MISSIONARY    =  13,
 	ROOM_JUNGLE_GORILLA_2     =  14,
 	ROOM_JUNGLE_LOG_EXIT      =  15,
+	ROOM_JUNGLE_FERRY_POST    =  42,
 
 	ROOM_AMAZON_ENTRANCE      =  16,
 	ROOM_AMAZON_HIDEOUT       =  17,
@@ -210,6 +215,7 @@ enum {
 	ROOM_FLODA_LAB            =  40,
 	ROOM_FLODA_JAIL           =  41,
 	ROOM_FLODA_FRONTDESK      = 103,
+	ROOM_FLODA_ELEVATOR_RIDE  = 104,
 
 	ROOM_TEMPLE_OUTSIDE       =  43,
 	ROOM_TEMPLE_EANTRACE      =  44,
@@ -256,6 +262,8 @@ enum {
 	ROOM_FINAL_FIGHT          =  69,
 
 	//Intro cutscenes
+
+	ROOM_INTRO_RIVER_DELTA    =  96,
 	ROOM_INTRO_BLUE_SKY       = 112,
 	ROOM_INTRO_JUNGLE         = 113,
 	ROOM_INTRO_TWILIGHT_SKY   = 114,
@@ -271,26 +279,44 @@ enum {
 	ROOM_INTRO_OUTSIDE        = 124,
 	ROOM_INTRO_FIRE_WATCH     = 125,
 
-	//special
-	SPARKY_OUTSIDE_HOTEL      =  77,
-	DEATH_MASK                =  79,
-	IBI_LOGO                  =  82,
+	ROOM_ENDING_ZEPELIN       = 108,
+	ROOM_ENDING_KISS          = 109,
+	ROOM_ENDING_CREDITS       = 110,
+
+	//misc cutscenes
+
+	CUT_DARK_CLOUDS           = 111,
+	CUT_AIRFIELD              = 75,
+	CUT_PINACLE               = 76,
+	CUT_SPARKY_OUTSIDE_HOTEL  = 77,
+	DINO_CUT                  = 80,
+	MEANWHILE_CARD            = 81,
+	CUT_IRONSTEIN_GROWS       = 85,
+	CUT_ROBOT_GROWS           = 86,
+
+	//closeups
+	WRITINGPAD_CLOSEUP        =  78,
+	DEATH_MASK_CLOSEUP        =  79,
+	SAFE_CLOSEUP              =  83,
+	CRYSTAL_SKULL_CLOSEUP     =  84,
 	COMIC_1                   =  87,
 	COMIC_2                   =  88,
 	COMIC_3                   =  89,
+
 	ROOM_UNUSED_INTRO_1       =  90,
 	ROOM_UNUSED_INTRO_2       =  91,
 	ROOM_UNUSED_INTRO_3       =  92,
 	ROOM_UNUSED_INTRO_4       =  93,
 	ROOM_UNUSED_INTRO_5       =  94,
+
+	IBI_LOGO = 82,
 	FOTAQ_LOGO                =  95,
 	WARNER_LOGO               = 126,
 
 	FAYE_HEAD                 =  37,
+	IRONSTEIN_HEAD            = 105,
 	AZURA_HEAD                = 106,
 	FRANK_HEAD                = 107,
-
-	ROOM_ENDING_CREDITS       = 110,
 
 	ROOM_JOURNAL              = 200 // dummy value to keep Display methods happy
 };
