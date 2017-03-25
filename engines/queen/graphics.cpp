@@ -587,7 +587,7 @@ void Graphics::handleParallax(uint16 roomNum) {
 	case ROOM_AMAZON_HIDEOUT:
 		_bobs[8].x = 250 - screenScroll / 2;
 		break;
-	case ROOM_TEMPLE_MAZE_5:
+	case ROOM_TEMPLE_PIT:
 		_bobs[5].x = 410 - screenScroll / 2;
 		_bobs[6].x = 790 - screenScroll / 2;
 		break;

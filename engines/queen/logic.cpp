@@ -1136,12 +1136,12 @@ void Logic::handleSpecialArea(Direction facing, uint16 areaNum, uint16 walkDataN
 			break;
 		}
 		break;
-	case ROOM_TEMPLE_MAZE_5:
+	case ROOM_TEMPLE_PIT:
 		if (areaNum == 7) {
 			makeJoeSpeak(17);
 		}
 		break;
-	case ROOM_TEMPLE_MAZE_6:
+	case ROOM_TEMPLE_CRUSHER:
 		if (areaNum == 5 && gameState(187) == 0) {
 			playCutaway("C101B.CUT", nextCut);
 		}
