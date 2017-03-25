@@ -286,13 +286,13 @@ enum {
 	//misc cutscenes
 
 	CUT_DARK_CLOUDS           = 111,
-	CUT_AIRFIELD              = 75,
-	CUT_PINACLE               = 76,
-	CUT_SPARKY_OUTSIDE_HOTEL  = 77,
-	DINO_CUT                  = 80,
-	MEANWHILE_CARD            = 81,
-	CUT_IRONSTEIN_GROWS       = 85,
-	CUT_ROBOT_GROWS           = 86,
+	CUT_AIRFIELD              =  75,
+	CUT_PINACLE               =  76,
+	CUT_SPARKY_OUTSIDE_HOTEL  =  77,
+	DINO_CUT                  =  80,
+	MEANWHILE_CARD            =  81,
+	CUT_IRONSTEIN_GROWS       =  85,
+	CUT_ROBOT_GROWS           =  86,
 
 	//closeups
 	WRITINGPAD_CLOSEUP        =  78,
@@ -309,7 +309,7 @@ enum {
 	ROOM_UNUSED_INTRO_4       =  93,
 	ROOM_UNUSED_INTRO_5       =  94,
 
-	IBI_LOGO = 82,
+	IBI_LOGO                  =  82,
 	FOTAQ_LOGO                =  95,
 	WARNER_LOGO               = 126,
 
