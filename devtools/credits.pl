@@ -525,6 +525,10 @@ begin_credits("Credits");
 				add_person("Gregory Montoir", "cyx", "(retired)");
 				add_person("Eugene Sandulenko", "sev", "");
 			end_section();
+			
+			begin_section("ADL");
+				add_person("Walter van Niftrik", "waltervn", "");
+			end_section();
 
 			begin_section("AGI");
 				add_person("Stuart George", "darkfiber", "");
@@ -558,6 +562,11 @@ begin_credits("Credits");
 
 			begin_section("BBVS");
 				add_person("Benjamin Haisch", "john_doe", "");
+			end_section();
+
+			begin_section("Blade Runner");
+				add_person("Thomas Fach-Pedersen", "madmoose", "");
+				add_person("Peter Kohaut", "peterkohaut", "");
 			end_section();
 
 			begin_section("CGE");
