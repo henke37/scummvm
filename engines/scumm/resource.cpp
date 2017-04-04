@@ -1390,9 +1390,9 @@ void ScummEngine::dumpResource(const char *tag, int id, const byte *ptr, int len
 	else
 		size = READ_BE_UINT32(ptr + 4);
 
-	sprintf(buf, "dumps/%s%d.dmp", tag, id);
+	sprintf(buf, "dumps/%s/%s%d.dmp", _game.gameid, tag, id);
 
-	out.open(buf);
+	out.open(buf,true);
 	if (out.isOpen() == false)
 		return;
 	out.write(ptr, size);
