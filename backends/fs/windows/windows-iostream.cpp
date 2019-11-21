@@ -27,7 +27,7 @@
 WindowsIoStream* WindowsIoStream::makeFromPath(const Common::String& path, bool writeMode) {
 	DWORD access = writeMode ? (GENERIC_READ | GENERIC_WRITE) : GENERIC_READ;
 	DWORD share = writeMode ? FILE_SHARE_WRITE : FILE_SHARE_READ;
-	DWORD create = writeMode ? OPEN_ALWAYS : OPEN_EXISTING;
+	DWORD create = writeMode ? CREATE_ALWAYS : OPEN_EXISTING;
 	HANDLE fileObjHandle=CreateFile(toUnicode(path.c_str()), access, share, NULL, create, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if(fileObjHandle==INVALID_HANDLE_VALUE) return nullptr;
