@@ -95,26 +95,27 @@ private:
 	 */
 	static void addFile(AbstractFSList &list, ListMode mode, const char *base, bool hidden, WIN32_FIND_DATA* find_data);
 
-	/**
-	 * Converts a Unicode string to Ascii format.
-	 *
-	 * @param str Common::String to convert from Unicode to Ascii.
-	 * @return str in Ascii format.
-	 */
-	static char *toAscii(TCHAR *str);
-
-	/**
-	 * Converts an Ascii string to Unicode format.
-	 *
-	 * @param str Common::String to convert from Ascii to Unicode.
-	 * @return str in Unicode format.
-	 */
-	static const TCHAR* toUnicode(const char *str);
 
 	/**
 	 * Tests and sets the _isValid and _isDirectory flags, using the GetFileAttributes() function.
 	 */
 	virtual void setFlags();
 };
+
+/**
+ * Converts a Unicode string to Ascii format.
+ *
+ * @param str Common::String to convert from Unicode to Ascii.
+ * @return str in Ascii format.
+ */
+char* toAscii(TCHAR* str);
+
+/**
+ * Converts an Ascii string to Unicode format.
+ *
+ * @param str Common::String to convert from Ascii to Unicode.
+ * @return str in Unicode format.
+ */
+const TCHAR* toUnicode(const char* str);
 
 #endif

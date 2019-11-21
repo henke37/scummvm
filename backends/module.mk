@@ -202,6 +202,7 @@ MODULE_OBJS += \
 	dialogs/win32/win32-dialogs.o \
 	fs/windows/windows-fs.o \
 	fs/windows/windows-fs-factory.o \
+	fs/windows/windows-iostream.o \
 	midi/windows.o \
 	plugins/win32/win32-provider.o \
 	saves/windows/windows-saves.o \

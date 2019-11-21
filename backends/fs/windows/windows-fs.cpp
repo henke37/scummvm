@@ -26,7 +26,7 @@
 #define FORBIDDEN_SYMBOL_ALLOW_ALL
 
 #include "backends/fs/windows/windows-fs.h"
-#include "backends/fs/stdiostream.h"
+#include "backends/fs/windows/windows-iostream.h"
 
 // F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
 // For more information on the modes used by MSVC, check:
@@ -86,7 +86,7 @@ void WindowsFilesystemNode::addFile(AbstractFSList &list, ListMode mode, const c
 	list.push_back(new WindowsFilesystemNode(entry));
 }
 
-char* WindowsFilesystemNode::toAscii(TCHAR *str) {
+char* toAscii(TCHAR *str) {
 #ifndef UNICODE
 	return (char *)str;
 #else
@@ -96,7 +96,7 @@ char* WindowsFilesystemNode::toAscii(TCHAR *str) {
 #endif
 }
 
-const TCHAR* WindowsFilesystemNode::toUnicode(const char *str) {
+const TCHAR* toUnicode(const char *str) {
 #ifndef UNICODE
 	return (const TCHAR *)str;
 #else
@@ -231,11 +231,11 @@ AbstractFSNode *WindowsFilesystemNode::getParent() const {
 }
 
 Common::SeekableReadStream *WindowsFilesystemNode::createReadStream() {
-	return StdioStream::makeFromPath(getPath(), false);
+	return WindowsIoStream::makeFromPath(getPath(), false);
 }
 
 Common::WriteStream *WindowsFilesystemNode::createWriteStream() {
-	return StdioStream::makeFromPath(getPath(), true);
+	return WindowsIoStream::makeFromPath(getPath(), true);
 }
 
 bool WindowsFilesystemNode::createDirectory() {
