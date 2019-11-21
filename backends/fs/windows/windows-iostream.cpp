@@ -91,6 +91,7 @@ bool WindowsIoStream::seek(int32 offset, int whence) {
 	case SEEK_SET: moveMethod = FILE_BEGIN; break;
 	case SEEK_CUR: moveMethod = FILE_CURRENT; break;
 	case SEEK_END: moveMethod = FILE_END; break;
+	default: return false;
 	}
 
 	DWORD newPosLow=SetFilePointer(fileObjHandle, offset, &distanceHigh, moveMethod);
