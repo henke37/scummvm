@@ -35,7 +35,7 @@ WindowsIoStream* WindowsIoStream::makeFromPath(const Common::String& path, bool 
 	return new WindowsIoStream(fileObjHandle, writeMode);
 }
 
-WindowsIoStream::WindowsIoStream(HANDLE handle, bool writeMode) : fileObjHandle(handle) {
+WindowsIoStream::WindowsIoStream(HANDLE handle, bool writeMode) : fileObjHandle(handle), error(false) {
 }
 
 WindowsIoStream::~WindowsIoStream() {
