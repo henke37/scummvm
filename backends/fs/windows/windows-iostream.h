@@ -40,6 +40,9 @@ public:
 
 	void close();
 
+	virtual bool err() const;
+	virtual void clearErr();
+
 	int32 size() const override;
 
 	// Inherited via SeekableReadStream
@@ -55,8 +58,7 @@ public:
 
 private:
 	HANDLE fileObjHandle;
-
+	bool error;
 };
-
 
 #endif

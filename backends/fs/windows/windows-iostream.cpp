@@ -47,6 +47,10 @@ void WindowsIoStream::close() {
 	fileObjHandle = INVALID_HANDLE_VALUE;
 }
 
+bool WindowsIoStream::err() const { return error; }
+
+void WindowsIoStream::clearErr() { error = false; }
+
 int32 WindowsIoStream::size() const {
 	DWORD sizeHighBuf;
 	DWORD sizeLow=GetFileSize(fileObjHandle, &sizeHighBuf);
@@ -63,12 +67,12 @@ bool WindowsIoStream::eos() const {
 uint32 WindowsIoStream::read(void* dataPtr, uint32 dataSize) {
 	DWORD numRead;
 	BOOL success = ReadFile(fileObjHandle, dataPtr, dataSize, &numRead, NULL);
+	error = success;
 	return numRead;
 }
 
 int32 WindowsIoStream::pos() const {
 	LONG distanceHigh = 0;
-	DWORD curPosHigh;
 	DWORD curPosLow = SetFilePointer(fileObjHandle, 0, &distanceHigh, FILE_CURRENT);
 	if (curPosLow == INVALID_SET_FILE_POINTER) return -1;
 
@@ -94,6 +98,7 @@ bool WindowsIoStream::seek(int32 offset, int whence) {
 uint32 WindowsIoStream::write(const void* dataPtr, uint32 dataSize) {
 	DWORD numWritten;
 	BOOL success=WriteFile(fileObjHandle, dataPtr, dataSize, &numWritten, NULL);
+	error = success;
 	return numWritten;
 }
 
