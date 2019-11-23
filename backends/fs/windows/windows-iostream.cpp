@@ -98,12 +98,13 @@ bool WindowsIoStream::seek(int32 offset, int whence) {
 	default: return false;
 	}
 
-	eof = false;
-
 	DWORD newPosLow=SetFilePointer(fileObjHandle, offset, &distanceHigh, moveMethod);
 	if (newPosLow == INVALID_SET_FILE_POINTER) {
+		error = true;
 		return false;
 	}
+
+	eof = false;
 
 	return true;
 }
