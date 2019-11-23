@@ -203,6 +203,7 @@ MODULE_OBJS += \
 	fs/windows/windows-fs.o \
 	fs/windows/windows-fs-factory.o \
 	fs/windows/windows-iostream.o \
+	fs/compStream.o \
 	midi/windows.o \
 	plugins/win32/win32-provider.o \
 	saves/windows/windows-saves.o \
