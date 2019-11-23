@@ -5,6 +5,7 @@
 ComparisonStream::ComparisonStream(Common::SeekableReadStream* test, Common::SeekableReadStream* verification) :
 	testStream(test), verificationStream(verification)
 {
+	checkSync();
 }
 
 ComparisonStream::~ComparisonStream()
