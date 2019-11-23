@@ -28,6 +28,9 @@
 #include "backends/fs/windows/windows-fs.h"
 #include "backends/fs/windows/windows-iostream.h"
 
+#include "backends/fs/stdiostream.h"
+#include "backends/fs/compStream.h"
+
 // F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
 // For more information on the modes used by MSVC, check:
 // http://msdn2.microsoft.com/en-us/library/1w06ktdy(VS.80).aspx
@@ -231,7 +234,10 @@ AbstractFSNode *WindowsFilesystemNode::getParent() const {
 }
 
 Common::SeekableReadStream *WindowsFilesystemNode::createReadStream() {
-	return WindowsIoStream::makeFromPath(getPath(), false);
+	return new ComparisonStream(
+		WindowsIoStream::makeFromPath(getPath(), false),
+		StdioStream::makeFromPath(getPath(), false)
+	);
 }
 
 Common::WriteStream *WindowsFilesystemNode::createWriteStream() {
