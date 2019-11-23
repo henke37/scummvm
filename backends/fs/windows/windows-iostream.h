@@ -59,6 +59,7 @@ public:
 private:
 	HANDLE fileObjHandle;
 	bool error;
+	bool eof;
 };
 
 #endif

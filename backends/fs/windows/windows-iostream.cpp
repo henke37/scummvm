@@ -35,7 +35,7 @@ WindowsIoStream* WindowsIoStream::makeFromPath(const Common::String& path, bool 
 	return new WindowsIoStream(fileObjHandle, writeMode);
 }
 
-WindowsIoStream::WindowsIoStream(HANDLE handle, bool writeMode) : fileObjHandle(handle), error(false) {
+WindowsIoStream::WindowsIoStream(HANDLE handle, bool writeMode) : fileObjHandle(handle), error(false), eof(false) {
 }
 
 WindowsIoStream::~WindowsIoStream() {
@@ -49,7 +49,7 @@ void WindowsIoStream::close() {
 
 bool WindowsIoStream::err() const { return error; }
 
-void WindowsIoStream::clearErr() { error = false; }
+void WindowsIoStream::clearErr() { error = false; eof = false; }
 
 int32 WindowsIoStream::size() const {
 	DWORD sizeHighBuf;
@@ -63,13 +63,17 @@ int32 WindowsIoStream::size() const {
 }
 
 bool WindowsIoStream::eos() const {
-	return pos()>=size();
+	return eof;
 }
 
 uint32 WindowsIoStream::read(void* dataPtr, uint32 dataSize) {
 	DWORD numRead;
 	BOOL success = ReadFile(fileObjHandle, dataPtr, dataSize, &numRead, NULL);
-	error = !success;
+	if (!success) {
+		error = true;
+	} else if (numRead == 0) {
+		eof = true;
+	}
 	return numRead;
 }
 
@@ -84,7 +88,7 @@ int32 WindowsIoStream::pos() const {
 }
 
 bool WindowsIoStream::seek(int32 offset, int whence) {
-	LONG distanceHigh = 0;
+	LONG distanceHigh = offset<0?-1:0;
 	DWORD moveMethod;
 
 	switch (whence) {
@@ -93,6 +97,8 @@ bool WindowsIoStream::seek(int32 offset, int whence) {
 	case SEEK_END: moveMethod = FILE_END; break;
 	default: return false;
 	}
+
+	eof = false;
 
 	DWORD newPosLow=SetFilePointer(fileObjHandle, offset, &distanceHigh, moveMethod);
 	if (newPosLow == INVALID_SET_FILE_POINTER) {
