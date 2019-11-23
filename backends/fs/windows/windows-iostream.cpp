@@ -88,7 +88,7 @@ int32 WindowsIoStream::pos() const {
 }
 
 bool WindowsIoStream::seek(int32 offset, int whence) {
-	LONG distanceHigh = 0;
+	LONG distanceHigh = offset<0?-1:0;
 	DWORD moveMethod;
 
 	switch (whence) {
