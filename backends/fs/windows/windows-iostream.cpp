@@ -78,17 +78,18 @@ uint32 WindowsIoStream::read(void* dataPtr, uint32 dataSize) {
 }
 
 int32 WindowsIoStream::pos() const {
-	LONG distanceHigh = 0;
-	DWORD curPosLow = SetFilePointer(fileObjHandle, 0, &distanceHigh, FILE_CURRENT);
-	if (curPosLow == INVALID_SET_FILE_POINTER) {
+	LARGE_INTEGER distance;
+	distance.QuadPart = 0;
+	BOOL success = SetFilePointerEx(fileObjHandle, distance, &distance, FILE_CURRENT);
+	if (!success) {
 		return -1;
 	}
 
-	return curPosLow;
+	return distance.QuadPart;
 }
 
 bool WindowsIoStream::seek(int32 offset, int whence) {
-	LONG distanceHigh = offset<0?-1:0;
+	LARGE_INTEGER distance;
 	DWORD moveMethod;
 
 	switch (whence) {
@@ -98,8 +99,11 @@ bool WindowsIoStream::seek(int32 offset, int whence) {
 	default: return false;
 	}
 
-	DWORD newPosLow=SetFilePointer(fileObjHandle, offset, &distanceHigh, moveMethod);
-	if (newPosLow == INVALID_SET_FILE_POINTER) {
+	distance.QuadPart = offset;
+
+	BOOL success=SetFilePointerEx(fileObjHandle, distance, NULL, moveMethod);
+
+	if (!success) {
 		error = true;
 		return false;
 	}
