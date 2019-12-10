@@ -23,14 +23,15 @@
 
 namespace MT32Emu {
 
-class Tables {
-private:
-	Tables();
-	Tables(Tables &);
-	~Tables() {}
+	class Tables;
 
+extern const Tables g_TablesInstance;
+
+class Tables {
 public:
-	static const Tables &getInstance();
+	Tables();
+
+	static const Tables &getInstance() { return g_TablesInstance; }
 
 	// Constant LUTs
 
@@ -56,6 +57,7 @@ public:
 
 	const Bit8u *resAmpDecayFactor;
 }; // class Tables
+
 
 } // namespace MT32Emu
 
