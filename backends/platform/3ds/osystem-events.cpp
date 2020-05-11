@@ -441,14 +441,14 @@ void OSystem_3DS::runOptionsDialog() {
 	}
 
 	optionsDialogRunning = true;
-
-	OptionsDialog dialog;
-	if (g_engine) {
-		g_engine->pauseEngine(true);
-	}
-	int result = dialog.runModal();
-	if (g_engine) {
-		g_engine->pauseEngine(false);
+	int result;
+	{
+		PauseToken pt;
+		OptionsDialog dialog;
+		if (g_engine) {
+			pt = g_engine->pauseEngine(true);
+		}
+		result = dialog.runModal();
 	}
 
 	if (result > 0) {
