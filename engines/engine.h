@@ -350,6 +350,11 @@ public:
 	 */
 	bool loadGameDialog();
 
+	/**
+	 * Shows the ScummVM About dialog.
+	 */
+	void aboutDialog();
+
 protected:
 	/**
 	 * Actual implementation of pauseEngine by subclasses. See there

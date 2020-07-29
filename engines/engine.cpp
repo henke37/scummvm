@@ -57,6 +57,7 @@
 #include "gui/dialog.h"
 #include "gui/message.h"
 #include "gui/saveload.h"
+#include "gui/about.h"
 
 #include "audio/mixer.h"
 
@@ -799,6 +800,11 @@ bool Engine::saveGameDialog() {
 	}
 
 	return true;
+}
+
+void Engine::aboutDialog() {
+	GUI::AboutDialog dialog;
+	this->runDialog(dialog);
 }
 
 void Engine::quitGame() {
