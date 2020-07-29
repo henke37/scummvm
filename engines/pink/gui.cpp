@@ -212,6 +212,10 @@ void PinkEngine::executeMenuCommand(uint id) {
 		openLocalWebPage("HINTS.HTM");
 		break;
 
+	case kShowAbout:
+		aboutDialog();
+		break;
+
 	default:
 		warning("Unprocessed command id %d", id);
 		break;
