@@ -25,6 +25,8 @@
 #include "graphics/macgui/macwindowmanager.h"
 #include "graphics/macgui/macmenu.h"
 
+#include "engines/dialogs.h"
+
 #include "pink/pink.h"
 #include "pink/director.h"
 #include "pink/objects/actors/lead_actor.h"
@@ -161,7 +163,13 @@ void PinkEngine::executeMenuCommand(uint id) {
 		saveGameDialog();
 		break;
 
-	case kSoundSettingsAction:
+	case kSoundSettingsAction: {
+		GUI::ConfigDialog configDialog;
+		runDialog(configDialog);
+		syncSoundSettings();
+		break;
+	}
+
 	case kLastSavesAction:
 	case kPauseAction:
 	case kExitAction:
