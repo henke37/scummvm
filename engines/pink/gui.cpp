@@ -21,9 +21,12 @@
  */
 
 #include "common/config-manager.h"
+#include "common/translation.h"
 
 #include "graphics/macgui/macwindowmanager.h"
 #include "graphics/macgui/macmenu.h"
+
+#include "gui/message.h"
 
 #include "engines/dialogs.h"
 
@@ -223,6 +226,13 @@ void PinkEngine::executeMenuCommand(uint id) {
 	case kShowAbout:
 		aboutDialog();
 		break;
+
+	case kShowHelp:
+	case kShowHints: {
+		GUI::MessageDialog alert(_("Help file rendering is not supported."));
+		runDialog(alert);
+		break;
+	}
 
 	default:
 		warning("Unprocessed command id %d", id);
