@@ -84,6 +84,12 @@ public:
 		}
 	}
 
+	Array(Array<T> &&old) : _capacity(old._capacity), _size(old._size), _storage(old._storage) {
+		old._storage = nullptr;
+		old._capacity = 0;
+		old._size = 0;
+	}
+
 	/**
 	 * Construct an array by copying data from a regular array.
 	 */
@@ -206,6 +212,23 @@ public:
 		_size = array._size;
 		allocCapacity(_size);
 		uninitialized_copy(array._storage, array._storage + _size, _storage);
+
+		return *this;
+	}
+
+	Array &operator=(Array<T> &&old) {
+		if (this == &old)
+			return *this;
+
+		freeStorage(_storage, _size);
+
+		_capacity = old._capacity;
+		_size = old._size;
+		_storage = old._storage;
+
+		old._storage = nullptr;
+		old._capacity = 0;
+		old._size = 0;
 
 		return *this;
 	}
