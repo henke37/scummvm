@@ -64,6 +64,11 @@ public:
 		free(_data);
 	}
 
+	CacheEntry(const CacheEntry &) = delete;
+
+	CacheEntry(CacheEntry &&old);
+	CacheEntry &operator=(CacheEntry &&old);
+
 	Common::String _packName;
 	Common::String _fileName;
 	uint32 _age;
