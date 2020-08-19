@@ -58,6 +58,25 @@ public:
 		insert(begin(), list.begin(), list.end());
 	}
 
+	List(List<t_T> &&old) {
+		if (old._anchor._prev != &old._anchor) {
+			_anchor._prev = old._anchor._prev;
+			_anchor._prev->_next = &_anchor;
+		} else {
+			_anchor._prev = &_anchor;
+		}
+
+		if (old._anchor._next != &old._anchor) {
+			_anchor._next = old._anchor._next;
+			_anchor._next->_prev = &_anchor;
+		} else {
+			_anchor._next = &_anchor;
+		}
+
+		old._anchor._next = &old._anchor;
+		old._anchor._prev = &old._anchor;
+	}
+
 	~List() {
 		clear();
 	}
@@ -178,6 +197,33 @@ public:
 				insert(i, i2, e2);
 			else
 				erase(i, e);
+		}
+
+		return *this;
+	}
+
+	List<t_T> &operator=(List<t_T> &&old) {
+		if (this == &old)
+			return *this;
+
+		clear();
+
+		if (old._anchor._prev != &old._anchor) {
+			_anchor._prev = old._anchor._prev;
+			_anchor._prev->_next = &_anchor;
+
+			old._anchor._prev = &old._anchor;
+		} else {
+			_anchor._prev = &_anchor;
+		}
+
+		if (old._anchor._next != &old._anchor) {
+			_anchor._next = old._anchor._next;
+			_anchor._next->_prev = &_anchor;
+			
+			old._anchor._next = &old._anchor;
+		} else {
+			_anchor._next = &_anchor;
 		}
 
 		return *this;
