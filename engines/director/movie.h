@@ -55,6 +55,13 @@ struct InfoEntry {
 		memcpy(data, old.data, len);
 	}
 
+	InfoEntry (InfoEntry &&old) {
+		len = old.len;
+		data = old.data;
+		old.data = nullptr;
+		old.len = 0;
+	}
+
 	~InfoEntry() {
 		free(data);
 		data = nullptr;
@@ -65,6 +72,15 @@ struct InfoEntry {
 		len = old.len;
 		data = (byte *)malloc(len);
 		memcpy(data, old.data, len);
+		return *this;
+	}
+
+	InfoEntry &operator=(InfoEntry &&old) {
+		free(data);
+		len = old.len;
+		data = old.data;
+		old.data = nullptr;
+		old.len = 0;
 		return *this;
 	}
 
