@@ -235,6 +235,67 @@ public:
 		return *this;
 	}
 
+	HM_t &operator=(HM_t &&old) {
+		if (this == &old)
+			return *this;
+
+		clear(false);
+		Node **prevStorage = _storage;
+		size_type prevMask = _mask;
+
+		_storage = old._storage;
+		_size = old._size;
+		_mask = old._mask;
+		_deleted = old._deleted;
+		_hash = old._hash;
+		_equal = old._equal;
+
+		old._mask = prevMask;
+		old._storage = prevStorage;
+		memset(old._storage, 0, (prevMask + 1) * sizeof(Node *));
+
+		old._size = 0;
+		old._deleted = 0;
+
+#ifdef DEBUG_HASH_COLLISIONS
+		_collisions = old._collisions;
+		_lookups = old._lookups;
+		_dummyHits = old._dummyHits;
+
+		old._collisions = 0;
+		old._lookups = 0;
+		old._dummyHits = 0;
+#endif
+
+		return *this;
+	}
+
+	HashMap(HM_t &&old) {
+		_storage = old._storage;
+		_size = old._size;
+		_mask = old._mask;
+		_deleted = old._deleted;
+		_hash = old._hash;
+		_equal = old._equal;
+
+		old._mask = HASHMAP_MIN_CAPACITY - 1;
+		old._storage = new Node *[HASHMAP_MIN_CAPACITY];
+		memset(old._storage, 0, (old._mask + 1) * sizeof(Node *));
+
+		old._size = 0;
+		old._deleted = 0;
+
+#ifdef DEBUG_HASH_COLLISIONS
+		_collisions = old._collisions;
+		_lookups = old._lookups;
+		_dummyHits = old._dummyHits;
+
+		old._collisions = 0;
+		old._lookups = 0;
+		old._dummyHits = 0;
+#endif
+	}
+
 	bool contains(const Key &key) const;
 
 	Val &operator[](const Key &key);
