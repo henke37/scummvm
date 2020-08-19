@@ -172,7 +172,19 @@ struct DirectorPlotData {
 		}
 	}
 
+	DirectorPlotData(DirectorPlotData &&old) : _wm(old._wm), sprite(old.sprite),
+	                                                ink(old.ink), alpha(old.alpha),
+	                                                backColor(old.backColor), foreColor(old.foreColor),
+	                                                srf(old.srf), dst(old.dst),
+	                                                destRect(old.destRect), srcPoint(old.srcPoint),
+	                                                colorWhite(old.colorWhite), colorBlack(old.colorBlack),
+	                                                applyColor(old.applyColor) {
+			ms = old.ms;
+		    old.ms = nullptr;
+	}
+
 	DirectorPlotData &operator=(const DirectorPlotData &);
+	DirectorPlotData &operator=(DirectorPlotData &&);
 
 	~DirectorPlotData() {
 		delete ms;
