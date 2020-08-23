@@ -70,7 +70,12 @@ public:
 	int _fix;
 
 	NinePatchSide() : _fix(0) { _m.clear(); }
+	NinePatchSide(const NinePatchSide &);
+	NinePatchSide(NinePatchSide &&);
 	~NinePatchSide();
+
+	NinePatchSide &operator=(const NinePatchSide &);
+	NinePatchSide &operator=(NinePatchSide &&);
 
 	bool init(Graphics::TransparentSurface *bmp, bool vertical);
 	void calcOffsets(int len);
