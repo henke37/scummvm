@@ -45,7 +45,12 @@ namespace Graphics {
  */
 struct WinCursorGroup {
 	WinCursorGroup();
+	WinCursorGroup(const WinCursorGroup &);
+	WinCursorGroup(WinCursorGroup &&);
 	~WinCursorGroup();
+
+	WinCursorGroup &operator=(const WinCursorGroup &);
+	WinCursorGroup &operator=(WinCursorGroup &&);
 
 	struct CursorItem {
 		Common::WinResourceID id;
