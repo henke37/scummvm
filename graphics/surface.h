@@ -383,7 +383,12 @@ public:
 	 * @param fillColor Color to fill with
 	 */
 	FloodFill(Surface *surface, uint32 oldColor, uint32 fillColor, bool maskMode = false);
+	FloodFill(const FloodFill &);
+	FloodFill(FloodFill &&);
 	~FloodFill();
+
+	FloodFill &operator=(const FloodFill &);
+	FloodFill &operator=(FloodFill &&);
 
 	/**
 	 * Add pixels to the fill queue.
