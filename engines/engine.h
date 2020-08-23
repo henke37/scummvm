@@ -71,15 +71,13 @@ class PauseToken {
 public:
 	PauseToken();
 	PauseToken(const PauseToken &);
-#if __cplusplus >= 201103L
 	PauseToken(PauseToken &&);
-#endif
+
 	~PauseToken();
 
 	void operator=(const PauseToken &);
-#if __cplusplus >= 201103L
 	void operator=(PauseToken &&);
-#endif
+
 	/** Manually releases the PauseToken. Only allowed if the token
 	* currently represents a pause request.
 	*/

@@ -905,7 +905,6 @@ PauseToken::~PauseToken() {
 	}
 }
 
-#if __cplusplus >= 201103L
 PauseToken::PauseToken(PauseToken &&t2) : _engine(t2._engine) {
 	t2._engine = nullptr;
 }
@@ -917,4 +916,3 @@ void PauseToken::operator=(PauseToken &&t2) {
 	_engine = t2._engine;
 	t2._engine = nullptr;
 }
-#endif
