@@ -254,7 +254,12 @@ private:
 class FontSjisSVM : public FontSJISBase {
 public:
 	FontSjisSVM(const Common::Platform platform);
+	FontSjisSVM(const FontSjisSVM &);
+	FontSjisSVM(FontSjisSVM &&);
 	~FontSjisSVM();
+
+	FontSjisSVM &operator=(const FontSjisSVM &);
+	FontSjisSVM &operator=(FontSjisSVM &&);
 
 	/**
 	 * Load the font data from "SJIS.FNT".
