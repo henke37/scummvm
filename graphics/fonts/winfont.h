@@ -83,8 +83,25 @@ private:
 
 	uint16 _glyphCount;
 	struct GlyphEntry {
-		GlyphEntry() { bitmap = 0; charWidth = 0; offset = 0; }
+		GlyphEntry() {
+			bitmap = 0;
+			charWidth = 0;
+			offset = 0;
+		}
+		GlyphEntry(const GlyphEntry &);
+		GlyphEntry(GlyphEntry &&old) : charWidth(old.charWidth), offset(old.offset), bitmap(old.bitmap) {
+			old.bitmap = nullptr;
+		}
 		~GlyphEntry() { delete[] bitmap; }
+
+		GlyphEntry &operator=(const GlyphEntry &old);
+		GlyphEntry &operator=(GlyphEntry &&old) {
+			offset = old.offset;
+			charWidth = old.charWidth;
+			bitmap = old.bitmap;
+
+			old.bitmap = nullptr;
+		}
 
 		uint16 charWidth;
 		uint32 offset;
