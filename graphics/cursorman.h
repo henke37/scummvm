@@ -197,9 +197,13 @@ private:
 
 		// _format set to default by Graphics::PixelFormat default constructor
 		Cursor() : _data(0), _visible(false), _width(0), _height(0), _hotspotX(0), _hotspotY(0), _keycolor(0), _dontScale(false), _size(0) {}
-
+		Cursor(const Cursor &);
+		Cursor(Cursor &&old);
 		Cursor(const void *data, uint w, uint h, int hotspotX, int hotspotY, uint32 keycolor, bool dontScale = false, const Graphics::PixelFormat *format = NULL);
 		~Cursor();
+
+		Cursor &operator=(const Cursor &);
+		Cursor &operator=(Cursor &&);
 	};
 
 	struct Palette {
@@ -211,9 +215,13 @@ private:
 		bool _disabled;
 
 		Palette() : _data(0), _start(0), _num(0), _size(0), _disabled(false) {}
-
+		Palette(const Palette &);
+		Palette(Palette &&);
 		Palette(const byte *colors, uint start, uint num);
 		~Palette();
+
+		Palette &operator=(const Palette &);
+		Palette &operator=(Palette &&);
 	};
 	Common::Stack<Cursor *> _cursorStack;
 	Common::Stack<Palette *> _cursorPaletteStack;
