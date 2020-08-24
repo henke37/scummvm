@@ -48,6 +48,7 @@
 #include "common/hash-str.h"
 #include "common/installshield_cab.h"
 #include "common/memstream.h"
+#include "common/textconsole.h"
 #include "common/zlib.h"
 
 namespace Common {

@@ -23,6 +23,7 @@
 #ifndef COMMON_WINEXE_H
 #define COMMON_WINEXE_H
 
+#include "common/array.h"
 #include "common/hash-str.h"
 #include "common/str.h"
 
