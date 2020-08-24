@@ -23,6 +23,7 @@
 #ifndef GLK_QUEST_STRING
 #define GLK_QUEST_STRING
 
+#include "common/array.h"
 #include "common/hashmap.h"
 #include "common/hash-str.h"
 #include "common/str.h"
