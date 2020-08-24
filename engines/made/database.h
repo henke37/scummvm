@@ -23,6 +23,7 @@
 #ifndef MADE_DATABASE_H
 #define MADE_DATABASE_H
 
+#include "common/array.h"
 #include "common/hashmap.h"
 
 namespace Common {
