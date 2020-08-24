@@ -27,6 +27,7 @@
 #include "zvision/scripting/control.h"
 #include "zvision/scripting/scripting_effect.h"
 
+#include "common/array.h"
 #include "common/hashmap.h"
 #include "common/queue.h"
 #include "common/events.h"
