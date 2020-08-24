@@ -24,6 +24,7 @@
 #define MUTATIONOFJB_HARDCODEDSTRINGS_H
 
 #include "common/language.h"
+#include "common/array.h"
 #include "common/hashmap.h"
 
 namespace MutationOfJB {
