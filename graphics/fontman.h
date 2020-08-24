@@ -26,6 +26,7 @@
 #include "common/scummsys.h"
 #include "common/singleton.h"
 #include "common/str.h"
+#include "common/array.h"
 #include "common/hashmap.h"
 #include "common/hash-str.h"
 
