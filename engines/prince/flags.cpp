@@ -22,6 +22,8 @@
 
 #include "prince/flags.h"
 
+#include "common/array.h"
+
 namespace Prince {
 
 struct FlagDebug {
