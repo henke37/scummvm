@@ -33,9 +33,6 @@ namespace Common {
 template<class T>
 class Singleton : NonCopyable {
 private:
-	Singleton<T>(const Singleton<T> &);
-	Singleton<T> &operator=(const Singleton<T> &);
-
 	/**
 	 * The default object factory used by the template class Singleton.
 	 * By specialising this template function, one can make a singleton use a
