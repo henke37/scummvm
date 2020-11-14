@@ -1203,6 +1203,19 @@
 		</layout>
 	</dialog>
 
+	<dialog name = 'GameOptions_CommandLine' overlays = 'Dialog.GameOptions.TabWidget' shading = 'dim'>
+		<layout type = 'vertical' padding = '16, 16, 16, 16'>
+			<layout type = 'horizontal' padding = '0, 0, 0, 0' spacing = '10' align = 'center'>
+				<widget name = 'Name'
+						type = 'OptionsLabel'
+				/>
+				<widget name = 'Desc'
+						type = 'PopUp'
+				/>
+			</layout>
+		</layout>
+	</dialog>
+	
 	<dialog name = 'GlobalMenu' overlays = 'screen_center'>
 		<layout type = 'vertical' padding = '16, 16, 16, 16' align = 'center'>
 			<widget name = 'Logo'

@@ -132,6 +132,8 @@ EditGameDialog::EditGameDialog(const String &domain)
 		description = qgd.description;
 	}
 
+	String cmdLine(ConfMan.get("cmdLine", domain));
+
 	// GUI:  Add tab widget
 	TabWidget *tab = new TabWidget(this, "GameOptions.TabWidget");
 
@@ -348,6 +350,17 @@ EditGameDialog::EditGameDialog(const String &domain)
 		}
 	}
 
+	//
+	// 10) CMD Tab
+	//
+	tab->addTab(_("CMD"), "GameOptions_CommandLine");
+
+	if (g_system->getOverlayWidth() > 320)
+		new StaticTextWidget(tab, "GameOptions_CommandLine.Name", _("Command Line:"), _("Additional command line options"));
+	else
+		new StaticTextWidget(tab, "GameOptions_CommandLine.Name", _c("Command Line:", "lowres"), _("Additional command line options"));
+	_cmdLineWidget = new EditTextWidget(tab, "GameOptions_CommandLine.Desc", cmdLine, _("Additional command line options"));
+
 	// Activate the first tab
 	tab->setActiveTab(0);
 	_tabWidget = tab;
@@ -478,6 +491,8 @@ void EditGameDialog::apply() {
 		ConfMan.removeKey("platform", _domain);
 	else
 		ConfMan.set("platform", Common::getPlatformCode(platform), _domain);
+
+	ConfMan.set("cmdLine", _cmdLineWidget->getEditString(), _domain);
 
 	if (_engineOptions) {
 		_engineOptions->save();

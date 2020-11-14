@@ -93,6 +93,8 @@ protected:
 	CheckboxWidget *_globalVolumeOverride;
 
 	OptionsContainerWidget *_engineOptions;
+
+	EditTextWidget *_cmdLineWidget;
 };
 
 } // End of namespace GUI
