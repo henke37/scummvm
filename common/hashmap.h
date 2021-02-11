@@ -100,6 +100,33 @@ private:
 		Node() : _key(), _value() {}
 	};
 
+public:
+	class IndexerProxy {
+		const Key _key;
+		HM_t &_map;
+
+	public:
+		IndexerProxy(HM_t &map, const Key key) : _map(map), _key(key) {}
+
+		Val operator =(Val newVal) {
+			_map.setVal(_key, newVal);
+			return newVal;
+		}
+
+		operator const Val &() const { return _map.getVal(_key); }
+	};
+
+	class ConstIndexerProxy {
+		const Key _key;
+		const HM_t &_map;
+
+	public:
+		ConstIndexerProxy(const HM_t &map, const Key key) : _map(map), _key(key) {}
+
+		operator const Val &() const { return _map.getVal(_key); }
+	};
+
+private:
 	enum {
 		HASHMAP_PERTURB_SHIFT = 5,
 		HASHMAP_MIN_CAPACITY = 16,
@@ -243,8 +270,8 @@ public:
 
 	bool contains(const Key &key) const;
 
-	Val &operator[](const Key &key);
-	const Val &operator[](const Key &key) const;
+	IndexerProxy operator[](const Key &key);
+	ConstIndexerProxy operator[](const Key &key) const;
 
 	Val &getOrCreateVal(const Key &key);
 	Val &getVal(const Key &key);
@@ -598,8 +625,8 @@ bool HashMap<Key, Val, HashFunc, EqualFunc>::contains(const Key &key) const {
  */
 
 template<class Key, class Val, class HashFunc, class EqualFunc>
-Val &HashMap<Key, Val, HashFunc, EqualFunc>::operator[](const Key &key) {
-	return getOrCreateVal(key);
+typename HashMap<Key, Val, HashFunc, EqualFunc>::IndexerProxy HashMap<Key, Val, HashFunc, EqualFunc>::operator[](const Key &key) {
+	return IndexerProxy(*this, key);
 }
 
 /**
@@ -607,8 +634,8 @@ Val &HashMap<Key, Val, HashFunc, EqualFunc>::operator[](const Key &key) {
  */
 
 template<class Key, class Val, class HashFunc, class EqualFunc>
-const Val &HashMap<Key, Val, HashFunc, EqualFunc>::operator[](const Key &key) const {
-	return getVal(key);
+typename HashMap<Key, Val, HashFunc, EqualFunc>::ConstIndexerProxy HashMap<Key, Val, HashFunc, EqualFunc>::operator[](const Key &key) const {
+	return ConstIndexerProxy(*this, key);
 }
 
 /**
