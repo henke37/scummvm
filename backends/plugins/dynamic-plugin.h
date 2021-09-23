@@ -98,6 +98,7 @@ public:
 
 	virtual void unloadPlugin() {
 		delete _pluginObject;
+		_pluginObject = NULL;
 	}
 
 	virtual const char *getFileName() const {
