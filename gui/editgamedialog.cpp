@@ -28,6 +28,8 @@
 #include "common/translation.h"
 #include "common/system.h"
 
+#include "engines/engineman.h"
+
 #include "gui/browser.h"
 #include "gui/gui-manager.h"
 #include "gui/message.h"

@@ -20,6 +20,7 @@
  */
 
 #include "engines/engine.h"
+#include "engines/engineman.h"
 #include "engines/dialogs.h"
 #include "engines/util.h"
 #include "engines/metaengine.h"

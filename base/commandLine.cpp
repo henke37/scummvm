@@ -25,6 +25,7 @@
 #define FORBIDDEN_SYMBOL_EXCEPTION_exit
 
 #include "engines/advancedDetector.h"
+#include "engines/engineman.h"
 #include "engines/metaengine.h"
 #include "base/commandLine.h"
 #include "base/plugins.h"

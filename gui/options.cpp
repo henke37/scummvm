@@ -46,6 +46,7 @@
 #include "common/util.h"
 #include "common/text-to-speech.h"
 
+#include "engines/engineman.h"
 #include "engines/achievements.h"
 
 #include "audio/mididrv.h"

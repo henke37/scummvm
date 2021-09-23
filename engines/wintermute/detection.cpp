@@ -26,6 +26,7 @@
 #include "common/fs.h"
 #include "common/util.h"
 
+#include "engines/engineman.h"
 #include "engines/metaengine.h"
 
 #include "wintermute/detection.h"
