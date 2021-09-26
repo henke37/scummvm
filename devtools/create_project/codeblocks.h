@@ -45,13 +45,13 @@ protected:
 								const std::string &objPrefix, const std::string &filePrefix,
 								const std::string &pchIncludeRoot, const StringList &pchDirs, const StringList &pchExclude) final;
 
-	void writeReferences(const BuildSetup &setup, std::ofstream &output) final;
 
 	const char *getProjectExtension() final;
 
 private:
 	void writeWarnings(const std::string &name, std::ofstream &output) const;
 	void writeDefines(const StringList &defines, std::ofstream &output) const;
+	void writeReferences(const BuildSetup &setup, std::ofstream &output) const;
 };
 
 } // End of CreateProjectTool namespace

@@ -276,7 +276,7 @@ void CodeBlocksProvider::writeFileListToProject(const FileNode &dir, std::ostrea
 	}
 }
 
-void CodeBlocksProvider::writeReferences(const BuildSetup &setup, std::ofstream &output) {
+void CodeBlocksProvider::writeReferences(const BuildSetup &setup, std::ofstream &output) const {
 	output << "\t\t<Project filename=\"" << setup.projectName << ".cbp\" active=\"1\">\n";
 
 	for (UUIDMap::const_iterator i = _engineUuidMap.begin(); i != _engineUuidMap.end(); ++i) {

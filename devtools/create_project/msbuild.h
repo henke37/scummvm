@@ -40,7 +40,9 @@ protected:
 								const std::string &objPrefix, const std::string &filePrefix,
 								const std::string &pchIncludeRoot, const StringList &pchDirs, const StringList &pchExclude) override;
 
-	void writeReferences(const BuildSetup &setup, std::ofstream &output) override;
+	void writeReferences(const BuildSetup &setup, std::ofstream &output);
+
+	void writeProjectReference(std::ofstream &output, const std::string name, const std::string uuid);
 
 	void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const StringList &defines, const std::string &prefix) override;
 
