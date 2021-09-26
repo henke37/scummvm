@@ -1121,11 +1121,14 @@ const Feature s_features[] = {
 	{            "dialogs",                "USE_SYSDIALOGS", false, true,  "System dialogs support"},
 	{         "langdetect",                "USE_DETECTLANG", false, true,  "System language detection support" }, // This feature actually depends on "translation", there
 	                                                                                                           // is just no current way of properly detecting this...
-	{       "text-console", "USE_TEXT_CONSOLE_FOR_DEBUGGER", false, false, "Text console debugger" }, // This feature is always applied in xcode projects
-	{                "tts",                       "USE_TTS", false, true,  "Text to speech support"},
-	{  "builtin-resources",             "BUILTIN_RESOURCES", false, true,  "include resources (e.g. engine data, fonts) into the binary"},
-	{     "detection-full",                "DETECTION_FULL", false, true,  "Include detection objects for all engines" },
-	{   "detection-static", "USE_DETECTION_FEATURES_STATIC", false, true,  "Static linking of detection objects for engines."},
+	{     "text-console", "USE_TEXT_CONSOLE_FOR_DEBUGGER", false, false, "Text console debugger" }, // This feature is always applied in xcode projects
+	{              "tts",                       "USE_TTS", false, true,  "Text to speech support"},
+	{"builtin-resources",             "BUILTIN_RESOURCES", false, true,  "include resources (e.g. engine data, fonts) into the binary"},
+	{ "detection-static", "USE_DETECTION_FEATURES_STATIC", false, true,  "Static linking of detection objects for engines."},
+	{  "dynamic-modules",               "DYNAMIC_MODULES", false, false, "Dynamic modules for engines"},
+	{   "detection-full",                "DETECTION_FULL", false, true,  "Include detection objects for all engines" },
+	{ "detection-static", "USE_DETECTION_FEATURES_STATIC", false, true,  "Static linking of detection objects for engines."},
+	{            "cxx11",                     "USE_CXX11", false, true,  "Compile with c++11 support"}
 };
 
 const Tool s_tools[] = {
