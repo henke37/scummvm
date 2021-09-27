@@ -366,9 +366,6 @@ endif
 # Include common rules
 include $(srcdir)/rules.mk
 
-# Skip building the following objects if a static
-# module is enabled, because it already has the contents.
-ifneq ($(ENABLE_GLK), STATIC_PLUGIN)
 # Detection objects
 DETECT_OBJS += $(MODULE)/detection.o
 
@@ -393,4 +390,3 @@ DETECT_OBJS += $(MODULE)/zcode/detection.o
 # Dependencies of detection objects
 DETECT_OBJS += $(MODULE)/blorb.o
 DETECT_OBJS += $(MODULE)/advsys/game.o
-endif
