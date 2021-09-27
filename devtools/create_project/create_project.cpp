@@ -397,7 +397,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Setup defines and libraries
-	setup.defines = getEngineDefines(setup.engines);
+	setup.defines = setup.getEngineDefines();
 
 	// Add features
 	StringList featureDefines = getFeatureDefines(setup.features);
@@ -935,12 +935,17 @@ bool setEngineBuildState(const std::string &name, EngineDescList &engines, bool 
 	return false;
 }
 
-StringList getEngineDefines(const EngineDescList &engines) {
+StringList BuildSetup::getEngineDefines() const {
 	StringList result;
 
 	for (EngineDescList::const_iterator i = engines.begin(); i != engines.end(); ++i) {
-		if (i->enable)
-			result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name));
+		if (i->enable) {
+			if (featureEnabled("dynamic-modules")) {
+				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=DYNAMIC_PLUGIN");
+			} else {
+				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=STATIC_PLUGIN");
+			}
+		}
 	}
 
 	return result;

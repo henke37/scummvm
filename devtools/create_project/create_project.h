@@ -150,13 +150,6 @@ bool isSubEngine(const std::string &name, const EngineDescList &engines);
 bool setEngineBuildState(const std::string &name, EngineDescList &engines, bool enable);
 
 /**
- * Returns a list of all defines, according to the engine list passed.
- *
- * @param features The list of engines, which should be operated on. (this may contain engines, which are *not* enabled!)
- */
-StringList getEngineDefines(const EngineDescList &engines);
-
-/**
  * Structure to define a given feature, usually an external library,
  * used to build ScummVM.
  */
@@ -265,6 +258,11 @@ struct BuildSetup {
 
 	bool featureEnabled(std::string feature) const;
 	Feature getFeature(std::string feature) const;
+
+	/**
+	* Returns a list of defines for enabled engines.
+	*/
+	StringList getEngineDefines() const;
 };
 
 /**
