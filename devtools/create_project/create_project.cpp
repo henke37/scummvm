@@ -400,59 +400,59 @@ int main(int argc, char *argv[]) {
 	setup.defines = setup.getEngineDefines();
 
 	// Add features
-	StringList featureDefines = getFeatureDefines(setup.features);
-	setup.defines.splice(setup.defines.begin(), featureDefines);
+	StringMap featureDefines = getFeatureDefines(setup.features);
+	setup.defines.insert(featureDefines.begin(),featureDefines.end());
 
 	bool backendWin32 = false;
 	if (projectType == kProjectXcode) {
-		setup.defines.push_back("POSIX");
+		setup.defines["POSIX"] = "";
 		// Define both MACOSX, and IPHONE, but only one of them will be associated to the
 		// correct target by the Xcode project provider.
 		// This define will help catching up target-dependent files, like "browser_osx.mm"
 		// The suffix ("_osx", or "_ios") will be used by the project provider to filter out
 		// the files, according to the target.
-		setup.defines.push_back("MACOSX");
-		setup.defines.push_back("IPHONE");
-		setup.defines.push_back("SCUMMVM_NEON");
+		setup.defines["MACOSX"] = "";
+		setup.defines["IPHONE"] = "";
+		setup.defines["SCUMMVM_NEON"] = "";
 	} else if (projectType == kProjectMSVC || projectType == kProjectCodeBlocks) {
-		setup.defines.push_back("WIN32");
+		setup.defines["WIN32"] = "";
 		backendWin32 = true;
 	} else {
 		// As a last resort, select the backend files to build based on the platform used to build create_project.
 		// This is broken when cross compiling.
 #if defined(_WIN32) || defined(WIN32)
-		setup.defines.push_back("WIN32");
+		setup.defines["WIN32"] = "";
 		backendWin32 = true;
 #else
-		setup.defines.push_back("POSIX");
+		setup.defines["POSIX"] = "";
 #endif
 	}
 
 	for (FeatureList::const_iterator i = setup.features.begin(); i != setup.features.end(); ++i) {
 		if (i->enable) {
 			if (!strcmp(i->name, "updates"))
-				setup.defines.push_back("USE_SPARKLE");
+				setup.defines["USE_SPARKLE"] = "";
 			else if (backendWin32 && !strcmp(i->name, "libcurl"))
-				setup.defines.push_back("CURL_STATICLIB");
+				setup.defines["CURL_STATICLIB"] = "";
 			else if (!strcmp(i->name, "fluidlite"))
-				setup.defines.push_back("USE_FLUIDSYNTH");
+				setup.defines["USE_FLUIDSYNTH"] = "";
 		}
 	}
 
-	setup.defines.push_back("SDL_BACKEND");
+	setup.defines["SDL_BACKEND"] = "";
 	if (!setup.useSDL2) {
 		cout << "\nBuilding against SDL 1.2\n\n";
 	} else {
 		cout << "\nBuilding against SDL 2.0\n\n";
-		setup.defines.push_back("USE_SDL2");
+		setup.defines["USE_SDL2"] = "";
 	}
 
 	if (setup.useStaticDetection) {
-		setup.defines.push_back("DETECTION_STATIC");
+		setup.defines["DETECTION_STATIC"] = "";
 	}
 
 	if (getFeatureBuildState("opengl", setup.features)) {
-		setup.defines.push_back("USE_GLAD");
+		setup.defines["USE_GLAD"] = "";
 	}
 
 	// List of global warnings and map of project-specific warnings
@@ -939,15 +939,15 @@ bool setEngineBuildState(const std::string &name, EngineDescList &engines, bool 
 	return false;
 }
 
-StringList BuildSetup::getEngineDefines() const {
-	StringList result;
+StringMap BuildSetup::getEngineDefines() const {
+	StringMap result;
 
 	for (EngineDescList::const_iterator i = engines.begin(); i != engines.end(); ++i) {
 		if (i->enable) {
 			if (featureEnabled("dynamic-modules") && !isSubEngine(i->name,engines)) {
-				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=DYNAMIC_PLUGIN");
+				result["ENABLE_" +CreateProjectTool::toUpper(i->name)] = "DYNAMIC_PLUGIN";
 			} else {
-				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=STATIC_PLUGIN");
+				result["ENABLE_" + CreateProjectTool::toUpper(i->name)] = "STATIC_PLUGIN";
 			}
 		}
 	}
@@ -1189,12 +1189,12 @@ FeatureList getAllFeatures() {
 	return features;
 }
 
-StringList getFeatureDefines(const FeatureList &features) {
-	StringList defines;
+StringMap getFeatureDefines(const FeatureList &features) {
+	StringMap defines;
 
 	for (FeatureList::const_iterator i = features.begin(); i != features.end(); ++i) {
 		if (i->enable && i->define && i->define[0])
-			defines.push_back(i->define);
+			defines[i->define] = "";
 	}
 
 	return defines;
@@ -1224,7 +1224,7 @@ BuildSetup removeFeatureFromSetup(BuildSetup setup, const std::string &feature) 
 	for (FeatureList::iterator i = setup.features.begin(); i != setup.features.end(); ++i) {
 		if (i->enable && feature == i->name) {
 			if (i->define && i->define[0]) {
-				setup.defines.remove(i->define);
+				setup.defines.erase(i->define);
 			}
 			setup.features.erase(i);
 			break;
@@ -1894,7 +1894,7 @@ void ProjectProvider::addFilesToProject(const std::string &dir, std::ostream &pr
 	delete files;
 }
 
-void ProjectProvider::createModuleList(const std::string &moduleDir, const StringList &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, StringList &pchDirs, StringList &pchExclude, bool forDetection) const {
+void ProjectProvider::createModuleList(const std::string &moduleDir, const StringMap &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, StringList &pchDirs, StringList &pchExclude, bool forDetection) const {
 	const std::string moduleMkFile = moduleDir + "/module.mk";
 	std::ifstream moduleMk(moduleMkFile.c_str());
 	if (!moduleMk)
@@ -2151,7 +2151,7 @@ void ProjectProvider::createModuleList(const std::string &moduleDir, const Strin
 				error("Malformed ifdef in " + moduleMkFile);
 			++i;
 
-			if (std::find(defines.begin(), defines.end(), *i) == defines.end())
+			if (defines.find(*i) == defines.end())
 				shouldInclude.push(false);
 			else
 				shouldInclude.push(true && shouldInclude.top());
@@ -2160,7 +2160,7 @@ void ProjectProvider::createModuleList(const std::string &moduleDir, const Strin
 				error("Malformed ifndef in " + moduleMkFile);
 			++i;
 
-			if (std::find(defines.begin(), defines.end(), *i) == defines.end())
+			if (defines.find(*i) == defines.end())
 				shouldInclude.push(true && shouldInclude.top());
 			else
 				shouldInclude.push(false);
