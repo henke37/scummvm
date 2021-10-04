@@ -1975,7 +1975,7 @@ public:
 
 
 /** The global OSystem instance. Initialized in main(). */
-extern OSystem *g_system;
+extern SCUMMVM_EXPORT OSystem *g_system;
 
 /** @} */
 

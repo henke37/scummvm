@@ -93,7 +93,7 @@ protected:
 
 	typedef T	SingletonBaseType;
 
-	static T *_singleton;
+	static SCUMMVM_EXPORT T *_singleton;
 };
 
 /**
