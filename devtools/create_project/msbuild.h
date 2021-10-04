@@ -40,7 +40,7 @@ protected:
 								const std::string &objPrefix, const std::string &filePrefix,
 								const std::string &pchIncludeRoot, const StringList &pchDirs, const StringList &pchExclude) override;
 
-	void writeReferences(const BuildSetup &setup, std::ofstream &output);
+	void writeReferences(const BuildSetup &setup, const std::string &name, std::ofstream &output);
 
 	void writeProjectReference(std::ofstream &output, const std::string name, const std::string uuid);
 
