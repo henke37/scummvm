@@ -86,6 +86,7 @@ void MSBuildProvider::outputProperties(const BuildSetup &setup, std::ostream &pr
 void MSBuildProvider::createProjectFile(const std::string &name, const std::string &uuid, const BuildSetup &setup, const std::string &moduleDir,
 										const StringList &includeList, const StringList &excludeList, const std::string &pchIncludeRoot, const StringList &pchDirs, const StringList &pchExclude) {
 	const std::string projectFile = setup.outputDir + '/' + name + getProjectExtension();
+	bool dynamicLib = name == setup.projectName + "-detection" ? (!setup.useStaticDetection) : setup.featureEnabled("dynamic-modules");
 	std::ofstream project(projectFile.c_str());
 	if (!project || !project.is_open()) {
 		error("Could not open \"" + projectFile + "\" for writing");
@@ -134,6 +135,12 @@ void MSBuildProvider::createProjectFile(const std::string &name, const std::stri
 	}
 
 	project << "\t<PropertyGroup Label=\"UserMacros\" />\n";
+
+	if (dynamicLib && setup.projectName != name) {
+		project << "<PropertyGroup>\n"
+				<< "\t<LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>\n"
+				<< "</PropertyGroup>";
+	}
 
 	// Project-specific settings (analysis uses debug properties)
 	for (std::list<MSVC_Architecture>::const_iterator arch = _archs.begin(); arch != _archs.end(); ++arch) {
