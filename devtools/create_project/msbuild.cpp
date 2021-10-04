@@ -319,7 +319,7 @@ void MSBuildProvider::outputProjectSettings(std::ofstream &project, const std::s
 		else
 			defines["SCUMMVM_EXPORT"]= "__declspec( dllimport )";
 	} else
-		defines["SCUMMVM_EXPORT"]= "";
+		defines["SCUMMVM_EXPORT"]= " ";
 
 	project << "\t\t\t<PreprocessorDefinitions>" << getDefinesList(defines) << "%(PreprocessorDefinitions)</PreprocessorDefinitions>\n";
 
