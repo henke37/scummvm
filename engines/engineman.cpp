@@ -371,3 +371,36 @@ const Plugin *EngineManager::findEnginePlugin(const Common::String &engineId) {
 
 	return 0;
 }
+
+/**
+ * Try to load the plugin by searching in the ConfigManager for a matching
+ * engine ID under the domain 'engine_plugin_files'.
+ **/
+bool EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
+	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
+
+	if (domain) {
+		if (domain->contains(engineId)) {
+			Common::String filename = (*domain)[engineId];
+
+			if (loadPluginByFileName(filename)) {
+				return true;
+			}
+		}
+	}
+	// Check for a plugin with the same name as the engine before starting
+	// to scan all plugins
+	Common::String tentativeEnginePluginFilename = engineId;
+#ifdef PLUGIN_SUFFIX
+	tentativeEnginePluginFilename += PLUGIN_SUFFIX;
+#endif
+	for (PluginList::iterator p = _allEnginePlugins.begin(); p != _allEnginePlugins.end(); ++p) {
+		Common::String filename = (*p)->getFileName();
+		if (filename.hasSuffixIgnoreCase(tentativeEnginePluginFilename)) {
+			if (loadPluginByFileName(filename)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}

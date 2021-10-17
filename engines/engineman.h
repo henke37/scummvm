@@ -80,6 +80,9 @@ public:
 	 */
 	QualifiedGameList findGamesMatching(const Common::String &engineId, const Common::String &gameId) const;
 
+	
+	virtual bool loadPluginFromEngineId(const Common::String &engineId);
+
 	/**
 	 * Create a target from the supplied game descriptor.
 	 *
