@@ -158,7 +158,7 @@ Common::String EngineManager::createTargetForGame(const DetectedGame &game) {
 	return domain;
 }
 
-const Plugin *EngineManager::findPlugin(const Common::String &engineId) const {
+const Plugin *EngineManager::findMetaPlugin(const Common::String &engineId) const {
 	const PluginList &plugins = getPlugins();
 
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)

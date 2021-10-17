@@ -42,7 +42,7 @@ public:
 	const Plugin *findLoadedEnginePlugin(const Common::String &engineId);
 
 	/** Find a plugin by its engine ID. */
-	const Plugin *findPlugin(const Common::String &engineId) const;
+	const Plugin *findMetaPlugin(const Common::String &engineId) const;
 
 	const Plugin *findEnginePlugin(const Common::String &engineId);
 
