@@ -586,7 +586,7 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 		const Plugin *plugin = detectPlugin();
 
 		// Then, get the relevant Engine plugin from MetaEngine.
-		const Plugin *enginePlugin = nullptr;
+		Plugin *enginePlugin = nullptr;
 		if (plugin)
 			enginePlugin = EngineMan.getEngineFromMetaEngine(plugin);
 
