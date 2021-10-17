@@ -513,6 +513,10 @@ void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, b
  */
 bool PluginManager::tryLoadPlugin(Plugin *plugin) {
 	assert(plugin);
+
+	if (plugin->isLoaded())
+		return true;
+
 	// Try to load the plugin
 	if (plugin->loadPlugin()) {
 		addToPluginsInMemList(plugin);
