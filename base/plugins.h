@@ -303,7 +303,6 @@ protected:
 
 	bool tryLoadPlugin(Plugin *plugin);
 	void addToPluginsInMemList(Plugin *plugin);
-	const Plugin *findEnginePlugin(const Common::String &engineId);
 	const Plugin *findLoadedPlugin(const Common::String &engineId);
 
 	static PluginManager *_instance;

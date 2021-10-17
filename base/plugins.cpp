@@ -612,35 +612,6 @@ const Plugin *PluginManager::findLoadedPlugin(const Common::String &engineId) {
 	return 0;
 }
 
-const Plugin *PluginManager::findEnginePlugin(const Common::String &engineId) {
-	// First look for the game using the plugins in memory. This is critical
-	// for calls coming from inside games
-	const Plugin *plugin = findLoadedPlugin(engineId);
-	if (plugin)
-		return plugin;
-
-	// Now look for the plugin using the engine ID. This is much faster than scanning plugin
-	// by plugin
-	if (loadPluginFromEngineId(engineId))  {
-		plugin = findLoadedPlugin(engineId);
-		if (plugin)
-			return plugin;
-	}
-
-	// We failed to find it using the engine ID. Scan the list of plugins
-	PluginMan.loadFirstPlugin();
-	do {
-		plugin = findLoadedPlugin(engineId);
-		if (plugin) {
-			// Update with new plugin file name
-			PluginMan.updateConfigWithFileName(engineId);
-			return plugin;
-		}
-	} while (PluginMan.loadNextPlugin());
-
-	return 0;
-}
-
 // Music plugins
 
 #include "audio/musicplugin.h"

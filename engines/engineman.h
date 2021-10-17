@@ -42,6 +42,8 @@ public:
 	/** Find a plugin by its engine ID. */
 	const Plugin *findPlugin(const Common::String &engineId) const;
 
+	const Plugin *findEnginePlugin(const Common::String &engineId);
+
 	/**
 	 * A method which takes in a plugin of type ENGINE,
 	 * and returns the appropriate & matching METAENGINE.
