@@ -227,18 +227,14 @@ ADDetectedGame SciMetaEngineDetection::fallbackDetect(const FileMap &allFiles, c
 		}
 	}
 
-	const Plugin *metaEnginePlugin = EngineMan.findPlugin(getEngineId());
-
-	if (metaEnginePlugin) {
-		const Plugin *enginePlugin = PluginMan.getEngineFromMetaEngine(metaEnginePlugin);
-		if (enginePlugin) {
-			return enginePlugin->get<AdvancedMetaEngine>().fallbackDetectExtern(_md5Bytes, allFiles, fslist);
-		} else {
-			static bool warn = true;
-			if (warn) {
-				warning("Engine plugin for SCI not present. Fallback detection is disabled.");
-				warn = false;
-			}
+	const Plugin *enginePlugin = EngineMan.findLoadedEnginePlugin(getEngineId());
+	if (enginePlugin) {
+		return enginePlugin->get<AdvancedMetaEngine>().fallbackDetectExtern(_md5Bytes, allFiles, fslist);
+	} else {
+		static bool warn = true;
+		if (warn) {
+			warning("Engine plugin for SCI not present. Fallback detection is disabled.");
+			warn = false;
 		}
 	}
 
