@@ -346,7 +346,7 @@ const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
 const Plugin *EngineManager::findEnginePlugin(const Common::String &engineId) {
 	// First look for the game using the plugins in memory. This is critical
 	// for calls coming from inside games
-	const Plugin *plugin = findLoadedPlugin(engineId);
+	const Plugin *plugin = findLoadedEnginePlugin(engineId);
 	if (plugin)
 		return plugin;
 
