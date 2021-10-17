@@ -243,7 +243,7 @@ void EngineManager::upgradeTargetForEngineId(const Common::String &target) const
 
 	// First, try to update entries for engines that previously used the "single id" system
 	// Search for an engine whose ID is the game ID
-	const Plugin *plugin = findPlugin(oldGameId);
+	const Plugin *plugin = findMetaPlugin(oldGameId);
 	if (plugin) {
 		// Run detection on the game path
 		Common::FSNode dir(path);
