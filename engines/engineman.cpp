@@ -42,7 +42,7 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineI
 	return results;
 }
 
-QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineId, const Common::String &gameId) const {
+QualifiedGameList EngineManager::findGamesMatching(const Common::String &gameId) const {
 	QualifiedGameList results;
 	// This is a slow path, we have to scan the list of plugins
 	PluginMan.loadFirstPlugin();
