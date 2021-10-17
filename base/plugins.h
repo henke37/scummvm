@@ -320,7 +320,6 @@ public:
 	virtual void init()	{}
 	virtual void loadFirstPlugin() {}
 	virtual bool loadNextPlugin() { return false; }
-	virtual void updateConfigWithFileName(const Common::String &engineId) {}
 	virtual void loadDetectionPlugin() {}
 	virtual void unloadDetectionPlugin() {}
 
@@ -354,7 +353,6 @@ public:
 	virtual void init() override;
 	virtual void loadFirstPlugin() override;
 	virtual bool loadNextPlugin() override;
-	virtual void updateConfigWithFileName(const Common::String &engineId) override;
 #ifndef DETECTION_STATIC
 	virtual void loadDetectionPlugin() override;
 	virtual void unloadDetectionPlugin() override;

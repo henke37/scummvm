@@ -364,7 +364,7 @@ const Plugin *EngineManager::findEnginePlugin(const Common::String &engineId) {
 		plugin = findLoadedPlugin(engineId);
 		if (plugin) {
 			// Update with new plugin file name
-			PluginMan.updateConfigWithFileName(engineId);
+			updateConfigWithFileName(engineId);
 			return plugin;
 		}
 	} while (PluginMan.loadNextPlugin());
@@ -403,4 +403,22 @@ bool EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Update the config manager with a plugin file name that we found can handle
+ * the engine.
+ **/
+void EngineManager::updateConfigWithFileName(const Common::String &engineId, Plugin *p) {
+	// Check if we have a filename for the current plugin
+	if (p->getFileName()) {
+		if (!ConfMan.hasMiscDomain("engine_plugin_files"))
+			ConfMan.addMiscDomain("engine_plugin_files");
+
+		Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
+		assert(domain);
+		(*domain).setVal(engineId, (p->getFileName());
+
+		ConfMan.flushToDisk();
+	}
 }

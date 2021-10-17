@@ -361,24 +361,6 @@ bool PluginManagerUncached::loadPluginByFileName(const Common::String &filename)
 	return false;
 }
 
-/**
- * Update the config manager with a plugin file name that we found can handle
- * the engine.
- **/
-void PluginManagerUncached::updateConfigWithFileName(const Common::String &engineId) {
-	// Check if we have a filename for the current plugin
-	if ((*_currentPlugin)->getFileName()) {
-		if (!ConfMan.hasMiscDomain("engine_plugin_files"))
-			ConfMan.addMiscDomain("engine_plugin_files");
-
-		Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
-		assert(domain);
-		(*domain).setVal(engineId, (*_currentPlugin)->getFileName());
-
-		ConfMan.flushToDisk();
-	}
-}
-
 #ifndef DETECTION_STATIC
 void PluginManagerUncached::loadDetectionPlugin() {
 	bool linkMetaEngines = false;
