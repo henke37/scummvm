@@ -39,6 +39,8 @@ public:
 	 */
 	DetectionResults detectGames(const Common::FSList &fslist) const;
 
+	const Plugin *findLoadedEnginePlugin(const Common::String &engineId);
+
 	/** Find a plugin by its engine ID. */
 	const Plugin *findPlugin(const Common::String &engineId) const;
 

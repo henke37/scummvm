@@ -422,3 +422,13 @@ void EngineManager::updateConfigWithFileName(const Common::String &engineId, Plu
 		ConfMan.flushToDisk();
 	}
 }
+
+const Plugin *EngineManager::findLoadedEnginePlugin(const Common::String &engineId) {
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
+
+	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
+		if (engineId == (*iter)->get<MetaEngine>().getName())
+			return *iter;
+
+	return 0;
+}

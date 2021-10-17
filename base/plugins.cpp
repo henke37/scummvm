@@ -551,16 +551,6 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 	}
 }
 
-const Plugin *PluginManager::findLoadedPlugin(const Common::String &engineId) {
-	const PluginList &plugins = getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
-		if (engineId == (*iter)->get<MetaEngine>().getName())
-			return *iter;
-
-	return 0;
-}
-
 // Music plugins
 
 #include "audio/musicplugin.h"
