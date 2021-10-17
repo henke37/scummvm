@@ -270,7 +270,7 @@ void EngineManager::upgradeTargetForEngineId(const Common::String &target) const
 
 	// Next, try to find an engine with the game ID in its supported games list
 	if (engineId.empty()) {
-		QualifiedGameList candidates = findGamesMatching("", oldGameId);
+		QualifiedGameList candidates = findGamesMatching(oldGameId);
 		if (candidates.size() > 1) {
 			warning("Multiple matching engines were found when upgrading target '%s'", target.c_str());
 			return;
