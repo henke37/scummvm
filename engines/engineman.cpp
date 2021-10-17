@@ -182,7 +182,7 @@ QualifiedGameDescriptor EngineManager::findTarget(const Common::String &target, 
 		return QualifiedGameDescriptor();
 
 	// Look for the engine ID
-	const Plugin *foundPlugin = findPlugin(domain->getVal("engineid"));
+	const Plugin *foundPlugin = findMetaPlugin(domain->getVal("engineid"));
 	if (!foundPlugin) {
 		return QualifiedGameDescriptor();
 	}
