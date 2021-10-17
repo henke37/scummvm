@@ -53,7 +53,7 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineI
  **/
 QualifiedGameList EngineManager::findGameInLoadedPlugins(const Common::String &gameId) const {
 	// Find the GameDescriptor for this target
-	const PluginList &plugins = getPlugins();
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
 	QualifiedGameList results;
 	PluginList::const_iterator iter;
@@ -99,11 +99,6 @@ DetectionResults EngineManager::detectGames(const Common::FSList &fslist) const 
 	}
 
 	return DetectionResults(candidates);
-}
-
-
-const PluginList &EngineManager::getPlugins(const PluginType fetchPluginType) const {
-	return PluginManager::instance().getPlugins(fetchPluginType);
 }
 
 namespace {
