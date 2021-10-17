@@ -155,7 +155,7 @@ void saveLastLaunchedTarget(const Common::String &target) {
 }
 
 // TODO: specify the possible return values here
-static Common::Error runGame(const Plugin *plugin, const Plugin *enginePlugin, OSystem &system, const Common::String &debugLevels) {
+static Common::Error runGame(const Plugin *plugin, Plugin *enginePlugin, OSystem &system, const Common::String &debugLevels) {
 	assert(plugin);
 	assert(enginePlugin);
 
@@ -207,6 +207,8 @@ static Common::Error runGame(const Plugin *plugin, const Plugin *enginePlugin, O
 		else if (!DebugMan.enableDebugChannel(token))
 			warning("Engine does not support debug level '%s'", token.c_str());
 	}
+
+	PluginMan.tryLoadPlugin(enginePlugin);
 
 	// Create the game's MetaEngine.
 	MetaEngine &metaEngine = enginePlugin->get<MetaEngine>();
