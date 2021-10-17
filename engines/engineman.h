@@ -83,7 +83,7 @@ public:
 	QualifiedGameList findGamesMatching(const Common::String &engineId, const Common::String &gameId) const;
 
 	
-	bool loadPluginFromEngineId(const Common::String &engineId);
+	Plugin *loadPluginFromEngineId(const Common::String &engineId);
 
 	void updateConfigWithFileName(const Common::String &engineId, Plugin *p);
 

@@ -352,11 +352,9 @@ const Plugin *EngineManager::findEnginePlugin(const Common::String &engineId) {
 
 	// Now look for the plugin using the engine ID. This is much faster than scanning plugin
 	// by plugin
-	if (loadPluginFromEngineId(engineId)) {
-		plugin = findLoadedPlugin(engineId);
-		if (plugin)
-			return plugin;
-	}
+	plugin = loadPluginFromEngineId(engineId));
+	if (plugin)
+		return plugin;
 
 	// We failed to find it using the engine ID. Scan the list of plugins
 	PluginMan.loadFirstPlugin();
@@ -376,7 +374,7 @@ const Plugin *EngineManager::findEnginePlugin(const Common::String &engineId) {
  * Try to load the plugin by searching in the ConfigManager for a matching
  * engine ID under the domain 'engine_plugin_files'.
  **/
-bool EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
+Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
 	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
 
 	if (domain) {
@@ -402,7 +400,7 @@ bool EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
 			}
 		}
 	}
-	return false;
+	return NULL;
 }
 
 /**
