@@ -43,6 +43,30 @@ public:
 	const Plugin *findPlugin(const Common::String &engineId) const;
 
 	/**
+	 * A method which takes in a plugin of type ENGINE,
+	 * and returns the appropriate & matching METAENGINE.
+	 * It uses the Engine plugin's getName method, which is an identifier,
+	 * and then tries to matches it with each plugin present in memory.
+	 *
+	 * @param plugin A plugin of type ENGINE.
+	 *
+	 * @return A plugin of type METAENGINE.
+	 */
+	const Plugin *getMetaEngineFromEngine(const Plugin *plugin);
+
+	/**
+	 * A method which takes in a plugin of type METAENGINE,
+	 * and returns the appropriate & matching ENGINE.
+	 * It uses the MetaEngine's getEngineID to reconstruct the name
+	 * of engine plugin, and then tries to matches it with each plugin in memory.
+	 *
+	 * @param A plugin of type METAENGINE.
+	 *
+	 * @return A plugin of type ENGINE.
+	 */
+	const Plugin *getEngineFromMetaEngine(const Plugin *plugin);
+
+	/**
 	 * Get the list of all plugins for the type specified.
 	 *
 	 * By default, it will get METAENGINES, for now.
