@@ -81,7 +81,7 @@ DetectionResults EngineManager::detectGames(const Common::FSList &fslist) const 
 
 	// MetaEngines are always loaded into memory, so, get them and
 	// run detection for all of them.
-	plugins = getPlugins(PLUGIN_TYPE_ENGINE_DETECTION);
+	plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
 	// Clear md5 cache before each detection starts, just in case.
 	MD5Man.clear();
