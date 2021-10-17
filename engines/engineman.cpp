@@ -298,7 +298,7 @@ void EngineManager::upgradeTargetForEngineId(const Common::String &target) const
 	ConfMan.flushToDisk();
 }
 
-const Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
+Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE_DETECTION);
 
 	const Plugin *enginePlugin = nullptr;

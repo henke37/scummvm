@@ -588,7 +588,7 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 		// Then, get the relevant Engine plugin from MetaEngine.
 		const Plugin *enginePlugin = nullptr;
 		if (plugin)
-			enginePlugin = PluginMan.getEngineFromMetaEngine(plugin);
+			enginePlugin = EngineMan.getEngineFromMetaEngine(plugin);
 
 		if (enginePlugin) {
 			// Unload all plugins not needed for this game, to save memory

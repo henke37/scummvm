@@ -56,7 +56,7 @@ public:
 	 *
 	 * @return A plugin of type METAENGINE.
 	 */
-	const Plugin *getMetaEngineFromEngine(const Plugin *plugin);
+	Plugin *getMetaEngineFromEngine(const Plugin *plugin);
 
 	/**
 	 * A method which takes in a plugin of type METAENGINE,
@@ -68,7 +68,7 @@ public:
 	 *
 	 * @return A plugin of type ENGINE.
 	 */
-	const Plugin *getEngineFromMetaEngine(const Plugin *plugin);
+	Plugin *getEngineFromMetaEngine(const Plugin *plugin);
 
 	/** Find a target. */
 	QualifiedGameDescriptor findTarget(const Common::String &target, const Plugin **plugin = NULL) const;
