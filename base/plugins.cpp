@@ -485,7 +485,7 @@ void PluginManagerUncached::loadDetectionPlugin() {
 	}
 
 	if (linkMetaEngines) {
-		_pluginsInMem[PLUGIN_TYPE_ENGINE_DETECTION].clear();
+		_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
 		const Detection &detectionConnect = _detectionPlugin->get<Detection>();
 		const PluginList &pl = detectionConnect.getPlugins();
 		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManagerUncached::tryLoadPlugin), this));
@@ -495,7 +495,7 @@ void PluginManagerUncached::loadDetectionPlugin() {
 
 void PluginManagerUncached::unloadDetectionPlugin() {
 	if (_isDetectionLoaded) {
-		_pluginsInMem[PLUGIN_TYPE_ENGINE_DETECTION].clear();
+		_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
 		_detectionPlugin->unloadPlugin();
 		_isDetectionLoaded = false;
 	} else {
@@ -549,7 +549,7 @@ void PluginManager::loadAllPlugins() {
 	 * We must register all plugins linked in it in order to use them
 	 */
 	PluginList dpl = getPlugins(PLUGIN_TYPE_DETECTION);
-	_pluginsInMem[PLUGIN_TYPE_ENGINE_DETECTION].clear();
+	_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
 	for (PluginList::iterator it = dpl.begin();
 	                            it != dpl.end();
 	                            ++it) {
@@ -591,7 +591,7 @@ void PluginManager::unloadAllPlugins() {
 
 void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin /*=true*/) {
 	Plugin *found = NULL;
-	for (PluginList::iterator p = _pluginsInMem[type].begin(); p != _pluginsInMem[type].end(); ++p) {
+	for (PluginList::iterator p = _loadedPluginsByType[type].begin(); p != _loadedPluginsByType[type].end(); ++p) {
 		if (*p == plugin) {
 			found = *p;
 		} else {
@@ -601,9 +601,9 @@ void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, b
 			}
 		}
 	}
-	_pluginsInMem[type].clear();
+	_loadedPluginsByType[type].clear();
 	if (found != NULL) {
-		_pluginsInMem[type].push_back(found);
+		_loadedPluginsByType[type].push_back(found);
 	}
 }
 
@@ -631,8 +631,8 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 	// The plugin is valid, see if it provides the same module as an
 	// already loaded one and should replace it.
 
-	PluginList::iterator pl = _pluginsInMem[plugin->getType()].begin();
-	while (!found && pl != _pluginsInMem[plugin->getType()].end()) {
+	PluginList::iterator pl = _loadedPluginsByType[plugin->getType()].begin();
+	while (!found && pl != _loadedPluginsByType[plugin->getType()].end()) {
 		if (!strcmp(plugin->getName(), (*pl)->getName())) {
 			// Found a duplicated module. Replace the old one.
 			found = true;
@@ -646,12 +646,12 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 
 	if (!found) {
 		// If it provides a new module, just add it to the list of known plugins in memory.
-		_pluginsInMem[plugin->getType()].push_back(plugin);
+		_loadedPluginsByType[plugin->getType()].push_back(plugin);
 	}
 }
 
 const Plugin *PluginManager::findLoadedPlugin(const Common::String &engineId) {
-	const PluginList &plugins = getPlugins(PLUGIN_TYPE_ENGINE);
+	const PluginList &plugins = getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
 		if (engineId == (*iter)->get<MetaEngine>().getName())
@@ -697,8 +697,8 @@ namespace Common {
 DECLARE_SINGLETON(MusicManager);
 }
 
-const PluginList &MusicManager::getPlugins() const {
-	return PluginManager::instance().getPlugins(PLUGIN_TYPE_MUSIC);
+const PluginList &MusicManager::getLoadedPlugins() const {
+	return PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_MUSIC);
 }
 
 // Scaler plugins
@@ -709,8 +709,8 @@ namespace Common {
 DECLARE_SINGLETON(ScalerManager);
 }
 
-const PluginList &ScalerManager::getPlugins() const {
-	return PluginManager::instance().getPlugins(PLUGIN_TYPE_SCALER);
+const PluginList &ScalerManager::getLoadedPlugins() const {
+	return PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_SCALER);
 }
 
 uint ScalerManager::getMaxExtraPixels() const {

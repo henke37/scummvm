@@ -298,7 +298,7 @@ class PluginManager {
 protected:
 	typedef Common::Array<PluginProvider *> ProviderList;
 
-	PluginList _pluginsInMem[PLUGIN_TYPE_MAX];
+	PluginList _loadedPluginsByType[PLUGIN_TYPE_MAX];
 	ProviderList _providers;
 
 	bool tryLoadPlugin(Plugin *plugin);
@@ -357,7 +357,7 @@ public:
 
 	void unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin = true);
 
-	const PluginList &getPlugins(PluginType t) { return _pluginsInMem[t]; }
+	const PluginList &getLoadedPluginsOfType(PluginType t) { return _loadedPluginsByType[t]; }
 };
 
 /**

@@ -212,7 +212,7 @@ private:
 	friend class Common::Singleton<SingletonBaseType>;
 
 public:
-	const PluginList &getPlugins() const;
+	const PluginList &getLoadedPlugins() const;
 
 	/**
 	 * Queries all scaler plugins for the maximum number of pixels they
