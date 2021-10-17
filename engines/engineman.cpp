@@ -322,7 +322,7 @@ const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
 
 	const Plugin *metaEngine = nullptr;
 
-	PluginList pl = PluginMan.getPlugins(PLUGIN_TYPE_ENGINE_DETECTION);
+	PluginList pl = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
 	// This will return a name of the Engine plugin, which will be identical to
 	// a getEngineID from a relevant MetaEngine.
