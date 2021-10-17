@@ -577,7 +577,7 @@ const PluginList &ScalerManager::getLoadedPlugins() const {
 
 uint ScalerManager::getMaxExtraPixels() const {
 	uint maxPixels = 0;
-	PluginList plugins = getPlugins();
+	PluginList plugins = getLoadedPlugins();
 	PluginList::iterator i = plugins.begin();
 	for (; i != plugins.end(); ++i) {
 		uint n = (*i)->get<ScalerPluginObject>().extraPixels();
@@ -589,7 +589,7 @@ uint ScalerManager::getMaxExtraPixels() const {
 }
 
 Plugin *ScalerManager::findScalerPlugin(const char *name) const {
-	const PluginList &plugins = getPlugins();
+	const PluginList &plugins = getLoadedPlugins();
 	for (PluginList::const_iterator i = plugins.begin(); i != plugins.end(); ++i) {
 		if (!strcmp((*i)->get<ScalerPluginObject>().getName(), name)) {
 			return *i;
@@ -600,7 +600,7 @@ Plugin *ScalerManager::findScalerPlugin(const char *name) const {
 }
 
 uint ScalerManager::findScalerPluginIndex(const char *name) const {
-	const PluginList &plugins = getPlugins();
+	const PluginList &plugins = getLoadedPlugins();
 	uint index = 0;
 
 	for (PluginList::const_iterator i = plugins.begin(); i != plugins.end(); ++i) {

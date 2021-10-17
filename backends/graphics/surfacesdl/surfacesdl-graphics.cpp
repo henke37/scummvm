@@ -130,7 +130,7 @@ SurfaceSdlGraphicsManager::SurfaceSdlGraphicsManager(SdlEventSource *sdlEventSou
 	_enableFocusRectDebugCode(false), _enableFocusRect(false), _focusRect(),
 #endif
 	_transactionMode(kTransactionNone),
-	_scalerPlugins(ScalerMan.getPlugins()),
+	_scalerPlugins(ScalerMan.getLoadedPlugins()),
 	_needRestoreAfterOverlay(false) {
 
 	// allocate palette storage

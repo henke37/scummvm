@@ -43,7 +43,7 @@ bool BaseBackend::setScaler(const char *name, int factor) {
 	if (!scumm_stricmp(name, "default"))
 		return setScaler(getDefaultScaler(), factor);
 
-	const PluginList &scalerPlugins = ScalerMan.getPlugins();
+	const PluginList &scalerPlugins = ScalerMan.getLoadedPlugins();
 
 	for (uint scalerIndex = 0; scalerIndex < scalerPlugins.size(); scalerIndex++) {
 		if (!scumm_stricmp(scalerPlugins[scalerIndex]->get<ScalerPluginObject>().getName(), name)) {
