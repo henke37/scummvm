@@ -355,22 +355,7 @@ const Plugin *EngineManager::findAndLoadEnginePlugin(const Common::String &engin
 
 	// Now look for the plugin using the engine ID. This is much faster than scanning plugin
 	// by plugin
-	plugin = loadPluginFromEngineId(engineId));
-	if (plugin)
-		return plugin;
-
-	// We failed to find it using the engine ID. Scan the list of plugins
-	PluginMan.loadFirstPlugin();
-	do {
-		plugin = findLoadedPlugin(engineId);
-		if (plugin) {
-			// Update with new plugin file name
-			updateConfigWithFileName(engineId);
-			return plugin;
-		}
-	} while (PluginMan.loadNextPlugin());
-
-	return 0;
+	return loadPluginFromEngineId(engineId);
 }
 
 /**
