@@ -80,6 +80,7 @@ public:
 	 * loading them from the disk if necessary. This is a slow operation on
 	 * some platforms and should not be used for the happy path.
 	 */
+	QualifiedGameList findGamesMatching(const Common::String &gameId) const;
 	QualifiedGameList findGamesMatching(const Common::String &engineId, const Common::String &gameId) const;
 
 	

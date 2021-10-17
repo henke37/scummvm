@@ -25,27 +25,30 @@ DECLARE_SINGLETON(EngineManager);
 QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineId, const Common::String &gameId) const {
 	QualifiedGameList results;
 
-	if (!engineId.empty()) {
-		// If we got an engine name, look for THE game only in that engine
-		const Plugin *p = EngineMan.findMetaPlugin(engineId);
-		if (p) {
-			const MetaEngineDetection &meta = p->get<MetaEngineDetection>();
-			DebugMan.addAllDebugChannels(meta.getDebugChannels());
+	assert(!engineId.empty());
 
-			PlainGameDescriptor pluginResult = meta.findGame(gameId.c_str());
-			if (pluginResult.gameId) {
-				results.push_back(QualifiedGameDescriptor(meta.getEngineId(), pluginResult));
-			}
+	// If we got an engine name, look for THE game only in that engine
+	const Plugin *p = EngineMan.findMetaPlugin(engineId);
+	if (p) {
+		const MetaEngineDetection &meta = p->get<MetaEngineDetection>();
+		DebugMan.addAllDebugChannels(meta.getDebugChannels());
+
+		PlainGameDescriptor pluginResult = meta.findGame(gameId.c_str());
+		if (pluginResult.gameId) {
+			results.push_back(QualifiedGameDescriptor(meta.getEngineId(), pluginResult));
 		}
-	} else {
-		// This is a slow path, we have to scan the list of plugins
-		PluginMan.loadFirstPlugin();
-		do {
-			results.push_back(findGameInLoadedPlugins(gameId));
-		} while (PluginMan.loadNextPlugin());
 	}
 
 	return results;
+}
+
+QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineId, const Common::String &gameId) const {
+	QualifiedGameList results;
+	// This is a slow path, we have to scan the list of plugins
+	PluginMan.loadFirstPlugin();
+	do {
+		results.push_back(findGameInLoadedPlugins(gameId));
+	} while (PluginMan.loadNextPlugin());
 }
 
 /**
