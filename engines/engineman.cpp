@@ -362,15 +362,20 @@ const Plugin *EngineManager::findAndLoadEnginePlugin(const Common::String &engin
  * Try to load the plugin by searching in the ConfigManager for a matching
  * engine ID under the domain 'engine_plugin_files'.
  **/
-Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
+const Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
 	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
 
 	if (domain) {
 		if (domain->contains(engineId)) {
 			Common::String filename = (*domain)[engineId];
 
-			if (loadPluginByFileName(filename)) {
-				return true;
+			Plugin *plugin = PluginMan.getPluginByFileName(filename);
+			if (plugin) {
+				if (plugin->isLoaded())
+					return plugin;
+				if(PluginMan.tryLoadPlugin(plugin))
+					return plugin;
+				return NULL;
 			}
 		}
 	}

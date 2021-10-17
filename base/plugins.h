@@ -155,9 +155,14 @@ public:
  * memory.
  */
 class Plugin {
+	friend class PluginManager;
+
 protected:
 	PluginObject *_pluginObject;
 	PluginType _type;
+
+	virtual bool loadPlugin() = 0;   // TODO: Rename to load() ?
+	virtual void unloadPlugin() = 0; // TODO: Rename to unload() ?
 
 public:
 	Plugin() : _pluginObject(0), _type(PLUGIN_TYPE_MAX) {}
@@ -165,8 +170,6 @@ public:
 	}
 
 	bool isLoaded() const { return _pluginObject; }
-	virtual bool loadPlugin() = 0;     // TODO: Rename to load() ?
-	virtual void unloadPlugin() = 0;   // TODO: Rename to unload() ?
 
 	/**
 	 * The following functions query information from the plugin object once
@@ -295,14 +298,15 @@ protected:
  * managing all Plugin class instances, and unloading them.
  */
 class PluginManager {
+private:
+	PluginList _loadedPluginsByType[PLUGIN_TYPE_MAX];
+
+	void addToPluginsInMemList(Plugin *plugin);
+
 protected:
 	typedef Common::Array<PluginProvider *> ProviderList;
 
-	PluginList _loadedPluginsByType[PLUGIN_TYPE_MAX];
 	ProviderList _providers;
-
-	bool tryLoadPlugin(Plugin *plugin);
-	void addToPluginsInMemList(Plugin *plugin);
 
 	static PluginManager *_instance;
 	PluginManager();
@@ -322,10 +326,14 @@ public:
 	virtual void loadDetectionPlugin() {}
 	virtual void unloadDetectionPlugin() {}
 
+	bool tryLoadPlugin(Plugin *plugin);
+
 	// Functions used only by the cached PluginManager
 	virtual void loadAllPlugins();
 	virtual void loadAllPluginsOfType(PluginType type);
 	void unloadAllPlugins();
+
+	Plugin *getPluginByFileName(Common::String) const;
 
 	void unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin = true);
 
