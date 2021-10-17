@@ -27,14 +27,14 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineI
 
 	if (!engineId.empty()) {
 		// If we got an engine name, look for THE game only in that engine
-		const Plugin *p = EngineMan.findPlugin(engineId);
+		const Plugin *p = EngineMan.findMetaPlugin(engineId);
 		if (p) {
-			const MetaEngineDetection &engine = p->get<MetaEngineDetection>();
-			DebugMan.addAllDebugChannels(engine.getDebugChannels());
+			const MetaEngineDetection &meta = p->get<MetaEngineDetection>();
+			DebugMan.addAllDebugChannels(meta.getDebugChannels());
 
-			PlainGameDescriptor pluginResult = engine.findGame(gameId.c_str());
+			PlainGameDescriptor pluginResult = meta.findGame(gameId.c_str());
 			if (pluginResult.gameId) {
-				results.push_back(QualifiedGameDescriptor(engine.getEngineId(), pluginResult));
+				results.push_back(QualifiedGameDescriptor(meta.getEngineId(), pluginResult));
 			}
 		}
 	} else {
