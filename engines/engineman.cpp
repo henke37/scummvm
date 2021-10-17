@@ -408,7 +408,7 @@ void EngineManager::updateConfigWithFileName(const Common::String &engineId, Plu
 
 		Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
 		assert(domain);
-		(*domain).setVal(engineId, (p->getFileName());
+		(*domain).setVal(engineId, p->getFileName());
 
 		ConfMan.flushToDisk();
 	}

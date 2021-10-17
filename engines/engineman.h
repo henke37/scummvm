@@ -86,8 +86,6 @@ public:
 	
 	const Plugin *loadPluginFromEngineId(const Common::String &engineId);
 
-	void updateConfigWithFileName(const Common::String &engineId, Plugin *p);
-
 	/**
 	 * Create a target from the supplied game descriptor.
 	 *
@@ -104,6 +102,8 @@ private:
 
 	/** Use heuristics to complete a target lacking an engine ID. */
 	void upgradeTargetForEngineId(const Common::String &target) const;
+
+	void updateConfigWithFileName(const Common::String &engineId, Plugin *p);
 };
 
 /** Convenience shortcut for accessing the engine manager. */
