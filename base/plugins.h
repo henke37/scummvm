@@ -194,7 +194,7 @@ class Plugin {
 
 private:
 	template<class T>
-	void assertMatchingPluginType() {
+	void assertMatchingPluginType() const {
 		assert(pluginTypeForT<T>()==getType());
 	}
 
