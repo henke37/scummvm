@@ -45,14 +45,17 @@ int pluginTypeVersions[PLUGIN_TYPE_MAX] = {
 // Abstract plugins
 
 PluginType Plugin::getType() const {
+	assert(isLoaded());
 	return _type;
 }
 
 const char *Plugin::getName() const {
+	assert(isLoaded());
 	return _pluginObject->getName();
 }
 
 const char *Plugin::getEngineId() const {
+	assert(isLoaded());
 	if (_type == PLUGIN_TYPE_ENGINE_DETECTION) {
 		return _pluginObject->getEngineId();
 	}
