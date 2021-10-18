@@ -149,33 +149,37 @@ public:
 };
 
 template<class T>
-PluginType pluginTypeForT() {
+inline PluginType pluginTypeForT() {
 	error("Unknown plugin type!");
 }
 
+class MetaEngine;
 template<>
-PluginType pluginTypeForT<MetaEngine>() {
+inline PluginType pluginTypeForT<MetaEngine>() {
 	return PLUGIN_TYPE_ENGINE;
 }
 
+class MetaEngineDetection;
 template<>
-PluginType pluginTypeForT<MetaEngineDetection>() {
+inline PluginType pluginTypeForT<MetaEngineDetection>() {
 	return PLUGIN_TYPE_ENGINE_DETECTION;
 }
 
 class Detection;
 template<>
-PluginType pluginTypeForT<Detection>() {
+inline PluginType pluginTypeForT<Detection>() {
 	return PLUGIN_TYPE_DETECTION;
 }
 
+class MusicPluginObject;
 template<>
-PluginType pluginTypeForT<MusicPluginObject>() {
+inline PluginType pluginTypeForT<MusicPluginObject>() {
 	return PLUGIN_TYPE_MUSIC;
 }
 
+class ScalerPluginObject;
 template<>
-PluginType pluginTypeForT<ScalerPluginObject>() {
+inline PluginType pluginTypeForT<ScalerPluginObject>() {
 	return PLUGIN_TYPE_SCALER;
 }
 
