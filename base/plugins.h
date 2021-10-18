@@ -148,6 +148,37 @@ public:
 	}
 };
 
+template<class T>
+PluginType pluginTypeForT() {
+	error("Unknown plugin type!");
+}
+
+template<>
+PluginType pluginTypeForT<MetaEngine>() {
+	return PLUGIN_TYPE_ENGINE;
+}
+
+template<>
+PluginType pluginTypeForT<MetaEngineDetection>() {
+	return PLUGIN_TYPE_ENGINE_DETECTION;
+}
+
+class Detection;
+template<>
+PluginType pluginTypeForT<Detection>() {
+	return PLUGIN_TYPE_DETECTION;
+}
+
+template<>
+PluginType pluginTypeForT<MusicPluginObject>() {
+	return PLUGIN_TYPE_MUSIC;
+}
+
+template<>
+PluginType pluginTypeForT<ScalerPluginObject>() {
+	return PLUGIN_TYPE_SCALER;
+}
+
 /**
  * Abstract base class for the plugin system.
  * Subclasses for this can be used to wrap both static and dynamic
@@ -156,6 +187,12 @@ public:
  */
 class Plugin {
 	friend class PluginManager;
+
+private:
+	template<class T>
+	void assertMatchingPluginType() {
+		assert(pluginTypeForT<T>()==getType());
+	}
 
 protected:
 	PluginObject *_pluginObject;
@@ -182,6 +219,7 @@ public:
 	template <class T>
 	T &get() const {
 		assert(isLoaded());
+		assertMatchingPluginType<T>();
 		T *pluginObject = dynamic_cast<T *>(_pluginObject);
 		if (!pluginObject) {
 			error("Invalid cast of plugin %s", getName());
