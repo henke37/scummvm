@@ -354,6 +354,8 @@ protected:
 	static PluginManager *_instance;
 	PluginManager();
 
+	void unloadAllPlugins();
+
 public:
 	virtual ~PluginManager();
 
@@ -374,7 +376,6 @@ public:
 	// Functions used only by the cached PluginManager
 	virtual void loadAllPlugins();
 	virtual void loadAllPluginsOfType(PluginType type);
-	void unloadAllPlugins();
 
 	Plugin *getPluginByFileName(Common::String) const;
 
