@@ -300,8 +300,6 @@ void PluginManager::addPluginProvider(PluginProvider *pp) {
  * This should only be called once by main()
  **/
 void PluginManagerUncached::init() {
-	unloadAllPlugins();
-	_allEnginePlugins.clear();
 	ConfMan.setBool("always_run_fallback_detection_extern", false);
 
 	unloadPluginsExcept(PLUGIN_TYPE_ENGINE, NULL, false); // empty the engine plugins
@@ -336,18 +334,6 @@ void PluginManagerUncached::init() {
 				}
 			}
 #endif
-
-			if ((*pp)->isFilePluginProvider()) {
-				_allEnginePlugins.push_back(*p);
-			} else if ((*p)->loadPlugin()) { // and this is the proper method
-				if ((*p)->getType() == PLUGIN_TYPE_ENGINE) {
-					(*p)->unloadPlugin();
-					_allEnginePlugins.push_back(*p);
-				} else {	// add non-engine plugins to the 'in-memory' list
-							// these won't ever get unloaded
-					addToPluginsInMemList(*p);
-				}
-			}
  		}
  	}
 #ifndef DETECTION_STATIC

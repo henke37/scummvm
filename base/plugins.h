@@ -368,12 +368,10 @@ public:
 
 	void addPluginProvider(PluginProvider *pp);
 
-	// Functions used by the uncached PluginManager
-	virtual void unloadDetectionPlugin() {}
+	virtual void init() = 0;
 
 	bool tryLoadPlugin(Plugin *plugin);
 
-	// Functions used only by the cached PluginManager
 	virtual void loadAllPluginsOfType(PluginType type);
 
 	Plugin *getPluginByFileName(Common::String fileName) const;
@@ -418,9 +416,7 @@ public:
 class PluginManagerUncached : public PluginManager {
 protected:
 	friend class PluginManager;
-	PluginList _allEnginePlugins;
 	Plugin  *_detectionPlugin;
-	PluginList::iterator _currentPlugin;
 
 	bool _isDetectionLoaded;
 
