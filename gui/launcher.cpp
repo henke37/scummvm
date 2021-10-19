@@ -496,7 +496,7 @@ void LauncherDialog::loadGame(int item) {
 
 	// If we found a relevant plugin, find the matching engine plugin.
 	if (metaEnginePlugin) {
-		enginePlugin = PluginMan.getEngineFromMetaEngine(metaEnginePlugin);
+		enginePlugin = EngineMan.getEngineFromMetaEngine(metaEnginePlugin);
 	}
 
 	if (enginePlugin) {
