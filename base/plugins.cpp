@@ -350,26 +350,6 @@ void PluginManagerUncached::init() {
 			}
  		}
  	}
-}
-
-/**
- * Load a plugin with a filename taken from ConfigManager.
- **/
-bool PluginManagerUncached::loadPluginByFileName(const Common::String &filename) {
-	if (filename.empty())
-		return false;
-
-	unloadPluginsExcept(PLUGIN_TYPE_ENGINE, NULL, false);
-
-	PluginList::iterator i;
-	for (i = _allEnginePlugins.begin(); i != _allEnginePlugins.end(); ++i) {
-		if (Common::String((*i)->getFileName()) == filename && (*i)->loadPlugin()) {
-			addToPluginsInMemList(*i);
-			_currentPlugin = i;
-			return true;
-		}
-	}
-	return false;
 #ifndef DETECTION_STATIC
 	loadDetectionPlugin();
 #endif
@@ -417,32 +397,20 @@ void PluginManagerUncached::unloadDetectionPlugin() {
 }
 #endif
 
-void PluginManager::loadAllPluginsOfType(PluginType type) {
-	for (ProviderList::iterator pp = _providers.begin();
-	                            pp != _providers.end();
-	                            ++pp) {
-		PluginList pl((*pp)->getPlugins());
-		for (PluginList::iterator p = pl.begin();
-				                  p != pl.end();
-								  ++p) {
-			if ((*p)->loadPlugin()) {
-				if ((*p)->getType() == type) {
-					addToPluginsInMemList((*p));
-				} else {
-					// Plugin is wrong type
-					(*p)->unloadPlugin();
-					delete (*p);
-				}
-			} else {
-				// Plugin did not load
-				delete (*p);
-			}
-		}
-	}
-}
 void PluginManager::unloadAllPlugins() {
 	for (int i = 0; i < PLUGIN_TYPE_MAX; i++)
 		unloadPluginsExcept((PluginType)i, NULL);
+}
+
+Plugin *PluginManager::getPluginByFileName(Common::String fileName) const {
+
+	for (PluginManager::PluginIterator p; !p.atEnd(); ++p) {
+		Common::String filename = (*p)->getFileName();
+		if (filename.hasSuffixIgnoreCase(fileName)) {
+			return *p;
+		}
+	}
+	return NULL;
 }
 
 void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin /*=true*/) {

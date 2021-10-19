@@ -376,7 +376,7 @@ public:
 	// Functions used only by the cached PluginManager
 	virtual void loadAllPluginsOfType(PluginType type);
 
-	Plugin *getPluginByFileName(Common::String) const;
+	Plugin *getPluginByFileName(Common::String fileName) const;
 
 	void unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin = true);
 
@@ -389,11 +389,13 @@ public:
 		PluginList::iterator _currentPlugin;
 		PluginList _list;
 		PluginType _type;
+		bool _allPlugins;
 
 		bool next(bool acceptCurrent);
 		bool shouldStopAtCurrent() const;
 	public:
 		PluginIterator(PluginType type);
+		PluginIterator();
 		bool operator++();
 
 		template<class T>
@@ -401,6 +403,11 @@ public:
 			assert(_currentPlugin != _list.end());
 			return (*_currentPlugin)->get<T>();
 		};
+
+		Plugin *operator*();
+		Plugin &operator->() { return *operator*(); }
+
+		bool atEnd();
 	};
 };
 
