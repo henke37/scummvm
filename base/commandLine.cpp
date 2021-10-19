@@ -886,7 +886,7 @@ static void listGames(const Common::String &engineID) {
 	printf("Game ID                        Full Title                                                 \n"
 	       "------------------------------ -----------------------------------------------------------\n");
 
-	const PluginList &plugins = EngineMan.getPlugins(PLUGIN_TYPE_ENGINE);
+	const PluginList &plugins = PluginMan.getPlugins(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
 		const Plugin *p = EngineMan.findPlugin((*iter)->getName());
 		/* If for some reason, we can't find the MetaEngine for this Engine, just ignore it */
@@ -1084,7 +1084,7 @@ static Common::Error listSaves(const Common::String &singleTarget) {
 			printf("MetaEnginePlugin could not be loaded for target '%s'\n", i->c_str());
 			continue;
 		} else {
-			enginePlugin = PluginMan.getEngineFromMetaEngine(metaEnginePlugin);
+			enginePlugin = EngineMan.getEngineFromMetaEngine(metaEnginePlugin);
 
 			if (!enginePlugin) {
 				// If the target was specified, treat this as an error, and otherwise skip it.
