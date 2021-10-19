@@ -42,19 +42,10 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineI
 	return results;
 }
 
-QualifiedGameList EngineManager::findGamesMatching(const Common::String &gameId) const {
-	QualifiedGameList results;
-	// This is a slow path, we have to scan the list of plugins
-	PluginMan.loadFirstPlugin();
-	do {
-		results.push_back(findGameInLoadedPlugins(gameId));
-	} while (PluginMan.loadNextPlugin());
-}
-
 /**
  * Find the game within the plugins loaded in memory
  **/
-QualifiedGameList EngineManager::findGameInLoadedPlugins(const Common::String &gameId) const {
+QualifiedGameList EngineManager::findGamesMatching(const Common::String &gameId) const {
 	// Find the GameDescriptor for this target
 	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
