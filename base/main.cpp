@@ -487,8 +487,6 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 		if (res.getCode() != Common::kNoError)
 			warning("%s", res.getDesc().c_str());
 
-		PluginManager::instance().unloadDetectionPlugin();
-		PluginManager::instance().unloadAllPlugins();
 		PluginManager::destroy();
 
 		return res.getCode();
@@ -719,8 +717,6 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 	Cloud::CloudManager::destroy();
 #endif
 #endif
-	PluginManager::instance().unloadDetectionPlugin();
-	PluginManager::instance().unloadAllPlugins();
 	PluginManager::destroy();
 	GUI::GuiManager::destroy();
 	Common::ConfigManager::destroy();
