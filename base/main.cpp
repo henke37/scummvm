@@ -126,7 +126,7 @@ static const Plugin *detectPlugin() {
 		return 0;
 	}
 
-	const Plugin *plugin = EngineMan.findPlugin(engineId);
+	const Plugin *plugin = EngineMan.findMetaPlugin(engineId);
 	if (!plugin) {
 		warning("'%s' is an invalid engine ID. Use the --list-engines command to list supported engine IDs", engineId.c_str());
 		return 0;
