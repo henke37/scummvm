@@ -366,7 +366,6 @@ public:
 
 	// Functions used by the uncached PluginManager
 	virtual void init()	{}
-	virtual void loadFirstPlugin() {}
 	virtual bool loadNextPlugin() { return false; }
 	virtual void loadDetectionPlugin() {}
 	virtual void unloadDetectionPlugin() {}
@@ -374,7 +373,6 @@ public:
 	bool tryLoadPlugin(Plugin *plugin);
 
 	// Functions used only by the cached PluginManager
-	virtual void loadAllPlugins();
 	virtual void loadAllPluginsOfType(PluginType type);
 
 	Plugin *getPluginByFileName(Common::String) const;
@@ -382,6 +380,27 @@ public:
 	void unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin = true);
 
 	const PluginList &getLoadedPluginsOfType(PluginType t) { return _loadedPluginsByType[t]; }
+
+	class PluginIterator {
+
+	private:
+		ProviderList::iterator _currentProvider;
+		PluginList::iterator _currentPlugin;
+		PluginList _list;
+		PluginType _type;
+
+		bool next(bool acceptCurrent);
+		bool shouldStopAtCurrent() const;
+	public:
+		PluginIterator(PluginType type);
+		bool operator++();
+
+		template<class T>
+		T &getPluginObject() const {
+			assert(_currentPlugin != _list.end());
+			return (*_currentPlugin)->get<T>();
+		};
+	};
 };
 
 /**

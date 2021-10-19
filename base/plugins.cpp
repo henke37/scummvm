@@ -488,6 +488,44 @@ void PluginManager::loadAllPluginsOfType(PluginType type) {
 	}
 }
 
+bool PluginManager::PluginIterator::next(bool acceptCurrent) {
+	for(;;) {
+
+		for (;;) {
+			if (_currentPlugin == _list.end())
+				break;
+
+			if (acceptCurrent && shouldStopAtCurrent())
+				return true;
+
+			acceptCurrent = true;
+			++_currentPlugin;
+		}
+		if (_currentProvider == PluginMan._providers.end())
+			break;
+
+		++_currentProvider;
+		_list = (*_currentProvider)->getPlugins();
+	}
+	return false;
+}
+
+bool PluginManager::PluginIterator::shouldStopAtCurrent() const {
+	if (!(*_currentPlugin)->isLoaded())
+		return false;
+	return (*_currentPlugin)->getType() == _type;
+}
+
+PluginManager::PluginIterator::PluginIterator(PluginType type) : _type(type) {
+	_currentProvider = PluginMan._providers.begin();
+	_list = (*_currentProvider)->getPlugins();
+	next(true);
+}
+
+bool PluginManager::PluginIterator::operator++() {
+	return next(false);
+}
+
 void PluginManager::unloadAllPlugins() {
 	for (int i = 0; i < PLUGIN_TYPE_MAX; i++)
 		unloadPluginsExcept((PluginType)i, NULL);
