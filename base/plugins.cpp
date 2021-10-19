@@ -531,12 +531,20 @@ bool PluginManager::PluginIterator::next(bool acceptCurrent) {
 }
 
 bool PluginManager::PluginIterator::shouldStopAtCurrent() const {
+	if (_allPlugins)
+		return true;
 	if (!(*_currentPlugin)->isLoaded())
 		return false;
 	return (*_currentPlugin)->getType() == _type;
 }
 
-PluginManager::PluginIterator::PluginIterator(PluginType type) : _type(type) {
+PluginManager::PluginIterator::PluginIterator(PluginType type) : _type(type), _allPlugins(false) {
+	_currentProvider = PluginMan._providers.begin();
+	_list = (*_currentProvider)->getPlugins();
+	next(true);
+}
+
+PluginManager::PluginIterator::PluginIterator() : _allPlugins(true) {
 	_currentProvider = PluginMan._providers.begin();
 	_list = (*_currentProvider)->getPlugins();
 	next(true);
@@ -544,6 +552,11 @@ PluginManager::PluginIterator::PluginIterator(PluginType type) : _type(type) {
 
 bool PluginManager::PluginIterator::operator++() {
 	return next(false);
+}
+
+Plugin *PluginManager::PluginIterator::operator*() {
+	assert(_currentPlugin != _list.end());
+	return *_currentPlugin;
 }
 
 // Music plugins
