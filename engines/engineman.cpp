@@ -385,14 +385,9 @@ const Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engine
 #ifdef PLUGIN_SUFFIX
 	tentativeEnginePluginFilename += PLUGIN_SUFFIX;
 #endif
-	for (PluginList::iterator p = _allEnginePlugins.begin(); p != _allEnginePlugins.end(); ++p) {
-		Common::String filename = (*p)->getFileName();
-		if (filename.hasSuffixIgnoreCase(tentativeEnginePluginFilename)) {
-			if (loadPluginByFileName(filename)) {
-				return true;
-			}
-		}
-	}
+	Plugin *p=PluginMan.getPluginByFileName(tentativeEnginePluginFilename);
+	if (PluginMan.tryLoadPlugin(p))
+		return p;
 	return NULL;
 }
 
