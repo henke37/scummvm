@@ -369,8 +369,6 @@ public:
 	void addPluginProvider(PluginProvider *pp);
 
 	// Functions used by the uncached PluginManager
-	virtual void init()	{}
-	virtual void loadDetectionPlugin() {}
 	virtual void unloadDetectionPlugin() {}
 
 	bool tryLoadPlugin(Plugin *plugin);
@@ -425,11 +423,11 @@ protected:
 public:
 	virtual void init() override;
 #ifndef DETECTION_STATIC
-	virtual void loadDetectionPlugin() override;
-	virtual void unloadDetectionPlugin() override;
+	virtual void loadDetectionPlugin();
 #endif
 
-	virtual void loadAllPlugins() override {} 	// we don't allow these
+class PluginManagerCached : public PluginManager {
+
 	virtual void loadAllPluginsOfType(PluginType type) override {}
 };
 

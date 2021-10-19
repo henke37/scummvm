@@ -262,7 +262,7 @@ PluginManager &PluginManager::instance() {
 #if defined(UNCACHED_PLUGINS) && defined(DYNAMIC_MODULES)
 		_instance = new PluginManagerUncached();
 #else
-		_instance = new PluginManager();
+		_instance = new PluginManagerCached();
 #endif
 	return *_instance;
 }
@@ -370,6 +370,9 @@ bool PluginManagerUncached::loadPluginByFileName(const Common::String &filename)
 		}
 	}
 	return false;
+#ifndef DETECTION_STATIC
+	loadDetectionPlugin();
+#endif
 }
 
 #ifndef DETECTION_STATIC
@@ -413,35 +416,6 @@ void PluginManagerUncached::unloadDetectionPlugin() {
 	}
 }
 #endif
-
-/**
- * Used by only the cached plugin manager. The uncached manager can only have
- * one plugin in memory at a time.
- **/
-void PluginManager::loadAllPlugins() {
-	for (ProviderList::iterator pp = _providers.begin();
-	                            pp != _providers.end();
-	                            ++pp) {
-		PluginList pl((*pp)->getPlugins());
-		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
-	}
-
-#ifndef DETECTION_STATIC
-	/*
-	 * When detection is dynamic, loading above only gets us a PLUGIN_TYPE_DETECTION plugin
-	 * We must register all plugins linked in it in order to use them
-	 */
-	PluginList dpl = getPlugins(PLUGIN_TYPE_DETECTION);
-	_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
-	for (PluginList::iterator it = dpl.begin();
-	                            it != dpl.end();
-	                            ++it) {
-		const Detection &detectionConnect = (*it)->get<Detection>();
-		const PluginList &pl = detectionConnect.getPlugins();
-		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
-	}
-#endif
-}
 
 void PluginManager::loadAllPluginsOfType(PluginType type) {
 	for (ProviderList::iterator pp = _providers.begin();
@@ -534,6 +508,36 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 		// If it provides a new module, just add it to the list of known plugins in memory.
 		_loadedPluginsByType[plugin->getType()].push_back(plugin);
 	}
+}
+
+void PluginManagerCached::init() {
+	loadAllPlugins();
+}
+/**
+ * Used by only the cached plugin manager. The uncached manager can only have
+ * one plugin in memory at a time.
+ **/
+void PluginManagerCached::loadAllPlugins() {
+	for (ProviderList::iterator pp = _providers.begin();
+		 pp != _providers.end();
+		 ++pp) {
+		PluginList pl((*pp)->getPlugins());
+		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
+	}
+
+#ifndef DETECTION_STATIC
+	/*
+	 * When detection is dynamic, loading above only gets us a PLUGIN_TYPE_DETECTION plugin
+	 * We must register all plugins linked in it in order to use them
+	 */
+	PluginList dpl = getPlugins(PLUGIN_TYPE_DETECTION);
+	_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
+	for (PluginList::iterator it = dpl.begin();
+		 it != dpl.end();
+		 ++it) {
+		registerDetectionSubPlugins(it);
+	}
+#endif
 }
 
 bool PluginManager::PluginIterator::next(bool acceptCurrent) {

@@ -465,8 +465,6 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 
 	ConfMan.registerDefault("always_run_fallback_detection_extern", true);
 	PluginManager::instance().init();
- 	PluginManager::instance().loadAllPlugins(); // load plugins for cached plugin manager
-	PluginManager::instance().loadDetectionPlugin(); // load detection plugin for uncached plugin manager
 
 	// If we received an invalid music parameter via command line we check this here.
 	// We can't check this before loading the music plugins.
