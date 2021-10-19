@@ -370,7 +370,6 @@ public:
 
 	// Functions used by the uncached PluginManager
 	virtual void init()	{}
-	virtual bool loadNextPlugin() { return false; }
 	virtual void loadDetectionPlugin() {}
 	virtual void unloadDetectionPlugin() {}
 
@@ -425,8 +424,6 @@ protected:
 
 public:
 	virtual void init() override;
-	virtual void loadFirstPlugin() override;
-	virtual bool loadNextPlugin() override;
 #ifndef DETECTION_STATIC
 	virtual void loadDetectionPlugin() override;
 	virtual void unloadDetectionPlugin() override;

@@ -414,33 +414,6 @@ void PluginManagerUncached::unloadDetectionPlugin() {
 }
 #endif
 
-void PluginManagerUncached::loadFirstPlugin() {
-	unloadPluginsExcept(PLUGIN_TYPE_ENGINE, NULL, false);
-
-	// let's try to find one we can load
-	for (_currentPlugin = _allEnginePlugins.begin(); _currentPlugin != _allEnginePlugins.end(); ++_currentPlugin) {
-		if ((*_currentPlugin)->loadPlugin()) {
-			addToPluginsInMemList(*_currentPlugin);
-			break;
-		}
-	}
-}
-
-bool PluginManagerUncached::loadNextPlugin() {
-	unloadPluginsExcept(PLUGIN_TYPE_ENGINE, NULL, false);
-
-	if (!_currentPlugin || _currentPlugin == _allEnginePlugins.end())
-		return false;
-
-	for (++_currentPlugin; _currentPlugin != _allEnginePlugins.end(); ++_currentPlugin) {
-		if ((*_currentPlugin)->loadPlugin()) {
-			addToPluginsInMemList(*_currentPlugin);
-			return true;
-		}
-	}
-	return false; // no more in list
-}
-
 /**
  * Used by only the cached plugin manager. The uncached manager can only have
  * one plugin in memory at a time.
