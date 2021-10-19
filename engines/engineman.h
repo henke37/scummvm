@@ -97,9 +97,6 @@ public:
 	void upgradeTargetIfNecessary(const Common::String &target) const;
 
 private:
-	/** Find a game across all loaded plugins. */
-	QualifiedGameList findGameInLoadedPlugins(const Common::String &gameId) const;
-
 	/** Use heuristics to complete a target lacking an engine ID. */
 	void upgradeTargetForEngineId(const Common::String &target) const;
 
