@@ -311,7 +311,7 @@ Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
 Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE);
 
-	const Plugin *metaEngine = nullptr;
+	Plugin *metaEngine = nullptr;
 
 	PluginList pl = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
