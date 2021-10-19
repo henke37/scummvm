@@ -424,11 +424,17 @@ public:
 	virtual void init() override;
 #ifndef DETECTION_STATIC
 	virtual void loadDetectionPlugin();
+	virtual void unloadDetectionPlugin();
 #endif
+};
 
 class PluginManagerCached : public PluginManager {
 
 	virtual void loadAllPluginsOfType(PluginType type) override {}
+	void loadAllPlugins();
+
+public:
+	virtual void init() override;
 };
 
 #endif
