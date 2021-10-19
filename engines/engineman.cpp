@@ -308,7 +308,7 @@ Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
 	return nullptr;
 }
 
-const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
+Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE);
 
 	const Plugin *metaEngine = nullptr;
