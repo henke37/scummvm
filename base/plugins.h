@@ -354,6 +354,10 @@ protected:
 	static PluginManager *_instance;
 	PluginManager();
 
+#ifndef DETECTION_STATIC
+	void registerDetectionSubPlugins(Plugin *detectPlugin);
+#endif
+
 	void unloadAllPlugins();
 
 public:

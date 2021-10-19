@@ -272,6 +272,14 @@ PluginManager::PluginManager() {
 	addPluginProvider(new StaticPluginProvider());
 }
 
+#ifndef DETECTION_STATIC
+void PluginManager::registerDetectionSubPlugins(Plugin *detectPlugin) {
+	const Detection &detectionConnect = (*detectPlugin)->get<Detection>();
+	const PluginList &pl = detectionConnect.getPlugins();
+	Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
+}
+#endif
+
 PluginManager::~PluginManager() {
 	// Explicitly unload all loaded plugins
 	unloadAllPlugins();
@@ -390,9 +398,7 @@ void PluginManagerUncached::loadDetectionPlugin() {
 
 	if (linkMetaEngines) {
 		_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
-		const Detection &detectionConnect = _detectionPlugin->get<Detection>();
-		const PluginList &pl = detectionConnect.getPlugins();
-		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManagerUncached::tryLoadPlugin), this));
+		registerDetectionSubPlugins(_detectionPlugin);
 	}
 
 }
