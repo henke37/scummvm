@@ -451,21 +451,17 @@ protected:
 class AdvancedMetaEngine : public MetaEngine {
 public:
 	/**
-	 * Base createInstance for AdvancedMetaEngine.
-	 *
-	 * The AdvancedMetaEngine provides a default createInstance that is called first,
-	 * so this should be invoked first.
-	 * By the time this is called, it is assumed that there is only one
-	 * plugin engine loaded in memory.
+	 * Pre massager that locates an ADGameDescription for the subclass to use.
 	 */
 	virtual Common::Error createInstance(OSystem *syst, Engine **engine) const override;
 
+protected:
 	/**
-	 * A createInstance implementation for subclasses. To be called after the base
-	 * createInstance function above is called.
+	 * A createInstance implementation for subclasses. 
 	 */
 	virtual Common::Error createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const = 0;
 
+public:
 	/**
 	 * Return the name of the engine plugin based on the engineID.
 	 *
