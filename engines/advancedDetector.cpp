@@ -378,10 +378,10 @@ ADDetectedGame AdvancedMetaEngineDetection::getCurrentGameDescriptor() const {
 	if (fallbackDetectedGame.desc) {
 		// Seems we found a fallback match. But first perform a basic
 		// sanity check: the gameid must match.
-		if (fallbackDetectedGame.desc->gameId != gameid)
-			return ADDetectedGame();
-		return fallbackDetectedGame;
+		if (fallbackDetectedGame.desc->gameId == gameid)
+			return fallbackDetectedGame;
 	}
+	return ADDetectedGame();
 }
 
 void AdvancedMetaEngineDetection::composeFileHashMap(FileMap &allFiles, const Common::FSList &fslist, int depth, const Common::String &parentName) const {
