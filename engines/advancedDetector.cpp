@@ -425,13 +425,7 @@ Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine 
 	}
 	initSubSystems(agdDesc.desc);
 
-	PluginList pl = EngineMan.getPlugins(PLUGIN_TYPE_ENGINE);
-	Plugin *plugin = nullptr;
-
-	// By this point of time, we should have only one plugin in memory.
-	if (pl.size() == 1) {
-		plugin = pl[0];
-	}
+	const Plugin *plugin = EngineMan.findMetaPlugin(gameDescriptor.engineId);
 
 	if (plugin) {
 		// Call child class's createInstanceMethod.
