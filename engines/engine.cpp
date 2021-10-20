@@ -949,7 +949,7 @@ EnginePlugin *Engine::getMetaEnginePlugin() const {
 */
 
 MetaEngineDetection &Engine::getMetaEngineDetection() {
-	const Plugin *plugin = EngineMan.findPlugin(ConfMan.get("engineid"));
+	const Plugin *plugin = EngineMan.findLoadedEnginePlugin(ConfMan.get("engineid"));
 	assert(plugin);
 	return plugin->get<MetaEngineDetection>();
 }

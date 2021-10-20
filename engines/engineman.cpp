@@ -297,7 +297,7 @@ Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
 	// Use the engineID from MetaEngine for comparison.
 	Common::String metaEnginePluginName = plugin->getEngineId();
 
-	enginePlugin = findEnginePlugin(metaEnginePluginName);
+	enginePlugin = findLoadedEnginePlugin(metaEnginePluginName);
 
 	if (enginePlugin) {
 		debug(9, "MetaEngine: %s \t matched to \t Engine: %s", plugin->getName(), enginePlugin->getFileName());
