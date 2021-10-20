@@ -382,6 +382,8 @@ public:
 	 */
 	virtual const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override;
 
+	ADDetectedGame getCurrentGameDescriptor() const;
+
 protected:
 	/**
 	 * A hashmap of files and their MD5 checksums.

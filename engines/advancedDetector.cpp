@@ -321,9 +321,7 @@ const ExtraGuiOptions AdvancedMetaEngineDetection::getExtraGuiOptions(const Comm
 	return options;
 }
 
-Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine **engine) const {
-	assert(engine);
-
+ADDetectedGame AdvancedMetaEngineDetection::getCurrentGameDescriptor() const {
 	Common::Language language = Common::UNK_LANG;
 	Common::Platform platform = Common::kPlatformUnknown;
 	Common::String extra;
@@ -350,11 +348,11 @@ Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine 
 	Common::FSList files;
 	if (!dir.isDirectory() || !dir.getChildren(files, Common::FSNode::kListAll)) {
 		warning("Game data path does not exist or is not a directory (%s)", path.c_str());
-		return Common::kNoGameDataFoundError;
+		return ADDetectedGame();
 	}
 
 	if (files.empty())
-		return Common::kNoGameDataFoundError;
+		return ADDetectedGame();
 
 	// Compose a hashmap of all files in fslist.
 	FileMap allFiles;
@@ -367,13 +365,12 @@ Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine 
 	ADDetectedGames matches = detectGame(files.begin()->getParent(), allFiles, language, platform, extra);
 
 	if (cleanupPirated(matches))
-		return Common::kNoGameDataFoundError;
+		return ADDetectedGame();
 
 	ADDetectedGame agdDesc;
 	for (uint i = 0; i < matches.size(); i++) {
 		if (matches[i].desc->gameId == gameid && (!matches[i].hasUnknownFiles || canPlayUnknownVariants())) {
-			agdDesc = matches[i];
-			break;
+			return matches[i];
 		}
 	}
 
@@ -385,9 +382,16 @@ Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine 
 			// Seems we found a fallback match. But first perform a basic
 			// sanity check: the gameid must match.
 			if (agdDesc.desc->gameId != gameid)
-				agdDesc = ADDetectedGame();
+				return ADDetectedGame();
+			return fallbackDetectedGame;
 		}
 	}
+}
+
+Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine **engine) const {
+	assert(engine);
+
+	ADDetectedGame agdDesc = getCurrentGameDescriptor();
 
 	if (!agdDesc.desc)
 		return Common::kNoGameDataFoundError;
