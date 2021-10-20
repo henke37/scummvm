@@ -354,29 +354,10 @@ const Plugin *EngineManager::findAndLoadEnginePlugin(const Common::String &engin
  * engine ID under the domain 'engine_plugin_files'.
  **/
 const Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
-	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
+	
+	Common::String filename = getPluginFilenameForEngineId(engineId);
 
-	if (domain) {
-		if (domain->contains(engineId)) {
-			Common::String filename = (*domain)[engineId];
-
-			Plugin *plugin = PluginMan.getPluginByFileName(filename);
-			if (plugin) {
-				if (plugin->isLoaded())
-					return plugin;
-				if(PluginMan.tryLoadPlugin(plugin))
-					return plugin;
-				return NULL;
-			}
-		}
-	}
-	// Check for a plugin with the same name as the engine before starting
-	// to scan all plugins
-	Common::String tentativeEnginePluginFilename = engineId;
-#ifdef PLUGIN_SUFFIX
-	tentativeEnginePluginFilename += PLUGIN_SUFFIX;
-#endif
-	Plugin *p=PluginMan.getPluginByFileName(tentativeEnginePluginFilename);
+	Plugin *p = PluginMan.getPluginByFileName(filename);
 	if (PluginMan.tryLoadPlugin(p))
 		return p;
 	return NULL;
@@ -398,6 +379,23 @@ void EngineManager::updateConfigWithFileName(const Common::String &engineId, Plu
 
 		ConfMan.flushToDisk();
 	}
+}
+
+Common::String EngineManager::getPluginFilenameForEngineId(const Common::String &engineId) {
+	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
+
+	if (domain) {
+		Common::String filename;
+		if (domain->tryGetVal(engineId, filename)) {
+			return filename;
+		}
+	}
+
+	Common::String tentativeEnginePluginFilename = engineId;
+#ifdef PLUGIN_SUFFIX
+	tentativeEnginePluginFilename += PLUGIN_SUFFIX;
+#endif
+	return tentativeEnginePluginFilename;
 }
 
 const Plugin *EngineManager::findLoadedEnginePlugin(const Common::String &engineId) {

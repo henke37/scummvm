@@ -101,6 +101,8 @@ private:
 	void upgradeTargetForEngineId(const Common::String &target) const;
 
 	void updateConfigWithFileName(const Common::String &engineId, Plugin *p);
+
+	Common::String getPluginFilenameForEngineId(const Common::String &engineId);
 };
 
 /** Convenience shortcut for accessing the engine manager. */
