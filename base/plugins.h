@@ -205,6 +205,8 @@ protected:
 	virtual bool loadPlugin() = 0;   // TODO: Rename to load() ?
 	virtual void unloadPlugin() = 0; // TODO: Rename to unload() ?
 
+	void assertLoaded() const;
+
 public:
 	Plugin() : _pluginObject(0), _type(PLUGIN_TYPE_MAX) {}
 	virtual ~Plugin() {
@@ -222,7 +224,7 @@ public:
 
 	template <class T>
 	T &get() const {
-		assert(isLoaded());
+		assertLoaded();
 		assertMatchingPluginType<T>();
 		T *pluginObject = dynamic_cast<T *>(_pluginObject);
 		if (!pluginObject) {

@@ -44,18 +44,28 @@ int pluginTypeVersions[PLUGIN_TYPE_MAX] = {
 
 // Abstract plugins
 
-PluginType Plugin::getType() const {
+void Plugin::assertLoaded() const {
 	assert(isLoaded());
+	if (!isLoaded()) {
+		warning("Plugin used without being loaded first");
+		bool success = PluginMan.tryLoadPlugin(const_cast<Plugin *>(this));
+		if (!success)
+			error("Panic loading plugin failed");
+	}
+}
+
+PluginType Plugin::getType() const {
+	assertLoaded();
 	return _type;
 }
 
 const char *Plugin::getName() const {
-	assert(isLoaded());
+	assertLoaded();
 	return _pluginObject->getName();
 }
 
 const char *Plugin::getEngineId() const {
-	assert(isLoaded());
+	assertLoaded();
 	if (_type == PLUGIN_TYPE_ENGINE_DETECTION) {
 		return _pluginObject->getEngineId();
 	}
