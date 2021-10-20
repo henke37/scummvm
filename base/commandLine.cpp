@@ -886,9 +886,9 @@ static void listGames(const Common::String &engineID) {
 	printf("Game ID                        Full Title                                                 \n"
 	       "------------------------------ -----------------------------------------------------------\n");
 
-	const PluginList &plugins = PluginMan.getPlugins(PLUGIN_TYPE_ENGINE);
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
-		const Plugin *p = EngineMan.findPlugin((*iter)->getName());
+		const Plugin *p = EngineMan.getMetaEngineFromEngine((*iter));
 		/* If for some reason, we can't find the MetaEngine for this Engine, just ignore it */
 		if (!p) {
 			continue;
@@ -910,7 +910,7 @@ static void listAllGames(const Common::String &engineID) {
 	printf("Game ID                        Full Title                                                 \n"
 	       "------------------------------ -----------------------------------------------------------\n");
 
-	const PluginList &plugins = EngineMan.getPlugins();
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 
@@ -928,9 +928,9 @@ static void listEngines() {
 	printf("Engine ID       Engine Name                                           \n"
 	       "--------------- ------------------------------------------------------\n");
 
-	const PluginList &plugins = EngineMan.getPlugins(PLUGIN_TYPE_ENGINE);
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
-		const Plugin *p = EngineMan.findPlugin((*iter)->getName());
+		const Plugin *p = EngineMan.getMetaEngineFromEngine((*iter));
 		/* If for some reason, we can't find the MetaEngine for this Engine, just ignore it */
 		if (!p) {
 			continue;
@@ -945,7 +945,7 @@ static void listAllEngines() {
 	printf("Engine ID       Engine Name                                           \n"
 	       "--------------- ------------------------------------------------------\n");
 
-	const PluginList &plugins = EngineMan.getPlugins();
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 		printf("%-15s %s\n", metaEngine.getEngineId(), metaEngine.getName());
@@ -999,7 +999,7 @@ static void listDebugFlags(const Common::String &engineID) {
 	if (engineID == "global")
 		printDebugFlags(gDebugChannels);
 	else {
-		const PluginList &plugins = EngineMan.getPlugins();
+		const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 		for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
 			const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 			if (metaEngine.getEngineId() == engineID) {
@@ -1018,7 +1018,7 @@ static void listDebugFlags(const Common::String &engineID) {
 static void listAllEngineDebugFlags() {
 	printf("Flag name       Flag description                                           \n");
 
-	const PluginList &plugins = EngineMan.getPlugins();
+	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 		printf("--------------- ------------------------------------------------------\n");
@@ -1067,7 +1067,7 @@ static Common::Error listSaves(const Common::String &singleTarget) {
 			game = EngineMan.findTarget(*i, &metaEnginePlugin);
 		} else if (game = findGameMatchingName(*i), !game.gameId.empty()) {
 			// The name is a known game id
-			metaEnginePlugin = EngineMan.findPlugin(game.engineId);
+			metaEnginePlugin = EngineMan.findMetaPlugin(game.engineId);
 			currentTarget = createTemporaryTarget(game.engineId, game.gameId);
 		} else {
 			return Common::Error(Common::kEnginePluginNotFound, Common::String::format("target '%s'", singleTarget.c_str()));
@@ -1155,7 +1155,7 @@ static void listThemes() {
 
 /** Lists all output devices */
 static void listAudioDevices() {
-	PluginList pluginList = MusicMan.getPlugins();
+	PluginList pluginList = MusicMan.getLoadedPlugins();
 
 	printf("ID                             Description\n");
 	printf("------------------------------ ------------------------------------------------\n");
