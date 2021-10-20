@@ -716,7 +716,7 @@ void AdvancedMetaEngine::initSubSystems(const ADGameDescription *gameDesc) const
 }
 
 Common::Error AdvancedMetaEngine::createInstance(OSystem *syst, Engine **engine) const {
-	const Plugin *metaEnginePlugin = ERR;
+	const Plugin *metaEnginePlugin = EngineMan.findLoadedEnginePlugin(ConfMan.get("engineid"));
 	AdvancedMetaEngineDetection &advancedDetection = metaEnginePlugin->get<AdvancedMetaEngineDetection>();
 	
 	ADDetectedGame agdDesc = advancedDetection.getCurrentGameDescriptor();
