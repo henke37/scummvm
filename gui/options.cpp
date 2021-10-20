@@ -360,7 +360,7 @@ void OptionsDialog::build() {
 
 		if (g_system->hasFeature(OSystem::kFeatureScalers)) {
 			if (ConfMan.hasKey("scaler", _domain)) {
-				const PluginList &scalerPlugins = ScalerMan.getPlugins();
+				const PluginList &scalerPlugins = ScalerMan.getLoadedPlugins();
 				Common::String scaler(ConfMan.get("scaler", _domain));
 
 				for (uint scalerIndex = 0; scalerIndex < scalerPlugins.size(); scalerIndex++) {
@@ -624,7 +624,7 @@ void OptionsDialog::apply() {
 			}
 
 			isSet = false;
-			const PluginList &scalerPlugins = ScalerMan.getPlugins();
+			const PluginList &scalerPlugins = ScalerMan.getLoadedPlugins();
 			if ((int32)_scalerPopUp->getSelectedTag() >= 0) {
 				const char *name = scalerPlugins[_scalerPopUp->getSelectedTag()]->get<ScalerPluginObject>().getName();
 				if (ConfMan.get("scaler", _domain) != name)
@@ -1425,7 +1425,7 @@ void OptionsDialog::addGraphicControls(GuiObject *boss, const Common::String &pr
 	}
 
 	// The Scaler popup
-	const PluginList &scalerPlugins = ScalerMan.getPlugins();
+	const PluginList &scalerPlugins = ScalerMan.getLoadedPlugins();
 	_scalerPopUpDesc = new StaticTextWidget(boss, prefix + "grScalerPopupDesc", _("Scaler:"));
 	_scalerPopUp = new PopUpWidget(boss, prefix + "grScalerPopup", Common::U32String(), kScalerPopUpCmd);
 
@@ -1821,7 +1821,7 @@ void OptionsDialog::setupGraphicsTab() {
 
 void OptionsDialog::updateScaleFactors(uint32 tag) {
 	if ((int32)tag >= 0) {
-		const PluginList &scalerPlugins = ScalerMan.getPlugins();
+		const PluginList &scalerPlugins = ScalerMan.getLoadedPlugins();
 		const Common::Array<uint> &factors = scalerPlugins[tag]->get<ScalerPluginObject>().getFactors();
 
 		_scaleFactorPopUp->clearEntries();
