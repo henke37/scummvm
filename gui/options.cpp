@@ -2517,20 +2517,18 @@ bool GlobalOptionsDialog::updateAutosavePeriod(int newValue) {
 		const Common::String target = it->_key;
 		const ConfigManager::Domain domain = it->_value;
 		const Common::String engine = domain["engineid"];
-		if (const Plugin *detectionPlugin = EngineMan.findPlugin(engine)) {
-			if (const Plugin *plugin = PluginMan.getEngineFromMetaEngine(detectionPlugin)) {
-				MetaEngine &metaEngine = plugin->get<MetaEngine>();
-				const int autoSaveSlot = metaEngine.getAutosaveSlot();
-				if (autoSaveSlot < 0)
-					continue;
-				SaveStateDescriptor desc = metaEngine.querySaveMetaInfos(target.c_str(), autoSaveSlot);
-				if (desc.getSaveSlot() != -1 && !desc.getDescription().empty() && !desc.hasAutosaveName()) {
-					if (saveList.size() >= maxListSize) {
-						hasMore = true;
-						break;
-					}
-					saveList.push_back(ExistingSave(&metaEngine, target, desc));
+		if (const Plugin *plugin = EngineMan.findLoadedEnginePlugin(engine)) {
+			MetaEngine &metaEngine = plugin->get<MetaEngine>();
+			const int autoSaveSlot = metaEngine.getAutosaveSlot();
+			if (autoSaveSlot < 0)
+				continue;
+			SaveStateDescriptor desc = metaEngine.querySaveMetaInfos(target.c_str(), autoSaveSlot);
+			if (desc.getSaveSlot() != -1 && !desc.getDescription().empty() && !desc.hasAutosaveName()) {
+				if (saveList.size() >= maxListSize) {
+					hasMore = true;
+					break;
 				}
+				saveList.push_back(ExistingSave(&metaEngine, target, desc));
 			}
 		}
 	}
