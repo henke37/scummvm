@@ -359,14 +359,6 @@ public:
 	DetectedGames detectGames(const Common::FSList &fslist) const override;
 
 	/**
-	 * A generic createInstance.
-	 *
-	 * For instantiating engine objects, this method is called first,
-	 * and then the subclass implemented createInstance is called from within.
-	 */
-	Common::Error createInstance(OSystem *syst, Engine **engine) const;
-
-	/**
 	 * Return a list of extra GUI options for the specified target.
 	 *
 	 * If no target is specified, all of the available custom GUI options are
@@ -381,6 +373,9 @@ public:
 	 * @return A list of extra GUI options for an engine plugin and target.
 	 */
 	virtual const ExtraGuiOptions getExtraGuiOptions(const Common::String &target) const override;
+
+	/** Convert an AD game description into the shared game description format. */
+	virtual DetectedGame toDetectedGame(const ADDetectedGame &adGame, ADDetectedGameExtraInfo *extraInfo = nullptr) const;
 
 	ADDetectedGame getCurrentGameDescriptor() const;
 
@@ -397,9 +392,6 @@ protected:
 	virtual ADDetectedGame fallbackDetect(const FileMap &allFiles, const Common::FSList &fslist, ADDetectedGameExtraInfo **extra = nullptr) const {
 		return ADDetectedGame();
 	}
-
-private:
-	void initSubSystems(const ADGameDescription *gameDesc) const;
 
 protected:
 	/**
@@ -447,9 +439,6 @@ protected:
 	/** Get the properties (size and MD5) of this file. */
 	bool getFileProperties(const FileMap &allFiles, const ADGameDescription &game, const Common::String fname, FileProperties &fileProps) const;
 
-	/** Convert an AD game description into the shared game description format. */
-	virtual DetectedGame toDetectedGame(const ADDetectedGame &adGame, ADDetectedGameExtraInfo *extraInfo = nullptr) const;
-
 	/** Check for pirated games in the given detected games */
 	bool cleanupPirated(ADDetectedGames &matched) const;
 
@@ -485,6 +474,9 @@ public:
 	 * @see MetaEngine::getName().
 	 */
 	virtual const char *getName() const override = 0;
+
+private:
+	void initSubSystems(const ADGameDescription *gameDesc) const;
 
 public:
 	/**

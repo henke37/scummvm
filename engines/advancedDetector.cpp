@@ -367,76 +367,21 @@ ADDetectedGame AdvancedMetaEngineDetection::getCurrentGameDescriptor() const {
 	if (cleanupPirated(matches))
 		return ADDetectedGame();
 
-	ADDetectedGame agdDesc;
 	for (uint i = 0; i < matches.size(); i++) {
 		if (matches[i].desc->gameId == gameid && (!matches[i].hasUnknownFiles || canPlayUnknownVariants())) {
 			return matches[i];
 		}
 	}
 
-	if (!agdDesc.desc) {
-		// Use fallback detector if there were no matches by other means
-		ADDetectedGame fallbackDetectedGame = fallbackDetect(allFiles, files);
-		agdDesc = fallbackDetectedGame;
-		if (agdDesc.desc) {
-			// Seems we found a fallback match. But first perform a basic
-			// sanity check: the gameid must match.
-			if (agdDesc.desc->gameId != gameid)
-				return ADDetectedGame();
-			return fallbackDetectedGame;
-		}
+	// Use fallback detector if there were no matches by other means
+	ADDetectedGame fallbackDetectedGame = fallbackDetect(allFiles, files);
+	if (fallbackDetectedGame.desc) {
+		// Seems we found a fallback match. But first perform a basic
+		// sanity check: the gameid must match.
+		if (fallbackDetectedGame.desc->gameId != gameid)
+			return ADDetectedGame();
+		return fallbackDetectedGame;
 	}
-}
-
-Common::Error AdvancedMetaEngineDetection::createInstance(OSystem *syst, Engine **engine) const {
-	assert(engine);
-
-	ADDetectedGame agdDesc = getCurrentGameDescriptor();
-
-	if (!agdDesc.desc)
-		return Common::kNoGameDataFoundError;
-
-	DetectedGame gameDescriptor = toDetectedGame(agdDesc);
-
-	// If the GUI options were updated, we catch this here and update them in the users config
-	// file transparently.
-	ConfMan.setAndFlush("guioptions", gameDescriptor.getGUIOptions());
-
-	bool showTestingWarning = false;
-
-#ifdef RELEASE_BUILD
-	showTestingWarning = true;
-#endif
-
-	if (((gameDescriptor.gameSupportLevel == kUnstableGame
-			|| (gameDescriptor.gameSupportLevel == kTestingGame
-					&& showTestingWarning)))
-			&& !Engine::warnUserAboutUnsupportedGame())
-		return Common::kUserCanceled;
-
-	if (gameDescriptor.gameSupportLevel == kWarningGame
-			&& !Engine::warnUserAboutUnsupportedGame(gameDescriptor.extra))
-		return Common::kUserCanceled;
-
-	if (gameDescriptor.gameSupportLevel == kUnsupportedGame) {
-		Engine::errorUnsupportedGame(gameDescriptor.extra);
-		return Common::kUserCanceled;
-	}
-
-	debug("Running %s", gameDescriptor.description.c_str());
-	for (FilePropertiesMap::const_iterator i = gameDescriptor.matchedFiles.begin(); i != gameDescriptor.matchedFiles.end(); ++i) {
-		debug("%s: %s, %llu bytes.", i->_key.c_str(), i->_value.md5.c_str(), (unsigned long long)i->_value.size);
-	}
-	initSubSystems(agdDesc.desc);
-
-	const Plugin *plugin = EngineMan.findMetaPlugin(gameDescriptor.engineId);
-
-	if (plugin) {
-		// Call child class's createInstanceMethod.
-		return plugin->get<AdvancedMetaEngine>().createInstance(syst, engine, agdDesc.desc);
-	}
-
-	return Common::Error(Common::kEnginePluginNotFound);
 }
 
 void AdvancedMetaEngineDetection::composeFileHashMap(FileMap &allFiles, const Common::FSList &fslist, int depth, const Common::String &parentName) const {
@@ -762,7 +707,7 @@ AdvancedMetaEngineDetection::AdvancedMetaEngineDetection(const void *descs, uint
 	_maxAutogenLength = 15;
 }
 
-void AdvancedMetaEngineDetection::initSubSystems(const ADGameDescription *gameDesc) const {
+void AdvancedMetaEngine::initSubSystems(const ADGameDescription *gameDesc) const {
 #ifdef ENABLE_EVENTRECORDER
 	if (gameDesc) {
 		g_eventRec.processGameDescription(gameDesc);
@@ -771,13 +716,42 @@ void AdvancedMetaEngineDetection::initSubSystems(const ADGameDescription *gameDe
 }
 
 Common::Error AdvancedMetaEngine::createInstance(OSystem *syst, Engine **engine) const {
-	PluginList pl = PluginMan.getPlugins(PLUGIN_TYPE_ENGINE);
-	if (pl.size() == 1) {
-		const Plugin *metaEnginePlugin = EngineMan.getMetaEngineFromEngine(pl[0]);
-		if (metaEnginePlugin) {
-			return metaEnginePlugin->get<AdvancedMetaEngineDetection>().createInstance(syst, engine);
-		}
+	const Plugin *metaEnginePlugin = ERR;
+	AdvancedMetaEngineDetection &advancedDetection = metaEnginePlugin->get<AdvancedMetaEngineDetection>();
+	
+	ADDetectedGame agdDesc = advancedDetection.getCurrentGameDescriptor();
+
+	if (!agdDesc.desc)
+		return Common::kNoGameDataFoundError;
+
+	DetectedGame gameDescriptor = advancedDetection.toDetectedGame(agdDesc);
+
+	// If the GUI options were updated, we catch this here and update them in the users config
+	// file transparently.
+	ConfMan.setAndFlush("guioptions", gameDescriptor.getGUIOptions());
+
+	bool showTestingWarning = false;
+
+#ifdef RELEASE_BUILD
+	showTestingWarning = true;
+#endif
+
+	if (((gameDescriptor.gameSupportLevel == kUnstableGame || (gameDescriptor.gameSupportLevel == kTestingGame && showTestingWarning))) && !Engine::warnUserAboutUnsupportedGame())
+		return Common::kUserCanceled;
+
+	if (gameDescriptor.gameSupportLevel == kWarningGame && !Engine::warnUserAboutUnsupportedGame(gameDescriptor.extra))
+		return Common::kUserCanceled;
+
+	if (gameDescriptor.gameSupportLevel == kUnsupportedGame) {
+		Engine::errorUnsupportedGame(gameDescriptor.extra);
+		return Common::kUserCanceled;
 	}
 
-	return Common::Error();
+	debug("Running %s", gameDescriptor.description.c_str());
+	for (FilePropertiesMap::const_iterator i = gameDescriptor.matchedFiles.begin(); i != gameDescriptor.matchedFiles.end(); ++i) {
+		debug("%s: %s, %llu bytes.", i->_key.c_str(), i->_value.md5.c_str(), (unsigned long long)i->_value.size);
+	}
+	initSubSystems(agdDesc.desc);
+
+	return createInstance(syst, engine, agdDesc.desc);
 }
