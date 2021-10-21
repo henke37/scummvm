@@ -47,12 +47,10 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &engineI
  **/
 QualifiedGameList EngineManager::findGamesMatching(const Common::String &gameId) const {
 	// Find the GameDescriptor for this target
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
 	QualifiedGameList results;
-	PluginList::const_iterator iter;
 
-	for (iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE_DETECTION); !iter.atEnd(); ++iter) {
 		const MetaEngineDetection &engine = (*iter)->get<MetaEngineDetection>();
 		DebugMan.addAllDebugChannels(engine.getDebugChannels());
 		PlainGameDescriptor pluginResult = engine.findGame(gameId.c_str());
@@ -67,19 +65,13 @@ QualifiedGameList EngineManager::findGamesMatching(const Common::String &gameId)
 
 DetectionResults EngineManager::detectGames(const Common::FSList &fslist) const {
 	DetectedGames candidates;
-	PluginList plugins;
-	PluginList::const_iterator iter;
-
-	// MetaEngines are always loaded into memory, so, get them and
-	// run detection for all of them.
-	plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
 
 	// Clear md5 cache before each detection starts, just in case.
 	MD5Man.clear();
 
 	// Iterate over all known games and for each check if it might be
 	// the game in the presented directory.
-	for (iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE_DETECTION); !iter.atEnd(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 		// set the debug flags
 		DebugMan.addAllDebugChannels(metaEngine.getDebugChannels());
