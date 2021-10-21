@@ -153,13 +153,23 @@ inline PluginType pluginTypeForT() {
 	error("Unknown plugin type!");
 }
 
+class AdvancedMetaEngine;
 class MetaEngine;
+template<>
+inline PluginType pluginTypeForT<AdvancedMetaEngine>() {
+	return PLUGIN_TYPE_ENGINE;
+}
 template<>
 inline PluginType pluginTypeForT<MetaEngine>() {
 	return PLUGIN_TYPE_ENGINE;
 }
 
+class AdvancedMetaEngineDetection;
 class MetaEngineDetection;
+template<>
+inline PluginType pluginTypeForT<AdvancedMetaEngineDetection>() {
+	return PLUGIN_TYPE_ENGINE_DETECTION;
+}
 template<>
 inline PluginType pluginTypeForT<MetaEngineDetection>() {
 	return PLUGIN_TYPE_ENGINE_DETECTION;
