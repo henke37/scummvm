@@ -555,6 +555,10 @@ Plugin *PluginManager::PluginIterator::operator*() {
 	return *_currentPlugin;
 }
 
+bool PluginManager::PluginIterator::atEnd() {
+	return _currentPlugin == _list.end();
+}
+
 // Music plugins
 
 #include "audio/musicplugin.h"
