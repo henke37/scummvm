@@ -392,9 +392,7 @@ Common::String EngineManager::getPluginFilenameForEngineId(const Common::String 
 }
 
 const Plugin *EngineManager::findLoadedEnginePlugin(const Common::String &engineId) const {
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter)
 		if (engineId == (*iter)->get<MetaEngine>().getName())
 			return *iter;
 
