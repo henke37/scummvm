@@ -153,9 +153,7 @@ Common::String EngineManager::createTargetForGame(const DetectedGame &game) cons
 }
 
 const Plugin *EngineManager::findMetaPlugin(const Common::String &engineId) const {
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
-
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE_DETECTION); !iter.atEnd(); ++iter)
 		if (engineId == (*iter)->get<MetaEngineDetection>().getEngineId())
 			return *iter;
 
