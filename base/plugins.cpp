@@ -571,11 +571,6 @@ bool PluginManager::PluginIterator::atEnd() {
 namespace Common {
 DECLARE_SINGLETON(MusicManager);
 }
-
-const PluginList &MusicManager::getLoadedPlugins() const {
-	return PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_MUSIC);
-}
-
 // Scaler plugins
 
 #include "graphics/scalerplugin.h"

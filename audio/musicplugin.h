@@ -126,9 +126,6 @@ public:
 class MusicManager : public Common::Singleton<MusicManager> {
 private:
 	friend class Common::Singleton<SingletonBaseType>;
-
-public:
-	const PluginList &getLoadedPlugins() const;
 };
 
 /** Convenience shortcut for accessing the Music manager. */
