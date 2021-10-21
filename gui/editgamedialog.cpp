@@ -118,7 +118,7 @@ EditGameDialog::EditGameDialog(const String &domain)
 	if (!metaEnginePlugin) {
 		warning("MetaEnginePlugin for target \"%s\" not found!", domain.c_str());
 	} else {
-		enginePlugin = EngineMan.getEngineFromMetaEngine(metaEnginePlugin);
+		enginePlugin = EngineMan.getLoadedEngineFromMetaEngine(metaEnginePlugin);
 		if (!enginePlugin) {
 			warning("Engine Plugin for target \"%s\" not found! Game specific settings might be missing.", domain.c_str());
 		}

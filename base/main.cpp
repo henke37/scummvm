@@ -155,7 +155,7 @@ void saveLastLaunchedTarget(const Common::String &target) {
 }
 
 // TODO: specify the possible return values here
-static Common::Error runGame(const Plugin *plugin, Plugin *enginePlugin, OSystem &system, const Common::String &debugLevels) {
+static Common::Error runGame(const Plugin *plugin, const Plugin *enginePlugin, OSystem &system, const Common::String &debugLevels) {
 	assert(plugin);
 	assert(enginePlugin);
 
@@ -207,8 +207,6 @@ static Common::Error runGame(const Plugin *plugin, Plugin *enginePlugin, OSystem
 		else if (!DebugMan.enableDebugChannel(token))
 			warning("Engine does not support debug level '%s'", token.c_str());
 	}
-
-	PluginMan.tryLoadPlugin(enginePlugin);
 
 	// Create the game's MetaEngine.
 	MetaEngine &metaEngine = enginePlugin->get<MetaEngine>();
@@ -582,22 +580,11 @@ extern "C" int scummvm_main(int argc, const char * const argv[]) {
 		const Plugin *plugin = detectPlugin();
 
 		// Then, get the relevant Engine plugin from MetaEngine.
-		Plugin *enginePlugin = nullptr;
+		const Plugin *enginePlugin = nullptr;
 		if (plugin)
-			enginePlugin = EngineMan.getEngineFromMetaEngine(plugin);
+			enginePlugin = EngineMan.findAndLoadEnginePlugin(plugin);
 
 		if (enginePlugin) {
-			// Unload all plugins not needed for this game, to save memory
-			// Right now, we have a MetaEngine plugin, and we want to unload all except Engine.
-
-			// Pass in the pointer to enginePlugin, with the matching type, so our function behaves as-is.
-			PluginManager::instance().unloadPluginsExcept(PLUGIN_TYPE_ENGINE, enginePlugin);
-
-#if defined(UNCACHED_PLUGINS) && defined(DYNAMIC_MODULES) && !defined(DETECTION_STATIC)
-			// Unload all MetaEngines not needed for the current engine, if we're using uncached plugins
-			// to save extra memory.
-			PluginManager::instance().unloadPluginsExcept(PLUGIN_TYPE_ENGINE_DETECTION, plugin);
-#endif
 
 #ifdef ENABLE_EVENTRECORDER
 			Common::String recordMode = ConfMan.get("record_mode");

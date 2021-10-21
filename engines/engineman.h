@@ -39,12 +39,12 @@ public:
 	 */
 	DetectionResults detectGames(const Common::FSList &fslist) const;
 
-	const Plugin *findLoadedEnginePlugin(const Common::String &engineId);
+	const Plugin *findLoadedEnginePlugin(const Common::String &engineId) const;
 
 	/** Find a plugin by its engine ID. */
 	const Plugin *findMetaPlugin(const Common::String &engineId) const;
 
-	const Plugin *findAndLoadEnginePlugin(const Common::String &engineId);
+	const Plugin *findAndLoadEnginePlugin(const Plugin *metaPlugin);
 
 	/**
 	 * A method which takes in a plugin of type ENGINE,
@@ -56,7 +56,7 @@ public:
 	 *
 	 * @return A plugin of type METAENGINE.
 	 */
-	Plugin *getMetaEngineFromEngine(const Plugin *plugin);
+	const Plugin *getMetaEngineFromEngine(const Plugin *plugin) const;
 
 	/**
 	 * A method which takes in a plugin of type METAENGINE,
@@ -68,7 +68,7 @@ public:
 	 *
 	 * @return A plugin of type ENGINE.
 	 */
-	Plugin *getEngineFromMetaEngine(const Plugin *plugin);
+	const Plugin *getLoadedEngineFromMetaEngine(const Plugin *plugin) const;
 
 	/** Find a target. */
 	QualifiedGameDescriptor findTarget(const Common::String &target, const Plugin **plugin = NULL) const;
@@ -83,15 +83,12 @@ public:
 	QualifiedGameList findGamesMatching(const Common::String &gameId) const;
 	QualifiedGameList findGamesMatching(const Common::String &engineId, const Common::String &gameId) const;
 
-	
-	const Plugin *loadPluginFromEngineId(const Common::String &engineId);
-
 	/**
 	 * Create a target from the supplied game descriptor.
 	 *
 	 * @return The created target name.
 	 */
-	Common::String createTargetForGame(const DetectedGame &game);
+	Common::String createTargetForGame(const DetectedGame &game) const;
 
 	/** Upgrade a target to the current configuration format. */
 	void upgradeTargetIfNecessary(const Common::String &target) const;
@@ -102,7 +99,9 @@ private:
 
 	void updateConfigWithFileName(const Common::String &engineId, Plugin *p);
 
-	Common::String getPluginFilenameForEngineId(const Common::String &engineId);
+	Common::String getPluginFilenameForEngineId(const Common::String &engineId) const;
+
+	Plugin *getEnginePluginByEngineId(const Common::String &engineId) const;
 };
 
 /** Convenience shortcut for accessing the engine manager. */

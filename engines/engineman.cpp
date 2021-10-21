@@ -104,7 +104,7 @@ void addStringToConf(const Common::String &key, const Common::String &value, con
 
 } // End of anonymous namespace
 
-Common::String EngineManager::createTargetForGame(const DetectedGame &game) {
+Common::String EngineManager::createTargetForGame(const DetectedGame &game) const {
 	// The auto detector or the user made a choice.
 	// Pick a domain name which does not yet exist (after all, we
 	// are *adding* a game to the config, not replacing).
@@ -289,7 +289,7 @@ void EngineManager::upgradeTargetForEngineId(const Common::String &target) const
 	ConfMan.flushToDisk();
 }
 
-Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
+const Plugin *EngineManager::getLoadedEngineFromMetaEngine(const Plugin *plugin) const {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE_DETECTION);
 
 	const Plugin *enginePlugin = nullptr;
@@ -308,7 +308,7 @@ Plugin *EngineManager::getEngineFromMetaEngine(const Plugin *plugin) {
 	return nullptr;
 }
 
-Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
+const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) const {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE);
 
 	Plugin *metaEngine = nullptr;
@@ -337,30 +337,29 @@ Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) {
 	return nullptr;
 }
 
-const Plugin *EngineManager::findAndLoadEnginePlugin(const Common::String &engineId) {
-	// First look for the game using the plugins in memory. This is critical
-	// for calls coming from inside games
-	const Plugin *plugin = findLoadedEnginePlugin(engineId);
-	if (plugin)
-		return plugin;
+const Plugin *EngineManager::findAndLoadEnginePlugin(const Plugin *metaPlugin) {
+	const char *engineId=metaPlugin->getEngineId();
 
-	// Now look for the plugin using the engine ID. This is much faster than scanning plugin
-	// by plugin
-	return loadPluginFromEngineId(engineId);
+	Plugin *enginePlugin = getEnginePluginByEngineId(engineId);
+	
+	// Unload all plugins not needed for this game, to save memory
+	// Right now, we have a MetaEngine plugin, and we want to unload all except Engine.
+	PluginManager::instance().unloadPluginsExcept(PLUGIN_TYPE_ENGINE, enginePlugin);
+
+#if defined(UNCACHED_PLUGINS) && defined(DYNAMIC_MODULES) && !defined(DETECTION_STATIC)
+	// Unload all MetaEngines not needed for the current engine, if we're using uncached plugins
+	// to save extra memory.
+	PluginManager::instance().unloadPluginsExcept(PLUGIN_TYPE_ENGINE_DETECTION, plugin);
+#endif
+	if (PluginMan.tryLoadPlugin(enginePlugin))
+		return enginePlugin;
+	return NULL;
 }
 
-/**
- * Try to load the plugin by searching in the ConfigManager for a matching
- * engine ID under the domain 'engine_plugin_files'.
- **/
-const Plugin *EngineManager::loadPluginFromEngineId(const Common::String &engineId) {
-	
+Plugin *EngineManager::getEnginePluginByEngineId(const Common::String &engineId) const {
 	Common::String filename = getPluginFilenameForEngineId(engineId);
 
-	Plugin *p = PluginMan.getPluginByFileName(filename);
-	if (PluginMan.tryLoadPlugin(p))
-		return p;
-	return NULL;
+	return PluginMan.getPluginByFileName(filename);
 }
 
 /**
@@ -381,7 +380,7 @@ void EngineManager::updateConfigWithFileName(const Common::String &engineId, Plu
 	}
 }
 
-Common::String EngineManager::getPluginFilenameForEngineId(const Common::String &engineId) {
+Common::String EngineManager::getPluginFilenameForEngineId(const Common::String &engineId) const {
 	Common::ConfigManager::Domain *domain = ConfMan.getDomain("engine_plugin_files");
 
 	if (domain) {
@@ -398,7 +397,7 @@ Common::String EngineManager::getPluginFilenameForEngineId(const Common::String 
 	return tentativeEnginePluginFilename;
 }
 
-const Plugin *EngineManager::findLoadedEnginePlugin(const Common::String &engineId) {
+const Plugin *EngineManager::findLoadedEnginePlugin(const Common::String &engineId) const {
 	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
 
 	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++)
