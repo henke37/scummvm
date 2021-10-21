@@ -311,22 +311,9 @@ const Plugin *EngineManager::getLoadedEngineFromMetaEngine(const Plugin *plugin)
 const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) const {
 	assert(plugin->getType() == PLUGIN_TYPE_ENGINE);
 
-	Plugin *metaEngine = nullptr;
+	const Plugin *metaEngine = nullptr;
 
-	PluginList pl = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE_DETECTION);
-
-	// This will return a name of the Engine plugin, which will be identical to
-	// a getEngineID from a relevant MetaEngine.
-	Common::String enginePluginName(plugin->getName());
-
-	for (PluginList::const_iterator itr = pl.begin(); itr != pl.end(); itr++) {
-		Common::String metaEngineName = (*itr)->getEngineId();
-
-		if (metaEngineName.equalsIgnoreCase(enginePluginName)) {
-			metaEngine = (*itr);
-			break;
-		}
-	}
+	metaEngine = findMetaPlugin(plugin->getEngineId());
 
 	if (metaEngine) {
 		debug(9, "Engine: %s matched to MetaEngine: %s", plugin->getFileName(), metaEngine->getName());
