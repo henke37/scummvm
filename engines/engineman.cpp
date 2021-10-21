@@ -332,6 +332,9 @@ const Plugin *EngineManager::findAndLoadEnginePlugin(const Plugin *metaPlugin) {
 	}
 
 	Plugin *enginePlugin = getEnginePluginByEngineId(engineId);
+
+	if (!enginePlugin)
+		return NULL;
 	
 	// Unload all plugins not needed for this game, to save memory
 	// Right now, we have a MetaEngine plugin, and we want to unload all except Engine.
