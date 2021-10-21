@@ -374,8 +374,6 @@ public:
 
 	bool tryLoadPlugin(Plugin *plugin);
 
-	virtual void loadAllPluginsOfType(PluginType type);
-
 	Plugin *getPluginByFileName(Common::String fileName) const;
 
 	void unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin = true);
@@ -423,7 +421,6 @@ protected:
 	bool _isDetectionLoaded;
 
 	PluginManagerUncached() : _isDetectionLoaded(false), _detectionPlugin(nullptr) {}
-	bool loadPluginByFileName(const Common::String &filename);
 
 public:
 	virtual void init() override;
@@ -434,8 +431,6 @@ public:
 };
 
 class PluginManagerCached : public PluginManager {
-
-	virtual void loadAllPluginsOfType(PluginType type) override {}
 	void loadAllPlugins();
 
 public:
