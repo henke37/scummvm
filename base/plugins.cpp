@@ -505,6 +505,8 @@ void PluginManagerCached::loadAllPlugins() {
 }
 
 bool PluginManager::PluginIterator::next(bool acceptCurrent) {
+	if (_currentProvider == PluginMan._providers.end())
+		return false;
 	for (;;) {
 
 		for (;;) {
@@ -517,11 +519,12 @@ bool PluginManager::PluginIterator::next(bool acceptCurrent) {
 			acceptCurrent = true;
 			++_currentPlugin;
 		}
-		if (_currentProvider == PluginMan._providers.end())
-			break;
 
 		++_currentProvider;
+		if (_currentProvider == PluginMan._providers.end())
+			break;
 		_list = (*_currentProvider)->getPlugins();
+		_currentPlugin = _list.begin();
 	}
 	return false;
 }
@@ -537,12 +540,14 @@ bool PluginManager::PluginIterator::shouldStopAtCurrent() const {
 PluginManager::PluginIterator::PluginIterator(PluginType type) : _type(type), _allPlugins(false) {
 	_currentProvider = PluginMan._providers.begin();
 	_list = (*_currentProvider)->getPlugins();
+	_currentPlugin = _list.begin();
 	next(true);
 }
 
 PluginManager::PluginIterator::PluginIterator() : _allPlugins(true) {
 	_currentProvider = PluginMan._providers.begin();
 	_list = (*_currentProvider)->getPlugins();
+	_currentPlugin = _list.begin();
 	next(true);
 }
 
