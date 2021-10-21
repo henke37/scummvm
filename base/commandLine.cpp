@@ -886,8 +886,7 @@ static void listGames(const Common::String &engineID) {
 	printf("Game ID                        Full Title                                                 \n"
 	       "------------------------------ -----------------------------------------------------------\n");
 
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 		const Plugin *p = EngineMan.getMetaEngineFromEngine((*iter));
 		/* If for some reason, we can't find the MetaEngine for this Engine, just ignore it */
 		if (!p) {
@@ -910,8 +909,7 @@ static void listAllGames(const Common::String &engineID) {
 	printf("Game ID                        Full Title                                                 \n"
 	       "------------------------------ -----------------------------------------------------------\n");
 
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 
 		if (any || (metaEngine.getEngineId() == engineID)) {
@@ -928,8 +926,7 @@ static void listEngines() {
 	printf("Engine ID       Engine Name                                           \n"
 	       "--------------- ------------------------------------------------------\n");
 
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 		const Plugin *p = EngineMan.getMetaEngineFromEngine((*iter));
 		/* If for some reason, we can't find the MetaEngine for this Engine, just ignore it */
 		if (!p) {
@@ -945,8 +942,7 @@ static void listAllEngines() {
 	printf("Engine ID       Engine Name                                           \n"
 	       "--------------- ------------------------------------------------------\n");
 
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 		printf("%-15s %s\n", metaEngine.getEngineId(), metaEngine.getName());
 	}
@@ -999,8 +995,7 @@ static void listDebugFlags(const Common::String &engineID) {
 	if (engineID == "global")
 		printDebugFlags(gDebugChannels);
 	else {
-		const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-		for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+		for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 			const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 			if (metaEngine.getEngineId() == engineID) {
 				printf("Flag name       Flag description                                           \n");
@@ -1018,8 +1013,7 @@ static void listDebugFlags(const Common::String &engineID) {
 static void listAllEngineDebugFlags() {
 	printf("Flag name       Flag description                                           \n");
 
-	const PluginList &plugins = PluginMan.getLoadedPluginsOfType(PLUGIN_TYPE_ENGINE);
-	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); ++iter) {
+	for (PluginManager::PluginIterator iter(PLUGIN_TYPE_ENGINE); !iter.atEnd(); ++iter) {
 		const MetaEngineDetection &metaEngine = (*iter)->get<MetaEngineDetection>();
 		printf("--------------- ------------------------------------------------------\n");
 		printf("ID=%-12s Name=%s\n", metaEngine.getEngineId(), metaEngine.getName());
