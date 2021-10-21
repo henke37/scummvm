@@ -325,6 +325,12 @@ const Plugin *EngineManager::getMetaEngineFromEngine(const Plugin *plugin) const
 const Plugin *EngineManager::findAndLoadEnginePlugin(const Plugin *metaPlugin) {
 	const char *engineId=metaPlugin->getEngineId();
 
+	{
+		const Plugin *loadedEnginePlugin = findLoadedEnginePlugin(engineId);
+		if (loadedEnginePlugin)
+			return loadedEnginePlugin;
+	}
+
 	Plugin *enginePlugin = getEnginePluginByEngineId(engineId);
 	
 	// Unload all plugins not needed for this game, to save memory
