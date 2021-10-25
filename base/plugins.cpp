@@ -21,6 +21,7 @@
  */
 
 #include "base/plugins.h"
+#include "base/pluginCollection.h"
 
 #include "common/func.h"
 #include "common/debug.h"
@@ -314,6 +315,25 @@ void PluginManager::addPluginProvider(PluginProvider *pp) {
 	}
 }
 
+void PluginManager::removePluginProvider(PluginProvider *pp) {
+	PluginList pl = pp->getPlugins();
+	for (PluginList::const_iterator it = pl.begin(); it != pl.end(); ++it) {
+		Plugin *p = *it;
+
+		if (!p->isLoaded())
+			continue;
+
+		removePluginFromInMemList(p);
+	}
+
+	for (ProviderList::iterator it = _providers.begin(); it != _providers.end(); ++it) {
+		if (*it != pp)
+			continue;
+		it = _providers.erase(it);
+		break;
+	}
+}
+
 /**
  * This should only be called once by main()
  **/
@@ -423,7 +443,7 @@ void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, b
 		if (*p == plugin) {
 			found = *p;
 		} else {
-			(*p)->unloadPlugin();
+			unloadPlugin(*p);
 			if (deletePlugin) {
 				delete *p;
 			}
@@ -455,6 +475,17 @@ bool PluginManager::tryLoadPlugin(Plugin *plugin) {
 	}
 }
 
+void PluginManager::unloadPlugin(Plugin *plugin) {
+	assert(plugin);
+
+	if (!plugin->isLoaded())
+		return;
+
+	removePluginFromInMemList(plugin);
+
+	plugin->unloadPlugin();
+}
+
 /**
  * Add to the list of plugins loaded in memory.
  */
@@ -470,7 +501,7 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 		if (!strcmp(plugin->getName(), (*pl)->getName())) {
 			// Found a duplicated module. Replace the old one.
 			found = true;
-			(*pl)->unloadPlugin();
+			unloadPlugin(*pl);
 			delete *pl;
 			*pl = plugin;
 			debug(1, "Replaced the duplicated plugin: '%s'", plugin->getName());
@@ -481,6 +512,27 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 	if (!found) {
 		// If it provides a new module, just add it to the list of known plugins in memory.
 		_loadedPluginsByType[type].push_back(plugin);
+	}
+
+	if (type == PLUGIN_TYPE_COLLECTION) {
+		PluginCollection *col = &plugin->get<PluginCollection>();
+		addPluginProvider(col);
+	}
+}
+
+void PluginManager::removePluginFromInMemList(Plugin *plugin) {
+	PluginType type = plugin->getType();
+
+	if (type == PLUGIN_TYPE_COLLECTION) {
+		PluginCollection *col = &plugin->get<PluginCollection>();
+		removePluginProvider(col);
+	}
+
+	PluginList &pl = _loadedPluginsByType[type];
+	for (PluginList::iterator itr = pl.begin(); itr != pl.end(); ++itr) {
+		if (*itr != plugin)
+			continue;
+		itr = pl.erase(itr);
 	}
 }
 

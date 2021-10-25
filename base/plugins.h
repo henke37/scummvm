@@ -357,6 +357,7 @@ private:
 	PluginList _loadedPluginsByType[PLUGIN_TYPE_MAX];
 
 	void addToPluginsInMemList(Plugin *plugin);
+	void removePluginFromInMemList(Plugin *plugin);
 
 protected:
 	typedef Common::Array<PluginProvider *> ProviderList;
@@ -379,10 +380,12 @@ public:
 	static PluginManager &instance();
 
 	void addPluginProvider(PluginProvider *pp);
+	void removePluginProvider(PluginProvider *pp);
 
 	virtual void init() = 0;
 
 	bool tryLoadPlugin(Plugin *plugin);
+	void unloadPlugin(Plugin *plugin);
 
 	Plugin *getPluginByFileName(Common::String fileName) const;
 
