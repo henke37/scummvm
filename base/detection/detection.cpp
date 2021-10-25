@@ -23,12 +23,12 @@
 #ifndef DETECTION_STATIC
 
 #include "base/plugins.h"
-#include "base/detection/detection.h"
+#include "base/pluginCollection.h"
 #include "engines/metaengine.h"
 #include "engines/advancedDetector.h"
 
 
-class DetectionDynamic : public Detection {
+class DetectionDynamic : public PluginCollection {
 public:
 	DetectionDynamic() {}
 	~DetectionDynamic() {}
@@ -51,6 +51,6 @@ public:
 	}
 };
 
-REGISTER_PLUGIN_DYNAMIC(DETECTION_DYNAMIC, PLUGIN_TYPE_DETECTION, DetectionDynamic);
+REGISTER_PLUGIN_DYNAMIC(DETECTION_DYNAMIC, PLUGIN_TYPE_COLLECTION, DetectionDynamic);
 
 #endif // !DETECTION_STATIC
