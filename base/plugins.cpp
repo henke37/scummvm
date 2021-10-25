@@ -304,6 +304,14 @@ PluginManager::~PluginManager() {
 
 void PluginManager::addPluginProvider(PluginProvider *pp) {
 	_providers.push_back(pp);
+
+	PluginList pl=pp->getPlugins();
+	for (PluginList::const_iterator it = pl.begin(); it != pl.end();++it) {
+		Plugin *p = *it;
+		if (!p->isLoaded())
+			continue;
+		_loadedPluginsByType[p->getType()].push_back(p);
+	}
 }
 
 /**
