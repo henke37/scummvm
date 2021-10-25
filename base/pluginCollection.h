@@ -22,10 +22,10 @@
 
 #include "base/plugins.h"
 
-class Detection : public PluginObject {
+class PluginCollection : public PluginObject, public PluginProvider {
 public:
-	Detection() {}
-	virtual ~Detection() {}
+	PluginCollection() {}
+	virtual ~PluginCollection() {}
 
 	virtual const char *getName() const = 0;
 	virtual PluginList getPlugins() const = 0;

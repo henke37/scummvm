@@ -42,7 +42,7 @@ enum PluginType {
 	PLUGIN_TYPE_ENGINE_DETECTION = 0,
 	PLUGIN_TYPE_ENGINE,
 	PLUGIN_TYPE_MUSIC,
-	PLUGIN_TYPE_DETECTION,
+	PLUGIN_TYPE_COLLECTION,
 	PLUGIN_TYPE_SCALER,
 
 	PLUGIN_TYPE_MAX
@@ -175,10 +175,10 @@ inline PluginType pluginTypeForT<MetaEngineDetection>() {
 	return PLUGIN_TYPE_ENGINE_DETECTION;
 }
 
-class Detection;
+class PluginCollection;
 template<>
-inline PluginType pluginTypeForT<Detection>() {
-	return PLUGIN_TYPE_DETECTION;
+inline PluginType pluginTypeForT<PluginCollection>() {
+	return PLUGIN_TYPE_COLLECTION;
 }
 
 class MusicPluginObject;

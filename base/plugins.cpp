@@ -284,7 +284,7 @@ PluginManager::PluginManager() {
 
 #ifndef DETECTION_STATIC
 void PluginManager::registerDetectionSubPlugins(Plugin *detectPlugin) {
-	const Detection &detectionConnect = (*detectPlugin)->get<Detection>();
+	const PluginCollection &detectionConnect = (*detectPlugin)->get<PluginCollection>();
 	const PluginList &pl = detectionConnect.getPlugins();
 	Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
 }
@@ -369,7 +369,7 @@ void PluginManagerUncached::loadDetectionPlugin() {
 	} else {
 		if (_detectionPlugin) {
 			if (_detectionPlugin->loadPlugin()) {
-				assert((_detectionPlugin)->getType() == PLUGIN_TYPE_DETECTION);
+				assert((_detectionPlugin)->getType() == PLUGIN_TYPE_COLLECTION);
 
 				linkMetaEngines = true;
 				_isDetectionLoaded = true;
@@ -463,8 +463,10 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 	// The plugin is valid, see if it provides the same module as an
 	// already loaded one and should replace it.
 
-	PluginList::iterator pl = _loadedPluginsByType[plugin->getType()].begin();
-	while (!found && pl != _loadedPluginsByType[plugin->getType()].end()) {
+	PluginType type = plugin->getType();
+
+	PluginList::iterator pl = _loadedPluginsByType[type].begin();
+	while (!found && pl != _loadedPluginsByType[type].end()) {
 		if (!strcmp(plugin->getName(), (*pl)->getName())) {
 			// Found a duplicated module. Replace the old one.
 			found = true;
@@ -478,7 +480,7 @@ void PluginManager::addToPluginsInMemList(Plugin *plugin) {
 
 	if (!found) {
 		// If it provides a new module, just add it to the list of known plugins in memory.
-		_loadedPluginsByType[plugin->getType()].push_back(plugin);
+		_loadedPluginsByType[type].push_back(plugin);
 	}
 }
 
@@ -499,10 +501,10 @@ void PluginManagerCached::loadAllPlugins() {
 
 #ifndef DETECTION_STATIC
 	/*
-	 * When detection is dynamic, loading above only gets us a PLUGIN_TYPE_DETECTION plugin
+	 * When detection is dynamic, loading above only gets us a PLUGIN_TYPE_COLLECTION plugin
 	 * We must register all plugins linked in it in order to use them
 	 */
-	PluginList dpl = getPlugins(PLUGIN_TYPE_DETECTION);
+	PluginList dpl = getPlugins(PLUGIN_TYPE_COLLECTION);
 	_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
 	for (PluginList::iterator it = dpl.begin();
 		 it != dpl.end();
