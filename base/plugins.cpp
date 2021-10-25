@@ -318,11 +318,13 @@ void PluginManager::removePluginProvider(PluginProvider *pp) {
 		removePluginFromInMemList(p);
 	}
 
-	for (ProviderList::iterator it = _providers.begin(); it != _providers.end(); ++it) {
-		if (*it != pp)
-			continue;
-		it = _providers.erase(it);
-		break;
+	for (ProviderList::iterator it = _providers.begin(); it != _providers.end();) {
+		if (*it == pp) {
+			it = _providers.erase(it);
+			break;
+		} else {
+			++it;
+		}
 	}
 }
 
@@ -372,7 +374,10 @@ Plugin *PluginManager::getPluginByFileName(Common::String fileName) const {
 
 void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin /*=true*/) {
 	Plugin *found = NULL;
-	for (PluginList::iterator p = _loadedPluginsByType[type].begin(); p != _loadedPluginsByType[type].end(); ++p) {
+
+	// copy the list since unloadPlugin modifies the main one
+	PluginList pl = _loadedPluginsByType[type];
+	for (PluginList::iterator p = pl.begin(); p != pl.end(); ++p) {
 		if (*p == plugin) {
 			found = *p;
 		} else {
@@ -458,10 +463,11 @@ void PluginManager::removePluginFromInMemList(Plugin *plugin) {
 	}
 
 	PluginList &pl = _loadedPluginsByType[type];
-	for (PluginList::iterator itr = pl.begin(); itr != pl.end(); ++itr) {
-		if (*itr != plugin)
-			continue;
-		itr = pl.erase(itr);
+	for (PluginList::iterator itr = pl.begin(); itr != pl.end();) {
+		if (*itr == plugin)
+			itr = pl.erase(itr);
+		else
+			++itr;
 	}
 }
 
