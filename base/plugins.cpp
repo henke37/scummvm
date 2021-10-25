@@ -449,10 +449,6 @@ void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, b
 			}
 		}
 	}
-	_loadedPluginsByType[type].clear();
-	if (found != NULL) {
-		_loadedPluginsByType[type].push_back(found);
-	}
 }
 
 /*
