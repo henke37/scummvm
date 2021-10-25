@@ -375,6 +375,10 @@ Plugin *PluginManager::getPluginByFileName(Common::String fileName) const {
 void PluginManager::unloadPluginsExcept(PluginType type, const Plugin *plugin, bool deletePlugin /*=true*/) {
 	Plugin *found = NULL;
 
+	if (plugin) {
+		assert(plugin->getType() == type);
+	}
+
 	// copy the list since unloadPlugin modifies the main one
 	PluginList pl = _loadedPluginsByType[type];
 	for (PluginList::iterator p = pl.begin(); p != pl.end(); ++p) {
