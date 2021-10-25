@@ -7,8 +7,6 @@
 #include "common/debug-channels.h"
 #include "common/config-manager.h"
 
-#include "base/detection/detection.h"
-
 #include "engines/advancedDetector.h"
 
 namespace Common {
