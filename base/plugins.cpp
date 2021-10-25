@@ -283,14 +283,6 @@ PluginManager::PluginManager() {
 	addPluginProvider(new StaticPluginProvider());
 }
 
-#ifndef DETECTION_STATIC
-void PluginManager::registerDetectionSubPlugins(Plugin *detectPlugin) {
-	const PluginCollection &detectionConnect = (*detectPlugin)->get<PluginCollection>();
-	const PluginList &pl = detectionConnect.getPlugins();
-	Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
-}
-#endif
-
 PluginManager::~PluginManager() {
 	// Explicitly unload all loaded plugins
 	unloadAllPlugins();
@@ -348,76 +340,17 @@ void PluginManagerUncached::init() {
 	detectPluginName += PLUGIN_SUFFIX;
 #endif
 
-	bool foundDetectPlugin = false;
-#endif
-
-	for (ProviderList::iterator pp = _providers.begin();
-	                            pp != _providers.end();
-	                            ++pp) {
-		PluginList pl((*pp)->getPlugins());
-
-		for (PluginList::iterator p = pl.begin(); p != pl.end(); ++p) {
-			// This is a 'hack' based on the assumption that we have no sound
-			// file plugins. Currently this is the case. If it changes, we
-			// should find a fast way of detecting whether a plugin is a
-			// music or an engine plugin.
-#ifndef DETECTION_STATIC
-			if (!foundDetectPlugin && (*pp)->isFilePluginProvider()) {
-				Common::String pName = (*p)->getFileName();
-				if (pName.hasSuffixIgnoreCase(detectPluginName)) {
-					_detectionPlugin = (*p);
-					foundDetectPlugin = true;
-					debug(9, "Detection plugin found!");
-					continue;
-				}
-			}
-#endif
- 		}
- 	}
-#ifndef DETECTION_STATIC
-	loadDetectionPlugin();
+	_detectionPlugin = getPluginByFileName(detectPluginName);
 #endif
 }
 
 #ifndef DETECTION_STATIC
 void PluginManagerUncached::loadDetectionPlugin() {
-	bool linkMetaEngines = false;
-
-	if (_isDetectionLoaded) {
-		debug(9, "Detection plugin is already loaded. Adding each available engines to the memory.");
-		linkMetaEngines = true;
-	} else {
-		if (_detectionPlugin) {
-			if (_detectionPlugin->loadPlugin()) {
-				assert((_detectionPlugin)->getType() == PLUGIN_TYPE_COLLECTION);
-
-				linkMetaEngines = true;
-				_isDetectionLoaded = true;
-			} else {
-				debug(9, "Detection plugin was not loaded correctly.");
-				return;
-			}
-		} else {
-			debug(9, "Detection plugin not found.");
-			return;
-		}
-	}
-
-	if (linkMetaEngines) {
-		_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
-		registerDetectionSubPlugins(_detectionPlugin);
-	}
-
+	tryLoadPlugin(_detectionPlugin);
 }
 
 void PluginManagerUncached::unloadDetectionPlugin() {
-	if (_isDetectionLoaded) {
-		_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
-		_detectionPlugin->unloadPlugin();
-		_isDetectionLoaded = false;
-	} else {
-		debug(9, "Detection plugin is already unloaded.");
-	}
+	unloadPlugin(_detectionPlugin);
 }
 #endif
 
@@ -546,20 +479,6 @@ void PluginManagerCached::loadAllPlugins() {
 		PluginList pl((*pp)->getPlugins());
 		Common::for_each(pl.begin(), pl.end(), Common::bind1st(Common::mem_fun(&PluginManager::tryLoadPlugin), this));
 	}
-
-#ifndef DETECTION_STATIC
-	/*
-	 * When detection is dynamic, loading above only gets us a PLUGIN_TYPE_COLLECTION plugin
-	 * We must register all plugins linked in it in order to use them
-	 */
-	PluginList dpl = getPlugins(PLUGIN_TYPE_COLLECTION);
-	_loadedPluginsByType[PLUGIN_TYPE_ENGINE_DETECTION].clear();
-	for (PluginList::iterator it = dpl.begin();
-		 it != dpl.end();
-		 ++it) {
-		registerDetectionSubPlugins(it);
-	}
-#endif
 }
 
 bool PluginManager::PluginIterator::next(bool acceptCurrent) {
