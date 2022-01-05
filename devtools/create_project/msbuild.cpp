@@ -259,18 +259,6 @@ void MSBuildProvider::outputFilter(std::ostream &filters, const FileEntries &fil
 	}
 }
 
-void MSBuildProvider::writeReferences(const BuildSetup &setup, std::ofstream &output) {
-	output << "\t<ItemGroup>\n";
-
-	for (UUIDMap::const_iterator i = _engineUuidMap.begin(); i != _engineUuidMap.end(); ++i) {
-		output << "\t<ProjectReference Include=\"" << i->first << ".vcxproj\">\n"
-		       << "\t\t<Project>{" << i->second << "}</Project>\n"
-		       << "\t</ProjectReference>\n";
-	}
-
-	output << "\t</ItemGroup>\n";
-}
-
 void MSBuildProvider::outputProjectSettings(std::ofstream &project, const std::string &name, const BuildSetup &setup, bool isRelease, MSVC_Architecture arch, const std::string &configuration) {
 	// Check for project-specific warnings:
 	std::map<std::string, StringList>::iterator warningsIterator = _projectWarnings.find(name);

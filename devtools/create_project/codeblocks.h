@@ -44,7 +44,12 @@ protected:
 	void writeFileListToProject(const FileNode &dir, std::ostream &projectFile, const int indentation,
 								const std::string &objPrefix, const std::string &filePrefix) final;
 
-	void writeReferences(const BuildSetup &setup, std::ofstream &output) final;
+	/**
+	 * Output a list of project references to the file stream
+	 *
+	 * @param output File stream to write to.
+	 */
+	void writeReferences(const BuildSetup &setup, std::ofstream &output);
 
 	const char *getProjectExtension() final;
 

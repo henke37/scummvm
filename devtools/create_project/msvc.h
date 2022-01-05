@@ -67,6 +67,13 @@ protected:
 	void createGlobalProp(const BuildSetup &setup);
 
 	/**
+	 * Output a list of project references to the file stream
+	 *
+	 * @param output File stream to write to.
+	 */
+	void writeReferences(const BuildSetup &setup, std::ofstream &output);
+
+	/**
 	 * Outputs a property file based on the input parameters.
 	 *
 	 * It can be easily used to create different global properties files

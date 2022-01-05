@@ -300,4 +300,16 @@ std::string MSVCProvider::getPostBuildEvent(MSVC_Architecture arch, const BuildS
 	return cmdLine;
 }
 
+void MSVCProvider::writeReferences(const BuildSetup &setup, std::ofstream &output) {
+	output << "\t<ItemGroup>\n";
+
+	for (UUIDMap::const_iterator i = _engineUuidMap.begin(); i != _engineUuidMap.end(); ++i) {
+		output << "\t<ProjectReference Include=\"" << i->first << ".vcxproj\">\n"
+			   << "\t\t<Project>{" << i->second << "}</Project>\n"
+			   << "\t</ProjectReference>\n";
+	}
+
+	output << "\t</ItemGroup>\n";
+}
+
 } // namespace CreateProjectTool
