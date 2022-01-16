@@ -1,0 +1,2 @@
+# add_engine [name] [desc] [build-by-default] [subengines] [base games] [deps]
+add_engine capbible "Captain Bible" no ""
