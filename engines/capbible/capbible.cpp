@@ -40,7 +40,7 @@ CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescr
 	: Engine(syst), _mainArchive(nullptr), _gameDescription(gameDescription),
 	randomizer("capbible") {
 	const Common::FSNode gameDataDir(ConfMan.get("path"));
-	SearchMan.addSubDirectoryMatching(gameDataDir, isDemo?"cbsedrv":"drivers");
+	SearchMan.addSubDirectoryMatching(gameDataDir, isDemo()?"cbsedrv":"drivers");
 }
 
 CapBibleEngine::~CapBibleEngine() {
