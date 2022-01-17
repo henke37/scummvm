@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	mainarchive.o \
 	metaengine.o \
 	debugger.o \
+	saveload.o \
 	capbible.o
 
 # This module can be built as a plugin
