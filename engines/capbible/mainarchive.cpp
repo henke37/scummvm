@@ -43,15 +43,10 @@ void MainArchive::readTOC() {
 	uint16 fileC = _archiveFile.readUint16LE();
 	for (uint16 fileIndex = 0; fileIndex < fileC; ++fileIndex) {
 		MainArchiveMember *entry = new MainArchiveMember(this);
-
-		char baseNameBuf[9] = {'\0'};
-		char extBuf[4] = {'\0'};
-
-		_archiveFile.read(&baseNameBuf, 8);
-		entry->_baseName = Common::String(baseNameBuf);
+		
+		entry->_baseName = _archiveFile.readString('\0', 8);
 		entry->_compressionType = _archiveFile.readByte();
-		_archiveFile.read(&extBuf, 3);
-		entry->_extension = Common::String(extBuf);
+		entry->_extension = _archiveFile.readString('\0', 3);
 		entry->_offset = _archiveFile.readUint32LE();
 		entry->_decompressedSize = _archiveFile.readUint32LE();
 		entry->_compressedSize = _archiveFile.readUint32LE();
