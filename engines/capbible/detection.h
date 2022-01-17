@@ -22,6 +22,8 @@
 #ifndef CAPBIBLE_DETECTION_H
 #define CAPBIBLE_DETECTION_H
 
+#include "engines/advancedDetector.h"
+
 namespace CapBible {
 
 struct CapBibleGameDescription {

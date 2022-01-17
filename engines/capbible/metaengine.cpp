@@ -85,7 +85,7 @@ void CapBibleMetaEngine::removeSaveState(const char *target, int slot) const {
 }
 
 Common::Error CapBibleMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
-	*engine = new CapBible::CapBibleEngine(syst);
+	*engine = new CapBible::CapBibleEngine(syst, desc);
 	return Common::kNoError;
 }
 

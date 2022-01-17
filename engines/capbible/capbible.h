@@ -24,6 +24,7 @@
 
 #include "engines/engine.h"
 #include "common/random.h"
+#include "capbible/detection.h"
 
 namespace Common {
 class SeekableReadStream;
@@ -50,7 +51,7 @@ enum {
 class CapBibleEngine : public Engine {
 public:
 
-	CapBibleEngine(OSystem *syst);
+	CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescription);
 	~CapBibleEngine() override;
 
 	Common::RandomSource randomizer;
@@ -60,10 +61,13 @@ public:
 	int getAutosaveSlot() const override { return 99; }
 
 protected:
+	const ADGameDescription *_gameDescription;
 
 	// Engine APIs
 	Common::Error run() override;
 	bool hasFeature(EngineFeature f) const override;
+
+	bool isDemo() const { return _gameDescription->flags & ADGF_DEMO; }
 
 	private:
 	MainArchive *_mainArchive;
