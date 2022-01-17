@@ -37,9 +37,15 @@ bool CapBibleEngine::canSaveGameStateCurrently() {
 }
 
 Common::Error CapBibleEngine::loadGameStream(Common::SeekableReadStream *stream) {
+	Common::Serializer s(stream, nullptr);
+	syncGameStream(s);
 	return Common::kNoError;
 };
 Common::Error CapBibleEngine::saveGameStream(Common::WriteStream *stream, bool isAutosave) {
+	Common::Serializer s(nullptr, stream);
+	syncGameStream(s);
 	return Common::kNoError;
 };
+void CapBibleEngine::syncGameStream(Common::Serializer &s) {
+}
 } // End of namespace CapBible

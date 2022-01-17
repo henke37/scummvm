@@ -24,6 +24,7 @@
 
 #include "capbible/detection.h"
 #include "common/random.h"
+#include "common/serializer.h"
 #include "engines/engine.h"
 
 namespace Common {
@@ -74,6 +75,8 @@ protected:
 private:
 	MainArchive *_mainArchive;
 	Debugger *_debugger;
+
+	void syncGameStream(Common::Serializer &s);
 
 	friend class Debugger;
 };
