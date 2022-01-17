@@ -22,13 +22,53 @@
 #ifndef CAPBIBLE_MAINARCHIVE_H
 #define CAPBIBLE_MAINARCHIVE_H
 
+#include "common/archive.h"
+#include "common/hashmap.h"
+
 namespace Common {
 class SeekableReadStream;
 }
 
 namespace CapBible {
-	class MainArchive {
-	};
+
+class MainArchive : public Common::Archive {
+public:
+	MainArchive(Common::String fileName);
+	~MainArchive();
+	bool hasFile(const Common::Path &path) const override;
+	int listMembers(Common::ArchiveMemberList &list) const override;
+	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
+	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override;
+
+private:
+	void readTOC();
+
+	Common::File _archiveFile;
+
+	typedef Common::HashMap<Common::String, Common::ArchiveMemberPtr> EntryMap;
+	EntryMap _fileEntries;
+
+	friend class MainArchiveMember;
+};
+
+class MainArchiveMember : public Common::ArchiveMember {
+public:
+	Common::SeekableReadStream *createReadStream() const override;
+	Common::String getName() const override;
+
+private:
+	MainArchiveMember(MainArchive *archive) : _archive(archive) {}
+
+	MainArchive *_archive;
+	Common::String _baseName;
+	Common::String _extension;
+	uint32 _offset;
+	uint32 _compressedSize;
+	uint32 _decompressedSize;
+	byte _compressionType;
+
+	friend class MainArchive;
+};
 } // End of namespace CapBible
 
 #endif

@@ -32,11 +32,12 @@
 #include "engines/util.h"
 
 #include "capbible/capbible.h"
+#include "capbible/mainarchive.h"
 
 namespace CapBible {
 
 CapBibleEngine::CapBibleEngine(OSystem *syst)
-	: Engine(syst), 
+	: Engine(syst), _mainArchive(nullptr),
 	randomizer("capbible") {
 	const Common::FSNode gameDataDir(ConfMan.get("path"));
 	SearchMan.addSubDirectoryMatching(gameDataDir, "drivers");
@@ -62,6 +63,9 @@ bool CapBible::CapBibleEngine::hasFeature(EngineFeature f) const {
 
 Common::Error CapBibleEngine::run() {
 	initGraphics(GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
+
+	_mainArchive = new MainArchive("dd1.dat");
+	SearchMan.add("Main archive", _mainArchive);
 
 	// Setup mixer
 	syncSoundSettings();
