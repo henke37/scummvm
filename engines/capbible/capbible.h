@@ -39,6 +39,8 @@ class SeekableReadStream;
  */
 namespace CapBible {
 
+	class MainArchive;
+
 enum {
 	GAME_SCREEN_WIDTH = 320,
 	GAME_SCREEN_HEIGHT = 240
@@ -62,6 +64,9 @@ protected:
 	// Engine APIs
 	Common::Error run() override;
 	bool hasFeature(EngineFeature f) const override;
+
+	private:
+	MainArchive *_mainArchive;
 };
 
 } // End of namespace CapBible
