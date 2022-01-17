@@ -3,6 +3,7 @@ MODULE := engines/capbible
 MODULE_OBJS := \
 	mainarchive.o \
 	metaengine.o \
+	debugger.o \
 	capbible.o
 
 # This module can be built as a plugin

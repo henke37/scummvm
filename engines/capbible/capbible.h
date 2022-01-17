@@ -22,9 +22,9 @@
 #ifndef CAPBIBLE_CAPBIBLE_H
 #define CAPBIBLE_CAPBIBLE_H
 
-#include "engines/engine.h"
-#include "common/random.h"
 #include "capbible/detection.h"
+#include "common/random.h"
+#include "engines/engine.h"
 
 namespace Common {
 class SeekableReadStream;
@@ -40,17 +40,16 @@ class SeekableReadStream;
  */
 namespace CapBible {
 
-	class MainArchive;
+class MainArchive;
+class Debugger;
 
 enum {
 	GAME_SCREEN_WIDTH = 320,
 	GAME_SCREEN_HEIGHT = 240
 };
 
-
 class CapBibleEngine : public Engine {
 public:
-
 	CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescription);
 	~CapBibleEngine() override;
 
@@ -69,8 +68,11 @@ protected:
 
 	bool isDemo() const { return _gameDescription->flags & ADGF_DEMO; }
 
-	private:
+private:
 	MainArchive *_mainArchive;
+	Debugger *_debugger;
+
+	friend class Debugger;
 };
 
 } // End of namespace CapBible
