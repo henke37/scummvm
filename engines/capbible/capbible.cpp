@@ -36,8 +36,8 @@
 
 namespace CapBible {
 
-CapBibleEngine::CapBibleEngine(OSystem *syst)
-	: Engine(syst), _mainArchive(nullptr),
+CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescription)
+	: Engine(syst), _mainArchive(nullptr), _gameDescription(gameDescription),
 	randomizer("capbible") {
 	const Common::FSNode gameDataDir(ConfMan.get("path"));
 	SearchMan.addSubDirectoryMatching(gameDataDir, "drivers");
@@ -64,7 +64,7 @@ bool CapBible::CapBibleEngine::hasFeature(EngineFeature f) const {
 Common::Error CapBibleEngine::run() {
 	initGraphics(GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
 
-	_mainArchive = new MainArchive("dd1.dat");
+	_mainArchive = new MainArchive(isDemo() ? "cbse.dat" : "dd1.dat");
 	SearchMan.add("Main archive", _mainArchive);
 
 	// Setup mixer
