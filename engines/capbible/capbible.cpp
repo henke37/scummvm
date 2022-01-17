@@ -32,6 +32,7 @@
 #include "engines/util.h"
 
 #include "capbible/capbible.h"
+#include "capbible/debugger.h"
 #include "capbible/mainarchive.h"
 
 namespace CapBible {
@@ -63,6 +64,8 @@ bool CapBible::CapBibleEngine::hasFeature(EngineFeature f) const {
 
 Common::Error CapBibleEngine::run() {
 	initGraphics(GAME_SCREEN_WIDTH, GAME_SCREEN_HEIGHT);
+
+	setDebugger(_debugger=new Debugger(this));
 
 	_mainArchive = new MainArchive(isDemo() ? "cbse.dat" : "dd1.dat");
 	SearchMan.add("Main archive", _mainArchive);
