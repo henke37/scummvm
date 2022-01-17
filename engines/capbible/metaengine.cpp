@@ -35,53 +35,19 @@ public:
 
 	bool hasFeature(MetaEngineFeature f) const override;
 	Common::Error createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const override;
-	SaveStateList listSaves(const char *target) const override;
-	int getMaximumSaveSlot() const override { return 99; }
-	void removeSaveState(const char *target, int slot) const override;
-	int getAutosaveSlot() const override { return 99; }
 };
 
 bool CapBibleMetaEngine::hasFeature(MetaEngineFeature f) const {
 	return
 		(f == kSupportsListSaves) ||
 		(f == kSupportsLoadingDuringStartup) ||
-		(f == kSupportsDeleteSave);
-}
-
-SaveStateList CapBibleMetaEngine::listSaves(const char *target) const {
-	Common::SaveFileManager *saveFileMan = g_system->getSavefileManager();
-	Common::StringArray filenames;
-	char saveDesc[32];
-	Common::String pattern("capbible.s##");
-
-	filenames = saveFileMan->listSavefiles(pattern);
-
-	SaveStateList saveList;
-	for (Common::StringArray::const_iterator file = filenames.begin(); file != filenames.end(); ++file) {
-		// Obtain the last 2 digits of the filename, since they correspond to the save slot
-		int slotNum = atoi(file->c_str() + file->size() - 2);
-
-		if (slotNum >= 0 && slotNum <= 99) {
-			Common::InSaveFile *in = saveFileMan->openForLoading(*file);
-			if (in) {
-				for (int i = 0; i < 4; i++)
-					in->readUint32BE();
-				in->read(saveDesc, 32);
-				saveList.push_back(SaveStateDescriptor(this, slotNum, saveDesc));
-				delete in;
-			}
-		}
-	}
-
-	// Sort saves based on slot number.
-	Common::sort(saveList.begin(), saveList.end(), SaveStateDescriptorSlotComparator());
-	return saveList;
-}
-
-void CapBibleMetaEngine::removeSaveState(const char *target, int slot) const {
-	Common::String filename = Common::String::format("capbible.s%02d", slot);
-
-	g_system->getSavefileManager()->removeSavefile(filename);
+		(f == kSupportsDeleteSave) ||
+		(f == kSimpleSavesNames) ||
+		(f == kSavesSupportMetaInfo) ||
+		(f == kSavesSupportThumbnail) ||
+		(f == kSavesSupportCreationDate) ||
+		(f == kSavesSupportPlayTime) ||
+		(f == kSavesUseExtendedFormat );
 }
 
 Common::Error CapBibleMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {

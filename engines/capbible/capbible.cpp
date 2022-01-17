@@ -47,14 +47,6 @@ CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescr
 CapBibleEngine::~CapBibleEngine() {
 }
 
-bool CapBibleEngine::canLoadGameStateCurrently() {
-	return true;
-}
-
-bool CapBibleEngine::canSaveGameStateCurrently() {
-	return true;
-}
-
 bool CapBible::CapBibleEngine::hasFeature(EngineFeature f) const {
 	return
 		(f == kSupportsReturnToLauncher) ||

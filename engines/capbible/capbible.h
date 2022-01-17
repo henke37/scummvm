@@ -59,6 +59,9 @@ public:
 	bool canSaveGameStateCurrently() override;
 	int getAutosaveSlot() const override { return 99; }
 
+	Common::Error loadGameStream(Common::SeekableReadStream *stream) override;
+	Common::Error saveGameStream(Common::WriteStream *stream, bool isAutosave = false) override;
+
 protected:
 	const ADGameDescription *_gameDescription;
 
