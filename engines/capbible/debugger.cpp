@@ -28,9 +28,27 @@
 #include "engines/util.h"
 
 #include "capbible/capbible.h"
+#include "capbible/mainarchive.h"
 #include "debugger.h"
 
 namespace CapBible {
 Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
+	registerCmd("dumpMainArchive", WRAP_METHOD(Debugger,cmdDumpMainArch));
+}
+bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
+	Common::Archive *arch = _engine->_mainArchive;
+	Common::ArchiveMemberList fileList;
+	arch->listMembers(fileList);
+
+	for (Common::ArchiveMemberList::const_iterator itr = fileList.begin(); itr != fileList.end(); ++itr) {
+		Common::DumpFile dump;
+		Common::ArchiveMemberPtr entry=*itr;
+		dump.open(entry->getName());
+		Common::SeekableReadStream *stream = entry->createReadStream();
+		dump.writeStream(stream);
+		delete stream;
+	}
+
+	return true;
 }
 } // End of namespace CapBible

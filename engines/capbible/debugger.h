@@ -37,6 +37,8 @@ public:
 
 private:
 	CapBibleEngine *_engine;
+
+	bool cmdDumpMainArch(int argc, const char **argv);
 };
 } // End of namespace CapBible
 

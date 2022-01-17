@@ -23,6 +23,7 @@
 #include "common/file.h"
 #include "common/fs.h"
 #include "common/system.h"
+#include "common/memstream.h"
 
 #include "engines/util.h"
 
@@ -82,6 +83,9 @@ Common::String MainArchiveMember::getName() const {
 }
 
 Common::SeekableReadStream *MainArchiveMember::createReadStream() const {
-	return nullptr;
+	byte *buff = (byte*)malloc(_compressedSize);
+	_archive->_archiveFile.seek(_offset, SEEK_SET);
+	_archive->_archiveFile.read(buff, _compressedSize);
+	return new Common::MemoryReadStream(buff, _compressedSize, DisposeAfterUse::YES);
 }
 } // End of namespace CapBible
