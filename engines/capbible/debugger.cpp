@@ -34,6 +34,7 @@
 namespace CapBible {
 Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
 	registerCmd("dumpMainArchive", WRAP_METHOD(Debugger,cmdDumpMainArch));
+	registerCmd("giveItem", WRAP_METHOD(Debugger,cmdGiveItem));
 }
 bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	Common::Archive *arch = _engine->_mainArchive;
@@ -50,5 +51,41 @@ bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	}
 
 	return true;
+}
+bool Debugger::cmdGiveItem(int argc, const char **argv) {
+
+	bool sword = false;
+	bool shield = false;
+	bool light = false;
+	bool flight = false;
+	bool traps = false;
+
+	for(int argi = 0; argi < argc; ++argi) {
+		Common::String arg = argv[argi];
+		if (arg == "sword")
+			sword = true;
+		else if (arg == "shield")
+			shield = true;
+		else if (arg == "light")
+			light = true;
+		else if (arg == "flight")
+			flight = true;
+		else if (arg == "traps")
+			traps = true;
+		else {
+			this->debugPrintf("Invalid item %s", argv[argi]);
+			return true;
+		}
+	}
+
+	if (argc == 0) {
+		sword = true;
+		shield = true;
+		traps = true;
+		//light = map.needsLight
+		//flight = map.usesFlight
+	}
+
+	return false;
 }
 } // End of namespace CapBible
