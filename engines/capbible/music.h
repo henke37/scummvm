@@ -19,28 +19,23 @@
  *
  */
 
-#ifndef CAPBIBLE_DEBUGGER_H
-#define CAPBIBLE_DEBUGGER_H
+#ifndef CAPBIBLE_MUSIC_H
+#define CAPBIBLE_MUSIC_H
 
-#include "capbible/capbible.h"
-#include "gui/debugger.h"
-
-namespace Common {
-class SeekableReadStream;
-}
+#include "audio/mididrv.h"
+#include "audio/midiparser.h"
 
 namespace CapBible {
 
-class Debugger : public GUI::Debugger {
+class Music {
 public:
-	Debugger(CapBibleEngine *eng);
+	Music();
+
+	void playSong(Common::String fileName);
 
 private:
-	CapBibleEngine *_engine;
-
-	bool cmdDumpMainArch(int argc, const char **argv);
-	bool cmdGiveItem(int argc, const char **argv);
-	bool cmdPlayMusic(int argc, const char **argv);
+	MidiDriver *_driver;
+	MidiParser *_parser;
 };
 } // End of namespace CapBible
 
