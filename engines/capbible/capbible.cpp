@@ -28,6 +28,7 @@
 #include "common/savefile.h"
 #include "common/system.h"
 #include "common/textconsole.h"
+#include "common/unzip.h"
 
 #include "engines/util.h"
 
@@ -40,8 +41,11 @@ namespace CapBible {
 CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescription)
 	: Engine(syst), _mainArchive(nullptr), _gameDescription(gameDescription),
 	randomizer("capbible") {
-	const Common::FSNode gameDataDir(ConfMan.get("path"));
-	SearchMan.addSubDirectoryMatching(gameDataDir, isDemo()?"cbsedrv":"drivers");
+
+	if (!isDemo()) {
+		const Common::FSNode gameDataDir(ConfMan.get("path"));
+		SearchMan.addSubDirectoryMatching(gameDataDir, "drivers");
+	}
 }
 
 CapBibleEngine::~CapBibleEngine() {
@@ -61,6 +65,11 @@ Common::Error CapBibleEngine::run() {
 
 	_mainArchive = new MainArchive(isDemo() ? "cbse.dat" : "dd1.dat");
 	SearchMan.add("Main archive", _mainArchive);
+
+	if (isDemo()) {
+		Common::Archive *soundArch = Common::makeZipArchive("CBSEDRV.EXE");
+		SearchMan.add("Sound archive", soundArch);
+	}
 
 	// Setup mixer
 	syncSoundSettings();
