@@ -50,6 +50,7 @@ Music::Music() {
 
 	_parser->setMidiDriver(_driver);
 	_parser->setTimerRate(_driver->getBaseTempo());
+	_driver->setTimerCallback(_parser, MidiParser::timerCallback);
 }
 void Music::playSong(Common::String fileName) {
 	Common::File trackFile;
