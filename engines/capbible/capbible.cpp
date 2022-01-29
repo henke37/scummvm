@@ -42,9 +42,6 @@ namespace CapBible {
 CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescription)
 	: Engine(syst), _mainArchive(nullptr), _gameDescription(gameDescription),
 	randomizer("capbible") {
-
-	const Common::FSNode gameDataDir(ConfMan.get("path"));
-	SearchMan.addSubDirectoryMatching(gameDataDir, isDemo() ? "cbsedrv" : "drivers");
 }
 
 CapBibleEngine::~CapBibleEngine() {

@@ -25,6 +25,8 @@
 #include "audio/mididrv.h"
 #include "audio/midiparser.h"
 
+#include "capbible/capbible.h"
+
 namespace CapBible {
 
 class Music {
