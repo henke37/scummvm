@@ -62,7 +62,7 @@ bool Debugger::cmdGiveItem(int argc, const char **argv) {
 	bool flight = false;
 	bool traps = false;
 
-	for(int argi = 0; argi < argc; ++argi) {
+	for(int argi = 1; argi < argc; ++argi) {
 		Common::String arg = argv[argi];
 		if (arg == "sword")
 			sword = true;
@@ -75,12 +75,12 @@ bool Debugger::cmdGiveItem(int argc, const char **argv) {
 		else if (arg == "traps")
 			traps = true;
 		else {
-			this->debugPrintf("Invalid item %s", argv[argi]);
+			this->debugPrintf("Invalid item %s\n", argv[argi]);
 			return true;
 		}
 	}
 
-	if (argc == 0) {
+	if (argc < 2) {
 		sword = true;
 		shield = true;
 		traps = true;
