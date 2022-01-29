@@ -43,6 +43,7 @@ namespace CapBible {
 
 class MainArchive;
 class Debugger;
+class Music;
 
 enum {
 	GAME_SCREEN_WIDTH = 320,
@@ -62,6 +63,8 @@ public:
 
 	Common::Error loadGameStream(Common::SeekableReadStream *stream) override;
 	Common::Error saveGameStream(Common::WriteStream *stream, bool isAutosave = false) override;
+
+	Music *_music;
 
 protected:
 	const ADGameDescription *_gameDescription;

@@ -35,6 +35,7 @@
 #include "capbible/capbible.h"
 #include "capbible/debugger.h"
 #include "capbible/mainarchive.h"
+#include "capbible/music.h"
 
 namespace CapBible {
 
@@ -71,6 +72,7 @@ Common::Error CapBibleEngine::run() {
 
 	// Setup mixer
 	syncSoundSettings();
+	_music = new Music();
 
 	while (!shouldQuit()) {
 		Common::Event evt;

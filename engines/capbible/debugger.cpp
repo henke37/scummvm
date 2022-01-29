@@ -29,12 +29,14 @@
 
 #include "capbible/capbible.h"
 #include "capbible/mainarchive.h"
+#include "capbible/music.h"
 #include "debugger.h"
 
 namespace CapBible {
 Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
 	registerCmd("dumpMainArchive", WRAP_METHOD(Debugger,cmdDumpMainArch));
 	registerCmd("giveItem", WRAP_METHOD(Debugger,cmdGiveItem));
+	registerCmd("playMusic", WRAP_METHOD(Debugger,cmdPlayMusic));
 }
 bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	Common::Archive *arch = _engine->_mainArchive;
@@ -86,6 +88,15 @@ bool Debugger::cmdGiveItem(int argc, const char **argv) {
 		//flight = map.usesFlight
 	}
 
+	return false;
+}
+
+bool Debugger::cmdPlayMusic(int argc, const char **argv) {
+	if (argc < 2) {
+		this->debugPrintf("Filename required\n");
+		return true;
+	}
+	_engine->_music->playSong(argv[1]);
 	return false;
 }
 } // End of namespace CapBible
