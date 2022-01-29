@@ -66,6 +66,8 @@ public:
 
 	Music *_music;
 
+	static CapBibleEngine *instance() { return static_cast<CapBibleEngine *>(g_engine); }
+	
 protected:
 	const ADGameDescription *_gameDescription;
 
