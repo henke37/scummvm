@@ -68,6 +68,8 @@ public:
 
 	static CapBibleEngine *instance() { return static_cast<CapBibleEngine *>(g_engine); }
 	
+	bool isDemo() const { return _gameDescription->flags & ADGF_DEMO; }
+
 protected:
 	const ADGameDescription *_gameDescription;
 
@@ -75,7 +77,6 @@ protected:
 	Common::Error run() override;
 	bool hasFeature(EngineFeature f) const override;
 
-	bool isDemo() const { return _gameDescription->flags & ADGF_DEMO; }
 
 private:
 	MainArchive *_mainArchive;
