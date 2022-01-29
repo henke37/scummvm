@@ -48,6 +48,7 @@ CapBibleEngine::CapBibleEngine(OSystem *syst, const ADGameDescription *gameDescr
 }
 
 CapBibleEngine::~CapBibleEngine() {
+	delete _music;
 }
 
 bool CapBible::CapBibleEngine::hasFeature(EngineFeature f) const {

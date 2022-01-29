@@ -30,7 +30,7 @@
 #include "capbible/music.h"
 
 namespace CapBible {
-Music::Music() {
+Music::Music() : _trackData(nullptr) {
 
 	MidiDriver::DeviceHandle dev = MidiDriver::detectDevice(MDT_MIDI | MDT_ADLIB | MDT_PCSPK | MDT_PREFER_MT32);
 	MusicType musType = MidiDriver::getMusicType(dev);
@@ -52,15 +52,25 @@ Music::Music() {
 	_parser->setTimerRate(_driver->getBaseTempo());
 	_driver->setTimerCallback(_parser, MidiParser::timerCallback);
 }
+
+Music::~Music() {
+	_driver->setTimerCallback(nullptr, nullptr);
+
+	delete _parser;
+	delete _driver;
+	delete _trackData;
+}
+
 void Music::playSong(Common::String fileName) {
 	Common::File trackFile;
-	byte *buff;
+
+	delete _trackData;
 
 	trackFile.open(fileName);
 	uint32 buffSize = trackFile.size();
-	buff = (byte*)malloc(buffSize);
-	trackFile.read(buff, buffSize);
+	_trackData = (byte *)malloc(buffSize);
+	trackFile.read(_trackData, buffSize);
 
-	_parser->loadMusic(buff, buffSize);
+	_parser->loadMusic(_trackData, buffSize);
 }
 } // End of namespace CapBible

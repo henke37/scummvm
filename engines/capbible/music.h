@@ -30,12 +30,14 @@ namespace CapBible {
 class Music {
 public:
 	Music();
+	~Music();
 
 	void playSong(Common::String fileName);
 
 private:
 	MidiDriver *_driver;
 	MidiParser *_parser;
+	byte *_trackData;
 };
 } // End of namespace CapBible
 
