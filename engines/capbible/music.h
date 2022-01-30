@@ -36,6 +36,9 @@ public:
 
 	void playSong(Common::String fileName);
 
+	void pause();
+	void resume();
+
 private:
 	MidiDriver *_driver;
 	MidiParser *_parser;
