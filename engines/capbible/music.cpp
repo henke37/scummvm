@@ -57,7 +57,10 @@ Music::Music() : _trackData(nullptr) {
 Music::~Music() {
 	_driver->setTimerCallback(nullptr, nullptr);
 
+	_parser->unloadMusic();
 	delete _parser;
+
+	_driver->close();
 	delete _driver;
 	delete _trackData;
 }
