@@ -81,4 +81,12 @@ Common::Error CapBibleEngine::run() {
 	return Common::kNoError;
 }
 
+void CapBibleEngine::pauseEngineIntern(bool pause) {
+	if (pause) {
+		_music->pause();
+	} else {
+		_music->resume();
+	}
+}
+
 } // End of namespace CapBible

@@ -77,4 +77,11 @@ void Music::playSong(Common::String fileName) {
 
 	_parser->loadMusic(_trackData, buffSize);
 }
+
+void Music::pause() {
+	_parser->pausePlaying();
+}
+void Music::resume() {
+	_parser->resumePlaying();
+}
 } // End of namespace CapBible
