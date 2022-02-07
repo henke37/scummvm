@@ -21,6 +21,7 @@
 
 #include "msbuild.h"
 #include "config.h"
+#include "build_setup.h"
 
 #include <algorithm>
 #include <fstream>

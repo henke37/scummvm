@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "xcode.h"
+#include "build_setup.h"
 
 #include <limits.h>
 #include <stdlib.h>

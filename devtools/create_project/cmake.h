@@ -23,6 +23,8 @@
 #define TOOLS_CREATE_PROJECT_CMAKE_H
 
 #include "create_project.h"
+#include "project_provider.h"
+#include "build_setup.h"
 #include <sstream>
 
 namespace CreateProjectTool {

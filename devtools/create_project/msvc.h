@@ -23,6 +23,7 @@
 #define TOOLS_CREATE_PROJECT_MSVC_H
 
 #include "create_project.h"
+#include "project_provider.h"
 
 namespace CreateProjectTool {
 

@@ -23,6 +23,7 @@
 #define TOOLS_CREATE_PROJECT_XCODE_H
 
 #include "create_project.h"
+#include "project_provider.h"
 
 #include <algorithm>
 #include <vector>

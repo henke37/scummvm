@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "codeblocks.h"
+#include "build_setup.h"
 
 #include <fstream>
 #include <cstring>

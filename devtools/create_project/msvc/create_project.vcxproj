@@ -101,12 +101,14 @@ xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\..\..\dists\msvc\"</Command>
     <ClCompile Include="..\xcode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\build_setup.h" />
     <ClInclude Include="..\cmake.h" />
     <ClInclude Include="..\codeblocks.h" />
     <ClInclude Include="..\config.h" />
     <ClInclude Include="..\create_project.h" />
     <ClInclude Include="..\msbuild.h" />
     <ClInclude Include="..\msvc.h" />
+    <ClInclude Include="..\project_provider.h" />
     <ClInclude Include="..\xcode.h" />
   </ItemGroup>
   <ItemGroup>
