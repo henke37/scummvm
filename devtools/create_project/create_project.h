@@ -106,54 +106,6 @@ extern std::map<std::string, bool> isEngineEnabled;
 #endif
 void NORETURN_PRE error(const std::string &message) NORETURN_POST;
 
-/**
- * Structure to describe a Visual Studio version specification.
- *
- * This includes various generation details for MSVC projects,
- * as well as describe the versions supported.
- */
-struct MSVCVersion {
-	int version;                 ///< Version number passed as parameter.
-	const char *name;            ///< Full program name.
-	const char *solutionFormat;  ///< Format used for solution files.
-	const char *solutionVersion; ///< Version number used in solution files.
-	const char *project;         ///< Version number used in project files.
-	const char *toolsetMSVC;     ///< Toolset version for MSVC compiler.
-	const char *toolsetLLVM;     ///< Toolset version for Clang/LLVM compiler.
-};
-typedef std::list<MSVCVersion> MSVCList;
-
-enum MSVC_Architecture {
-	ARCH_ARM64,
-	ARCH_X86,
-	ARCH_AMD64
-};
-
-std::string getMSVCArchName(MSVC_Architecture arch);
-std::string getMSVCConfigName(MSVC_Architecture arch);
-
-/**
- * Creates a list of all supported versions of Visual Studio.
- *
- * @return A list including all versions available.
- */
-MSVCList getAllMSVCVersions();
-
-/**
- * Returns the definitions for a specific Visual Studio version.
- *
- * @param version The requested version.
- * @return The version information, or NULL if the version isn't supported.
- */
-const MSVCVersion *getMSVCVersion(int version);
-
-/**
- * Auto-detects the latest version of Visual Studio installed.
- *
- * @return Version number, or 0 if no installations were found.
- */
-int getInstalledMSVC();
-
 namespace CreateProjectTool {
 
 /**
