@@ -3,6 +3,8 @@ project(create_project)
 
 
 set(SOURCE_FILES
+	../build_setup.cpp
+	../build_setup.h
 	../cmake.cpp
 	../cmake.h
 	../codeblocks.cpp
@@ -13,6 +15,8 @@ set(SOURCE_FILES
 	../msbuild.h
 	../msvc.cpp
 	../msvc.h
+	../project_provider.cpp
+	../project_provider.h
 	../xcode.cpp
 	../xcode.h
     )

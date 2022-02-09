@@ -37,6 +37,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="..\config.h" />
+		<Unit filename="..\build_setup.cpp" />
+		<Unit filename="..\build_setup.h" />
 		<Unit filename="..\cmake.cpp" />
 		<Unit filename="..\cmake.h" />
 		<Unit filename="..\codeblocks.cpp" />
@@ -47,6 +49,8 @@
 		<Unit filename="..\msbuild.h" />
 		<Unit filename="..\msvc.cpp" />
 		<Unit filename="..\msvc.h" />
+		<Unit filename="..\project_provider.cpp" />
+		<Unit filename="..\project_provider.h" />
 		<Unit filename="..\xcode.cpp" />
 		<Unit filename="..\xcode.h" />
 		<Extensions>

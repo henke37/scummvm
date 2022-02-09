@@ -2,11 +2,13 @@
 MODULE := devtools/create_project
 
 MODULE_OBJS := \
+	build_setup.o \
 	cmake.o \
 	create_project.o \
 	codeblocks.o \
 	msvc.o \
 	msbuild.o \
+	project_provider.o \
 	xcode.o
 
 # Set the name of the executable
