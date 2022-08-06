@@ -72,7 +72,6 @@ protected:
 
 public:
 	// global String variables
-	Common::String launchNext;
 	Common::String loadNow;
 	Common::String gamePath;
 

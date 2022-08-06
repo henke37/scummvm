@@ -62,13 +62,6 @@ int main_loop(Common::String filename) {
 
 	killSludge();
 
-	// Load next game
-	if (!g_sludge->launchNext.empty()) {
-		Common::String name = g_sludge->launchNext;
-		g_sludge->launchNext.clear();
-		main_loop(name);
-	}
-
 	return (0);
 }
 
