@@ -209,8 +209,8 @@ static const SludgeGameDescription gameDescriptions[] = {
 
 	{
 		{
-			"tgttpoacs",
-			"launcher",
+			"tgttpoacs-launcher",
+			"",
 			AD_ENTRY2s(
 				"gamedata", "d5ec4d7d8440f7744335d25d25e1e943", 40368,
 				"tgttpoacs.exe", "7974f71566c423c3a344862dcbb827dd", 83968

@@ -46,6 +46,7 @@ static const PlainGameDescriptor sludgeGames[] = {
 	{ "interview",		"The Interview" },
 	{ "life",			"Life Flashes By" },
 	{ "tgttpoacs",		"The Game That Takes Place on a Cruise Ship" },
+	{ "tgttpoacs-launcher",	"The Game That Takes Place on a Cruise Ship (launcher)" },
 	{ "mandy",			"Mandy Christmas Adventure" },
 	{ "cubert",			"Cubert Badbone, P.I." },
 	{ "gjgagsas",		"The Game Jam Game About Games, Secrets and Stuff" },
