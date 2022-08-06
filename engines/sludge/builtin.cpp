@@ -2374,6 +2374,9 @@ builtIn(getLanguageID) {
 	return BR_CONTINUE;
 }
 
+Common::String dataFileToTarget(Common::String datafile) {
+	return Common::String();
+}
 
 bool launchNextGame(Common::String datafile) {
 	Common::String target = dataFileToTarget(datafile);
@@ -2392,34 +2395,29 @@ bool launchNextGame(Common::String datafile) {
 
 	return true;
 }
+
+bool isGameExecutable(Common::String executable) {
+	return executable.equalsIgnoreCase(g_sludge->getGameExecutable());
+}
+
 // Removed function
 builtIn(_rem_launchWith) {
 	UNUSEDALL
 
-	trimStack(fun->stack);
-
-	// To support some windows only games
 	Common::String filename = fun->stack->thisVar.getTextFromAnyVar();
 	trimStack(fun->stack);
+	
+	Common::String executable = fun->stack->thisVar.getTextFromAnyVar();
+	trimStack(fun->stack);
 
-	if (filename.hasSuffix(".exe")) {
-		const Common::FSNode gameDataDir(ConfMan.get("path"));
-		Common::FSList files;
-		gameDataDir.getChildren(files, Common::FSNode::kListFilesOnly);
-
-		if (!files.empty()) {
-			for (Common::FSList::const_iterator file = files.begin(); file != files.end(); ++file) {
-				Common::String fileName = file->getName();
-				fileName.toLowercase();
-				if (fileName.hasSuffix(".dat") || fileName == "data") {
-					g_sludge->launchNext = file->getName();
-					return BR_CONTINUE;
-				}
-			}
-		}
+	// Some games relaunch themselves with a different datafile
+	if(isGameExecutable(executable)) {
+		fun->reg.setVariable(SVT_INT, launchNextGame(filename));
+		return BR_CONTINUE;
 	}
 
-	g_sludge->launchNext.clear();
+	warning("Unsupported launchWith command \"%s\" \"%s\"!", executable.c_str(), filename.c_str());
+
 	fun->reg.setVariable(SVT_INT, false);
 	return BR_CONTINUE;
 }
