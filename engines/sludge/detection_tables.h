@@ -195,22 +195,28 @@ static const SludgeGameDescription gameDescriptions[] = {
 		{
 			"tgttpoacs",
 			"",
-			AD_ENTRY1s("gamedata", "d5ec4d7d8440f7744335d25d25e1e943", 40368),
+			AD_ENTRY2s(
+				"tgttpoacs.dat", "e61d3d050793689d55487d3ad01b6693", 23817174,
+				"tgttpoacs.exe", "7974f71566c423c3a344862dcbb827dd", 83968
+			),
 			Common::EN_ANY,
 			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
 			GUIO1(GUIO_NOMIDI)
 		},
 		0
-	},
+	},	
 
 	{
 		{
 			"tgttpoacs",
-			"",
-			AD_ENTRY1s("tgttpoacs.dat", "e61d3d050793689d55487d3ad01b6693", 23817174),
+			"launcher",
+			AD_ENTRY2s(
+				"gamedata", "d5ec4d7d8440f7744335d25d25e1e943", 40368,
+				"tgttpoacs.exe", "7974f71566c423c3a344862dcbb827dd", 83968
+			),
 			Common::EN_ANY,
-			Common::kPlatformLinux,
+			Common::kPlatformWindows,
 			ADGF_UNSTABLE,
 			GUIO1(GUIO_NOMIDI)
 		},
