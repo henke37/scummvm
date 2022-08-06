@@ -23,7 +23,10 @@
 #include "common/error.h"
 #include "common/random.h"
 
+#include "engines/advancedDetector.h"
+
 #include "sludge/cursors.h"
+#include "sludge/detection.h"
 #include "sludge/event.h"
 #include "sludge/fileset.h"
 #include "sludge/fonttext.h"
@@ -136,6 +139,32 @@ Common::Error SludgeEngine::run() {
 	main_loop(getGameFile());
 
 	return Common::kNoError;
+}
+
+Common::String SludgeEngine::getGameExecutable() const {
+	Common::String gameFile(getGameFile());
+	const ADGameDescription &desc = _gameDescription->desc;
+
+	//if the executable is listed, good, use that!
+	for (int fileIndex = 0; fileIndex < 14; ++fileIndex) {
+		const char *fileName = desc.filesDescriptions[fileIndex].fileName;
+		if (strstr(fileName, ".exe") != NULL) {
+			return Common::String(fileName);
+		}
+	}
+
+	//no listed executable? :(
+	//try guessing
+
+	//if there is a dat file, then it will have to be the executable
+	size_t datPos = gameFile.findLastOf(".dat");
+	if (datPos != Common::String::npos) {
+		return gameFile.substr(0, datPos) + ".exe";
+	}
+
+	//dang, no dat file!
+	//just hope the executable is named the same as the datafile
+	return gameFile + ".exe";
 }
 
 } // End of namespace Sludge

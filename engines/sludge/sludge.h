@@ -108,6 +108,7 @@ public:
 	Common::RandomSource *getRandomSource() const { return _rnd; };
 
 	const char *getGameFile() const;
+	Common::String getGameExecutable() const;
 
 	const SludgeGameDescription *_gameDescription;
 
