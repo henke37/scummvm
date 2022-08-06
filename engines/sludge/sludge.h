@@ -99,6 +99,8 @@ public:
 	SludgeEngine(OSystem *syst, const SludgeGameDescription *gameDesc);
 	~SludgeEngine() override;
 
+	bool hasFeature(EngineFeature f) const override;
+
 	uint getLanguageID() const;
 	const char *getGameId() const;
 	uint32 getFeatures() const;

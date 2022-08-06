@@ -141,6 +141,12 @@ Common::Error SludgeEngine::run() {
 	return Common::kNoError;
 }
 
+bool SludgeEngine::hasFeature(EngineFeature f) const {
+	if (f == kSupportsReturnToLauncher)
+		return true;
+	return false;
+}
+
 Common::String SludgeEngine::getGameExecutable() const {
 	Common::String gameFile(getGameFile());
 	const ADGameDescription &desc = _gameDescription->desc;
