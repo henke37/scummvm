@@ -20,6 +20,7 @@
  */
 
 #include "common/config-manager.h"
+#include "common/events.h"
 #include "common/random.h"
 #include "common/savefile.h"
 #include "common/system.h"
@@ -2373,6 +2374,24 @@ builtIn(getLanguageID) {
 	return BR_CONTINUE;
 }
 
+
+bool launchNextGame(Common::String datafile) {
+	Common::String target = dataFileToTarget(datafile);
+
+	if (target.empty()) {
+		 return false;
+	}
+
+	ChainedGamesMan.push(target);
+	// Force a return to the launcher. This will start the first
+	// chained game.
+	Common::EventManager *eventMan = g_system->getEventManager();
+	Common::Event event;
+	event.type = Common::EVENT_RETURN_TO_LAUNCHER;
+	eventMan->pushEvent(event);
+
+	return true;
+}
 // Removed function
 builtIn(_rem_launchWith) {
 	UNUSEDALL
