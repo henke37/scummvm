@@ -20,7 +20,6 @@
  */
 
 #include "common/config-manager.h"
-#include "common/events.h"
 #include "common/random.h"
 #include "common/savefile.h"
 #include "common/system.h"
@@ -2374,28 +2373,6 @@ builtIn(getLanguageID) {
 	return BR_CONTINUE;
 }
 
-Common::String dataFileToTarget(Common::String datafile) {
-	return Common::String();
-}
-
-bool launchNextGame(Common::String datafile) {
-	Common::String target = dataFileToTarget(datafile);
-
-	if (target.empty()) {
-		 return false;
-	}
-
-	ChainedGamesMan.push(target);
-	// Force a return to the launcher. This will start the first
-	// chained game.
-	Common::EventManager *eventMan = g_system->getEventManager();
-	Common::Event event;
-	event.type = Common::EVENT_RETURN_TO_LAUNCHER;
-	eventMan->pushEvent(event);
-
-	return true;
-}
-
 bool isGameExecutable(Common::String executable) {
 	return executable.equalsIgnoreCase(g_sludge->getGameExecutable());
 }
@@ -2412,7 +2389,7 @@ builtIn(_rem_launchWith) {
 
 	// Some games relaunch themselves with a different datafile
 	if(isGameExecutable(executable)) {
-		fun->reg.setVariable(SVT_INT, launchNextGame(filename));
+		fun->reg.setVariable(SVT_INT, g_sludge->launchNextGame(filename));
 		return BR_CONTINUE;
 	}
 

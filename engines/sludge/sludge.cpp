@@ -21,6 +21,7 @@
 #include "common/config-manager.h"
 #include "common/debug-channels.h"
 #include "common/error.h"
+#include "common/events.h"
 #include "common/random.h"
 
 #include "engines/advancedDetector.h"
@@ -147,6 +148,46 @@ bool SludgeEngine::hasFeature(EngineFeature f) const {
 	return false;
 }
 
+Common::String SludgeEngine::dataFileToGameId(Common::String dataFile) const {
+	MetaEngineDetection &detect = getMetaEngineDetection();
+
+	Common::FSNode currentPathNode(ConfMan.get("path"));
+	Common::FSList fsList;
+	currentPathNode.getChildren(fsList, Common::FSNode::kListFilesOnly);
+
+	DetectedGames games = detect.detectGames(fsList, 0, true);
+
+	for (auto gamesItr = games.begin(); gamesItr != games.end(); ++gamesItr) {
+		FilePropertiesMap &files = gamesItr->matchedFiles;
+		for (auto fileItr = files.begin(); fileItr != files.end(); ++fileItr) {
+			if (fileItr->_key == dataFile) {
+				return gamesItr->gameId;
+			}
+		}
+	}
+	return Common::String();
+}
+
+Common::String SludgeEngine::gameIdToTarget(Common::String gameId) const {
+	Common::String currentPath = ConfMan.get("path");
+	
+	Common::ConfigManager::DomainMap::iterator iter = ConfMan.beginGameDomains();
+	for (; iter != ConfMan.endGameDomains(); ++iter) {
+		Common::ConfigManager::Domain &dom = iter->_value;
+
+		if (dom.getVal("gameid") != gameId)
+			continue;
+		if (dom.getVal("path") != currentPath)
+			continue;
+		if (dom.getVal("engineid") != "sludge")
+			continue;
+
+		return iter->_key;
+	}
+
+	return Common::String();
+}
+
 Common::String SludgeEngine::getGameExecutable() const {
 	Common::String gameFile(getGameFile());
 	const ADGameDescription &desc = _gameDescription->desc;
@@ -168,9 +209,37 @@ Common::String SludgeEngine::getGameExecutable() const {
 		return gameFile.substr(0, datPos) + ".exe";
 	}
 
+	//or a slg file
+	size_t slgPos = gameFile.findLastOf(".slg");
+	if (slgPos != Common::String::npos) {
+		return gameFile.substr(0, slgPos) + ".exe";
+	}
+
 	//dang, no dat file!
 	//just hope the executable is named the same as the datafile
 	return gameFile + ".exe";
+}
+
+bool SludgeEngine::launchNextGame(Common::String datafile) {
+	Common::String gameId = dataFileToGameId(datafile);
+
+	if (gameId.empty())
+		return false;
+
+	Common::String target = gameIdToTarget(gameId);
+	if (target.empty())
+		return false;
+
+	ChainedGamesMan.push(target);
+
+	// Force a return to the launcher.
+	// This will start the chained game.
+	Common::EventManager *eventMan = g_system->getEventManager();
+	Common::Event event;
+	event.type = Common::EVENT_RETURN_TO_LAUNCHER;
+	eventMan->pushEvent(event);
+
+	return true;
 }
 
 } // End of namespace Sludge

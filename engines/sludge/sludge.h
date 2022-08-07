@@ -111,6 +111,10 @@ public:
 
 	const char *getGameFile() const;
 	Common::String getGameExecutable() const;
+	Common::String dataFileToGameId(Common::String dataFile) const;
+	Common::String gameIdToTarget(Common::String gameId) const;
+
+	bool launchNextGame(Common::String datafile);
 
 	const SludgeGameDescription *_gameDescription;
 
