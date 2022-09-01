@@ -486,7 +486,7 @@ void ProjectProvider::addFilesToProject(const std::string &dir, std::ostream &pr
 	delete files;
 }
 
-void ProjectProvider::createModuleList(const std::string &moduleDir, const StringList &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, bool forDetection) const {
+void ProjectProvider::createModuleList(const std::string &moduleDir, const DefineList &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, bool forDetection) const {
 	const std::string moduleMkFile = moduleDir + "/module.mk";
 	std::ifstream moduleMk(moduleMkFile.c_str());
 	if (!moduleMk)
@@ -677,7 +677,7 @@ void ProjectProvider::createModuleList(const std::string &moduleDir, const Strin
 				error("Malformed ifdef in " + moduleMkFile);
 			++i;
 
-			if (std::find(defines.begin(), defines.end(), *i) == defines.end())
+			if (!defines.has(*i))
 				shouldInclude.push(false);
 			else
 				shouldInclude.push(true && shouldInclude.top());
@@ -686,7 +686,7 @@ void ProjectProvider::createModuleList(const std::string &moduleDir, const Strin
 				error("Malformed ifndef in " + moduleMkFile);
 			++i;
 
-			if (std::find(defines.begin(), defines.end(), *i) == defines.end())
+			if (!defines.has(*i))
 				shouldInclude.push(true && shouldInclude.top());
 			else
 				shouldInclude.push(false);

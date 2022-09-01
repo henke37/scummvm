@@ -369,45 +369,45 @@ int main(int argc, char *argv[]) {
 	setup.defines = getEngineDefines(setup.engines);
 
 	// Add features
-	StringList featureDefines = getFeatureDefines(setup.features);
-	setup.defines.splice(setup.defines.begin(), featureDefines);
+	DefineList featureDefines = getFeatureDefines(setup.features);
+	setup.defines += featureDefines;
 
 	bool backendWin32 = false;
 	if (projectType == kProjectXcode) {
-		setup.defines.push_back("POSIX");
+		setup.defines.add("POSIX");
 		// Define both MACOSX, and IPHONE, but only one of them will be associated to the
 		// correct target by the Xcode project provider.
 		// This define will help catching up target dependend files, like "browser_osx.mm"
 		// The suffix ("_osx", or "_ios") will be used by the project provider to filter out
 		// the files, according to the target.
-		setup.defines.push_back("MACOSX");
-		setup.defines.push_back("IPHONE");
+		setup.defines.add("MACOSX");
+		setup.defines.add("IPHONE");
 	} else if (projectType == kProjectMSVC || projectType == kProjectCodeBlocks) {
-		setup.defines.push_back("WIN32");
+		setup.defines.add("WIN32");
 		backendWin32 = true;
 	} else {
 		// As a last resort, select the backend files to build based on the platform used to build create_project.
 		// This is broken when cross compiling.
 #if defined(_WIN32) || defined(WIN32)
-		setup.defines.push_back("WIN32");
+		setup.defines.add("WIN32");
 		backendWin32 = true;
 #else
-		setup.defines.push_back("POSIX");
+		setup.defines.add("POSIX");
 #endif
 	}
 
 	for (FeatureList::const_iterator i = setup.features.begin(); i != setup.features.end(); ++i) {
 		if (i->enable) {
 			if (!strcmp(i->name, "updates"))
-				setup.defines.push_back("USE_SPARKLE");
+				setup.defines.add("USE_SPARKLE");
 			else if (backendWin32 && !strcmp(i->name, "libcurl"))
-				setup.defines.push_back("CURL_STATICLIB");
+				setup.defines.add("CURL_STATICLIB");
 			else if (!strcmp(i->name, "fluidlite"))
-				setup.defines.push_back("USE_FLUIDSYNTH");
+				setup.defines.add("USE_FLUIDSYNTH");
 		}
 	}
 
-	setup.defines.push_back("SDL_BACKEND");
+	setup.defines.add("SDL_BACKEND");
 	if (!setup.useSDL2) {
 		cout << "\nBuilding against SDL 1.2\n\n";
 	} else {
@@ -415,15 +415,15 @@ int main(int argc, char *argv[]) {
 		// TODO: This also defines USE_SDL2 in the preprocessor, we don't do
 		// this in our configure/make based build system. Adapt create_project
 		// to replicate this behavior.
-		setup.defines.push_back("USE_SDL2");
+		setup.defines.add("USE_SDL2");
 	}
 
 	if (setup.useStaticDetection) {
-		setup.defines.push_back("DETECTION_STATIC");
+		setup.defines.add("DETECTION_STATIC");
 	}
 
 	if (getFeatureBuildState("opengl", setup.features)) {
-		setup.defines.push_back("USE_GLAD");
+		setup.defines.add("USE_GLAD");
 	}
 
 	// List of global warnings and map of project-specific warnings

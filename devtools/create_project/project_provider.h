@@ -149,7 +149,7 @@ protected:
 	 * @param includeList Reference to a list, where included files should be added.
 	 * @param excludeList Reference to a list, where excluded files should be added.
 	 */
-	void createModuleList(const std::string &moduleDir, const StringList &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, bool forDetection = false) const;
+	void createModuleList(const std::string &moduleDir, const DefineList &defines, StringList &testDirs, StringList &includeList, StringList &excludeList, bool forDetection = false) const;
 
 	/**
 	 * Creates an UUID for every enabled engine of the

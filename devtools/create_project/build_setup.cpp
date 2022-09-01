@@ -164,12 +164,12 @@ bool setEngineBuildState(const std::string &name, EngineDescList &engines, bool 
 	return false;
 }
 
-StringList getEngineDefines(const EngineDescList &engines) {
-	StringList result;
+DefineList getEngineDefines(const EngineDescList &engines) {
+	DefineList result;
 
 	for (EngineDescList::const_iterator i = engines.begin(); i != engines.end(); ++i) {
 		if (i->enable)
-			result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name));
+			result.add("ENABLE_" + CreateProjectTool::toUpper(i->name));
 	}
 
 	return result;
@@ -349,12 +349,12 @@ FeatureList getAllFeatures() {
 	return features;
 }
 
-StringList getFeatureDefines(const FeatureList &features) {
-	StringList defines;
+DefineList getFeatureDefines(const FeatureList &features) {
+	DefineList defines;
 
 	for (FeatureList::const_iterator i = features.begin(); i != features.end(); ++i) {
 		if (i->enable && i->define && i->define[0])
-			defines.push_back(i->define);
+			defines.add(i->define);
 	}
 
 	return defines;

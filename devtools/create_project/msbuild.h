@@ -39,7 +39,7 @@ protected:
 	void writeFileListToProject(const FileNode &dir, std::ostream &projectFile, const int indentation,
 	                            const std::string &objPrefix, const std::string &filePrefix) override;
 
-	void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const StringList &defines, const std::string &prefix, bool runBuildEvents) override;
+	void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix, bool runBuildEvents) override;
 
 	void createBuildProp(const BuildSetup &setup, bool isRelease, MSVC_Architecture arch, const std::string &configuration) override;
 

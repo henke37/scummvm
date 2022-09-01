@@ -97,6 +97,11 @@ private:
 				_entries.push_back(Entry(values[i], ""));
 		}
 
+		Setting(DefineList values, int flgs = 0, int idt = 0, int ord = -1) : _flags(flgs), _indent(idt), _order(ord) {
+			for (DefineList::const_iterator i = values.cbegin(); i != values.cend(); ++i)
+				_entries.push_back(Entry(i->first + "=" + i->second, ""));
+		}
+
 		Setting(EntryList ents, int flgs = 0, int idt = 0, int ord = -1) : _entries(ents), _flags(flgs), _indent(idt), _order(ord) {}
 
 		void addEntry(std::string value, std::string comment = "") {
@@ -290,7 +295,7 @@ private:
 	void addBuildFile(const std::string &id, const std::string &name, const std::string &fileRefId, const std::string &comment);
 	// All objects
 	std::map<std::string, std::string> _hashDictionnary;
-	ValueList _defines;
+	DefineList _defines;
 
 	// Targets
 	ValueList _targets;

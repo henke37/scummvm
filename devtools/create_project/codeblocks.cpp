@@ -244,9 +244,9 @@ void CodeBlocksProvider::writeWarnings(const std::string &name, std::ofstream &o
 
 }
 
-void CodeBlocksProvider::writeDefines(const StringList &defines, std::ofstream &output) const {
-	for (StringList::const_iterator i = defines.begin(); i != defines.end(); ++i)
-		output << "\t\t\t\t\t<Add option=\"-D" << *i << "\" />\n";
+void CodeBlocksProvider::writeDefines(const DefineList &defines, std::ofstream &output) const {
+	for (DefineList::const_iterator i = defines.cbegin(); i != defines.cend(); ++i)
+		output << "\t\t\t\t\t<Add option=\"-D" << i->first << "=" << i->second << "\" />\n";
 }
 
 void CodeBlocksProvider::writeFileListToProject(const FileNode &dir, std::ostream &projectFile, const int indentation,

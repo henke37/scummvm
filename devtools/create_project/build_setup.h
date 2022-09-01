@@ -24,7 +24,6 @@
 
 #include <list>
 #include <map>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -121,7 +120,7 @@ bool setEngineBuildState(const std::string &name, EngineDescList &engines, bool 
  *
  * @param features The list of engines, which should be operated on. (this may contain engines, which are *not* enabled!)
  */
-StringList getEngineDefines(const EngineDescList &engines);
+DefineList getEngineDefines(const EngineDescList &engines);
 
 /**
  * Structure to define a given feature, usually an external library,
@@ -161,7 +160,7 @@ FeatureList getAllFeatures();
  *
  * @param features List of features for the build (this may contain features, which are *not* enabled!)
  */
-StringList getFeatureDefines(const FeatureList &features);
+DefineList getFeatureDefines(const FeatureList &features);
 
 /**
  * Sets the state of a given feature. This can be used to
@@ -206,7 +205,7 @@ struct BuildSetup {
 	EngineDescList engines; ///< Engine list for the build (this may contain engines, which are *not* enabled!).
 	FeatureList features;   ///< Feature list for the build (this may contain features, which are *not* enabled!).
 
-	StringList defines;   ///< List of all defines for the build.
+	DefineList defines;  ///< List of all defines for the build.
 	StringList testDirs;  ///< List of all folders containing tests
 
 	bool devTools;             ///< Generate project files for the tools

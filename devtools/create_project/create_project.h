@@ -42,6 +42,49 @@ typedef std::list<std::string> StringList;
 
 typedef StringList TokenList;
 
+
+class DefineList {
+public:
+	DefineList() {}
+	DefineList(const DefineList &old) : defines(old.defines) {}
+
+	void add(std::string name) {
+		defines.emplace(name, std::string("1"));
+	}
+	void add(std::string name, std::string value) {
+		defines.emplace(name, value);
+	}
+	void remove(std::string name) {
+		defines.erase(name);
+	}
+
+	bool has(std::string name) const {
+		return defines.count(name) > 0;
+	}
+
+	using const_iterator = std::map<std::string, std::string>::const_iterator;
+	using iterator = std::map<std::string, std::string>::iterator;
+
+	iterator begin() { return defines.begin(); }
+	iterator end() { return defines.end(); }
+	const_iterator cbegin() const { return defines.cbegin(); }
+	const_iterator cend() const { return defines.cend(); }
+
+	DefineList &operator+=(const DefineList &right) {
+		defines.insert(right.defines.cbegin(), right.defines.cend());
+		return *this;
+	}
+
+	friend DefineList operator+(const DefineList &left, const DefineList &right) {
+		DefineList newList = left;
+		newList.defines.insert(right.defines.cbegin(), right.defines.cend());
+		return newList;
+	}
+
+private:
+	std::map<std::string, std::string> defines;
+};
+
 /**
  * Converts the given path to only use slashes as
  * delimiters.

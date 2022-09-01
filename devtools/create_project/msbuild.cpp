@@ -332,15 +332,15 @@ void MSBuildProvider::outputProjectSettings(std::ofstream &project, const std::s
 	project << "\t</ItemDefinitionGroup>\n";
 }
 
-void MSBuildProvider::outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const StringList &defines, const std::string &prefix, bool runBuildEvents) {
+void MSBuildProvider::outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix, bool runBuildEvents) {
 
 	std::string warnings;
 	for (StringList::const_iterator i = _globalWarnings.begin(); i != _globalWarnings.end(); ++i)
 		warnings += *i + ';';
 
 	std::string definesList;
-	for (StringList::const_iterator i = defines.begin(); i != defines.end(); ++i)
-		definesList += *i + ';';
+	for (DefineList::const_iterator i = defines.cbegin(); i != defines.cend(); ++i)
+		definesList += i->first + "=" + i->second + ';';
 
 	// Add define to include revision header
 	if (runBuildEvents)
