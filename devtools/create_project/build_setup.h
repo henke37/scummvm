@@ -162,26 +162,6 @@ FeatureList getAllFeatures();
  */
 DefineList getFeatureDefines(const FeatureList &features);
 
-/**
- * Sets the state of a given feature. This can be used to
- * either include or exclude an feature.
- *
- * @param name Name of the feature.
- * @param features List of features to operate on.
- * @param enable Whether the feature should be enabled or disabled.
- * @return "true", when it succeeded, "false" otherwise.
- */
-bool setFeatureBuildState(const std::string &name, FeatureList &features, bool enable);
-
-/**
- * Gets the state of a given feature.
- *
- * @param name Name of the feature.
- * @param features List of features to operate on.
- * @return "true", when the feature is enabled, "false" otherwise.
- */
-bool getFeatureBuildState(const std::string &name, const FeatureList &features);
-
 ToolList getAllTools();
 
 /**
@@ -227,9 +207,28 @@ struct BuildSetup {
 		useStaticDetection = true;
 		useWindowsUnicode = true;
 	}
-
+	
+	/**
+	 * Gets the state of a given feature.
+	 *
+	 * @param name Name of the feature.
+	 * @return "true", when the feature is enabled, "false" otherwise.
+	 */
 	bool featureEnabled(std::string feature) const;
-	Feature getFeature(std::string feature) const;
+
+	/**
+	 * Sets the state of a given feature. This can be used to
+	 * either include or exclude an feature.
+	 *
+	 * @param name Name of the feature.
+	 * @param enable Whether the feature should be enabled or disabled.
+	 * @return "true", when it succeeded, "false" otherwise.
+	 */
+	void setFeatureEnabled(std::string feature, bool enable);
+
+	Feature &getFeature(std::string feature);
+	const Feature &getFeature(std::string feature) const;
+
 };
 
 /**

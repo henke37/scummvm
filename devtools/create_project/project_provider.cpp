@@ -267,7 +267,7 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 		ex.clear();
 		std::vector<std::string> detectionModuleDirs;
 		detectionModuleDirs.reserve(setup.engines.size());
-		bool detectAllEngines = getFeatureBuildState("detection-full", setup.features);
+		bool detectAllEngines = setup.featureEnabled("detection-full");
 
 		for (EngineDescList::const_iterator i = setup.engines.begin(), end = setup.engines.end(); i != end; ++i) {
 			// We ignore all sub engines here because they require no special handling.

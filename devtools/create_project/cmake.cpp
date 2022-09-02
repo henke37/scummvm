@@ -310,7 +310,7 @@ void CMakeProvider::createProjectFile(const std::string &name, const std::string
 		project << "endif()\n";
 		project << "\n";
 
-		if (getFeatureBuildState("tts", setup.features)) {
+		if (setup.featureEnabled("tts")) {
 			project << "if (WIN32)\n";
 			project << "\ttarget_link_libraries(" << name << " sapi ole32)\n";
 			project << "endif()\n";
@@ -345,7 +345,7 @@ void CMakeProvider::writeDefines(const BuildSetup &setup, std::ofstream &output)
 		output << "add_definitions(-DUSE_SDL2)\n";
 	}
 
-	if (getFeatureBuildState("opengl", setup.features)) {
+	if (setup.featureEnabled("opengl")) {
 		output << "add_definitions(-DUSE_GLAD)\n";
 	}
 

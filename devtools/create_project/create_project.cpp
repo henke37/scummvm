@@ -217,9 +217,8 @@ int main(int argc, char *argv[]) {
 			if (!std::strcmp(name, "all-engines")) {
 				for (EngineDescList::iterator j = setup.engines.begin(); j != setup.engines.end(); ++j)
 					j->enable = true;
-			} else if (!setFeatureBuildState(name, setup.features, true)) {
-				std::cerr << "ERROR: \"" << name << "\" is not a feature!\n";
-				return -1;
+			} else {
+				setup.setFeatureEnabled(name, true);
 			}
 		} else if (!strncmp(argv[i], "--disable-", 10)) {
 			const char *name = &argv[i][10];
@@ -231,9 +230,8 @@ int main(int argc, char *argv[]) {
 			if (!std::strcmp(name, "all-engines")) {
 				for (EngineDescList::iterator j = setup.engines.begin(); j != setup.engines.end(); ++j)
 					j->enable = false;
-			} else if (!setFeatureBuildState(name, setup.features, false)) {
-				std::cerr << "ERROR: \"" << name << "\" is not a feature!\n";
-				return -1;
+			} else {
+				setup.setFeatureEnabled(name, false);
 			}
 		} else if (!std::strcmp(argv[i], "--file-prefix")) {
 			if (i + 1 >= argc) {
@@ -293,8 +291,8 @@ int main(int argc, char *argv[]) {
 	// When building tests, disable some features
 	if (setup.tests) {
 		setup.useStaticDetection = false;
-		setFeatureBuildState("mt32emu", setup.features, false);
-		setFeatureBuildState("eventrecorder", setup.features, false);
+		setup.setFeatureEnabled("mt32emu", false);
+		setup.setFeatureEnabled("eventrecorder", false);
 
 		for (EngineDescList::iterator j = setup.engines.begin(); j != setup.engines.end(); ++j)
 			j->enable = false;
@@ -303,19 +301,19 @@ int main(int argc, char *argv[]) {
 	}
 
 	// HACK: Vorbis and Tremor can not be enabled simultaneously
-	if (getFeatureBuildState("tremor", setup.features)) {
-		setFeatureBuildState("vorbis", setup.features, false);
+	if (setup.featureEnabled("tremor")) {
+		setup.setFeatureEnabled("vorbis", false);
 	}
 
 	// HACK: Fluidsynth and Fluidlite can not be enabled simultaneously
-	if (getFeatureBuildState("fluidsynth", setup.features)) {
-		setFeatureBuildState("fluidlite", setup.features, false);
+	if (setup.featureEnabled("fluidsynth")) {
+		setup.setFeatureEnabled("fluidlite", false);
 	}
 
 	// HACK: These features depend on OpenGL
-	if (!getFeatureBuildState("opengl", setup.features)) {
-		setFeatureBuildState("opengl_game", setup.features, false);
-		setFeatureBuildState("opengl_shaders", setup.features, false);
+	if (!setup.featureEnabled("opengl")) {
+		setup.setFeatureEnabled("opengl_game", false);
+		setup.setFeatureEnabled("opengl_shaders", false);
 	}
 
 	// Disable engines for which we are missing dependencies
@@ -422,7 +420,7 @@ int main(int argc, char *argv[]) {
 		setup.defines.add("DETECTION_STATIC");
 	}
 
-	if (getFeatureBuildState("opengl", setup.features)) {
+	if (setup.featureEnabled("opengl")) {
 		setup.defines.add("USE_GLAD");
 	}
 

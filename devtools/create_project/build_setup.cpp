@@ -370,15 +370,6 @@ bool setFeatureBuildState(const std::string &name, FeatureList &features, bool e
 	}
 }
 
-bool getFeatureBuildState(const std::string &name, const FeatureList &features) {
-	FeatureList::const_iterator i = std::find(features.begin(), features.end(), name);
-	if (i != features.end()) {
-		return i->enable;
-	} else {
-		return false;
-	}
-}
-
 BuildSetup removeFeatureFromSetup(BuildSetup setup, const std::string &feature) {
 	// TODO: disable feature instead of removing from setup
 	for (FeatureList::iterator i = setup.features.begin(); i != setup.features.end(); ++i) {
@@ -407,7 +398,20 @@ bool BuildSetup::featureEnabled(std::string feature) const {
 	return getFeature(feature).enable;
 }
 
-Feature BuildSetup::getFeature(std::string feature) const {
+void BuildSetup::setFeatureEnabled(std::string feature, bool enable) {
+	getFeature(feature).enable=enable;
+}
+
+Feature &BuildSetup::getFeature(std::string feature) {
+	for (FeatureList::iterator itr = features.begin(); itr != features.end(); ++itr) {
+		if (itr->name != feature)
+			continue;
+		return *itr;
+	}
+	error("invalid feature request: " + feature);
+}
+
+const Feature &BuildSetup::getFeature(std::string feature) const {
 	for (FeatureList::const_iterator itr = features.begin(); itr != features.end(); ++itr) {
 		if (itr->name != feature)
 			continue;
