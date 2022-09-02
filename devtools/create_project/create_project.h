@@ -43,6 +43,26 @@ typedef std::list<std::string> StringList;
 typedef StringList TokenList;
 
 /**
+ * Converts the given path to only use slashes as
+ * delimiters.
+ * This means that for example the path:
+ *  foo/bar\test.txt
+ * will be converted to:
+ *  foo/bar/test.txt
+ *
+ * @param path Path string.
+ * @return Converted path.
+ */
+std::string unifyPath(const std::string &path);
+
+/**
+ * Removes trailing slash from path if it exists
+ *
+ * @param path Path string.
+ */
+void removeTrailingSlash(std::string &path);
+
+/**
  * Takes a given input line and creates a list of tokens out of it.
  *
  * A token in this context is separated by whitespaces. A special case
@@ -63,6 +83,8 @@ typedef StringList TokenList;
  * @return A list of tokens.
  */
 TokenList tokenize(const std::string &input, char separator = ' ');
+
+extern std::map<std::string, bool> isEngineEnabled;
 
 /**
  * Quits the program with the specified error message.

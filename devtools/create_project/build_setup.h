@@ -183,6 +183,8 @@ bool setFeatureBuildState(const std::string &name, FeatureList &features, bool e
  */
 bool getFeatureBuildState(const std::string &name, const FeatureList &features);
 
+ToolList getAllTools();
+
 /**
  * Structure to describe a build setup.
  *

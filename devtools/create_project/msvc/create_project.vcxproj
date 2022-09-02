@@ -93,11 +93,13 @@ xcopy /Y "$(TargetPath)" "$(SolutionDir)\..\..\..\dists\msvc\"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\build_setup.cpp" />
     <ClCompile Include="..\cmake.cpp" />
     <ClCompile Include="..\codeblocks.cpp" />
     <ClCompile Include="..\create_project.cpp" />
     <ClCompile Include="..\msbuild.cpp" />
     <ClCompile Include="..\msvc.cpp" />
+    <ClCompile Include="..\project_provider.cpp" />
     <ClCompile Include="..\xcode.cpp" />
   </ItemGroup>
   <ItemGroup>
