@@ -245,15 +245,12 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 
 	createWorkspace(setup);
 
-	StringList in, ex;
-
 	// Create project files
 	for (UUIDMap::const_iterator i = _engineUuidMap.begin(); i != _engineUuidMap.end(); ++i) {
 		if (i->first == detProject)
 			continue;
-		// Retain the files between engines if we're creating a single project
-		in.clear();
-		ex.clear();
+
+		StringList in, ex;
 
 		const std::string moduleDir = setup.srcDir + targetFolder + i->first;
 
@@ -263,8 +260,8 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 
 	// Create engine-detection submodules.
 	if (setup.useStaticDetection) {
-		in.clear();
-		ex.clear();
+		StringList in, ex;
+
 		std::vector<std::string> detectionModuleDirs;
 		detectionModuleDirs.reserve(setup.engines.size());
 		bool detectAllEngines = setup.featureEnabled("detection-full");
@@ -290,8 +287,8 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 
 	if (!setup.devTools) {
 		// Last but not least create the main project file.
-		in.clear();
-		ex.clear();
+		StringList in, ex;
+
 		// File list for the Project file
 		createModuleList(setup.srcDir + "/backends", setup.defines, setup.testDirs, in, ex);
 		createModuleList(setup.srcDir + "/backends/platform/sdl", setup.defines, setup.testDirs, in, ex);
