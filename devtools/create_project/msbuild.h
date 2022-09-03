@@ -41,6 +41,7 @@ protected:
 
 	void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix, bool runBuildEvents) override;
 
+
 	void createBuildProp(const BuildSetup &setup, bool isRelease, MSVC_Architecture arch, const std::string &configuration) override;
 
 	const char *getProjectExtension() override;
@@ -71,6 +72,10 @@ private:
 
 	void outputFilter(std::ostream &filters, const FileEntries &files, const std::string &action);
 	void outputFiles(std::ostream &projectFile, const FileEntries &files, const std::string &action);
+
+	void outputConfiguration(std::ostream &project, const std::string &config, MSVC_Architecture arch);
+	void outputConfigurationType(const BuildSetup &setup, std::ostream &project, const std::string &name, const std::string &config, MSVC_Architecture arch);
+	void outputProperties(const BuildSetup &setup, std::ostream &project, const std::string &config, MSVC_Architecture arch);
 
 	void outputNasmCommand(std::ostream &projectFile, const std::string &config, const std::string &prefix);
 };
