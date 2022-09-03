@@ -328,7 +328,7 @@ void MSBuildProvider::outputProjectSettings(std::ofstream &project, const std::s
 	project << "\t</ItemDefinitionGroup>\n";
 }
 
-void MSBuildProvider::outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix, bool runBuildEvents) {
+void MSBuildProvider::outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix) {
 
 	std::string warnings;
 	for (StringList::const_iterator i = _globalWarnings.begin(); i != _globalWarnings.end(); ++i)
@@ -339,7 +339,7 @@ void MSBuildProvider::outputGlobalPropFile(const BuildSetup &setup, std::ofstrea
 		definesList += i->first + "=" + i->second + ';';
 
 	// Add define to include revision header
-	if (runBuildEvents)
+	if (setup.runBuildEvents)
 		definesList += REVISION_DEFINE ";";
 
 	std::string includeDirsList;

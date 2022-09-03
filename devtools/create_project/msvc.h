@@ -136,7 +136,7 @@ protected:
 	 * @param prefix File prefix, used to add additional include paths.
 	 * @param runBuildEvents true if generating a revision number, false otherwise
 	 */
-	virtual void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix, bool runBuildEvents) = 0;
+	virtual void outputGlobalPropFile(const BuildSetup &setup, std::ofstream &properties, MSVC_Architecture arch, const DefineList &defines, const std::string &prefix) = 0;
 
 	/**
 	 * Generates the project properties for debug and release settings.

@@ -341,7 +341,7 @@ void MSVCProvider::createGlobalProp(const BuildSetup &setup) {
 			}
 		}
 
-		outputGlobalPropFile(archSetup, properties, *arch, archSetup.defines, convertPathToWin(archSetup.filePrefix), archSetup.runBuildEvents);
+		outputGlobalPropFile(archSetup, properties, *arch, archSetup.defines, convertPathToWin(archSetup.filePrefix));
 		properties.close();
 	}
 }
