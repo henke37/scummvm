@@ -85,6 +85,7 @@ typedef Array<Keymap *> KeymapArray;
 class AudioCDManager;
 class FilesystemFactory;
 class PaletteManager;
+class PrintingManager;
 
 /**
  * Structure describing time and date.
@@ -262,6 +263,13 @@ protected:
 	 * @note _fsFactory is deleted by the OSystem destructor.
 	 */
 	FilesystemFactory *_fsFactory;
+
+	/**
+	 * No default value is provided for _printingManager by OSystem.
+	 *
+	 * @note _printingManager is deleted by the OSystem destructor.
+	*/
+	PrintingManager *_printingManager;
 
 	/**
 	 * Used by the default clipboard implementation, for backends that don't
@@ -548,7 +556,12 @@ public:
 		/**
 		* For platforms that should not have a Quit button.
 		*/
-		kFeatureNoQuit
+		kFeatureNoQuit,
+
+		/**
+		* Putting text and/or images on physical paper
+		*/
+		kFeaturePrinting,
 	};
 
 	/**
@@ -1643,6 +1656,15 @@ public:
 	 */
 	virtual Common::TextToSpeechManager *getTextToSpeechManager() {
 		return _textToSpeechManager;
+	}
+
+	/**
+	 * Return the PrintingManager, used to handle printing.
+	 *
+	 * @return The PrintingManager for the current architecture.
+	 */
+	virtual PrintingManager *getPrintingManager() {
+		return _printingManager;
 	}
 
 #if defined(USE_SYSDIALOGS)
