@@ -264,12 +264,14 @@ protected:
 	 */
 	FilesystemFactory *_fsFactory;
 
+#if defined(USE_PRINTING)
 	/**
 	 * No default value is provided for _printingManager by OSystem.
 	 *
 	 * @note _printingManager is deleted by the OSystem destructor.
 	*/
 	PrintingManager *_printingManager;
+#endif
 
 	/**
 	 * Used by the default clipboard implementation, for backends that don't
@@ -1658,6 +1660,7 @@ public:
 		return _textToSpeechManager;
 	}
 
+#if defined(USE_PRINTING)
 	/**
 	 * Return the PrintingManager, used to handle printing.
 	 *
@@ -1666,6 +1669,7 @@ public:
 	virtual PrintingManager *getPrintingManager() {
 		return _printingManager;
 	}
+#endif
 
 #if defined(USE_SYSDIALOGS)
 	/**
