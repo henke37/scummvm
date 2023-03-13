@@ -99,6 +99,20 @@ android {
     lintOptions {
         abortOnError false
     }
+	
+	bundle {
+		language {
+			// No splitting on language
+			// It just complicates the in app lang switch
+			enableSplit = false
+		}
+		density {
+			enableSplit = true
+		}
+		abi {
+			enableSplit = true
+		}
+	}
 }
 
 dependencies {
