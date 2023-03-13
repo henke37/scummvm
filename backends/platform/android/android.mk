@@ -11,6 +11,8 @@ PATH_BUILD_LIBSCUMMVM = $(PATH_BUILD)/lib/$(ABI)/libscummvm.so
 
 APK_MAIN = ScummVM-debug.apk
 APK_MAIN_RELEASE = ScummVM-release-unsigned.apk
+AAB_MAIN = ScummVM-debug.aab
+AAB_MAIN_RELEASE = ScummVM-release-unsigned.aab
 
 $(PATH_BUILD):
 	$(MKDIR) $(PATH_BUILD)
@@ -45,14 +47,24 @@ $(APK_MAIN_RELEASE): $(PATH_BUILD_GRADLE) $(PATH_BUILD_ASSETS) $(PATH_BUILD_LIBS
 	(cd $(PATH_BUILD); ./gradlew assembleRelease)
 	$(CP) $(PATH_BUILD)/build/outputs/apk/release/$(APK_MAIN_RELEASE) $@
 
-all: $(APK_MAIN)
+$(AAB_MAIN): $(PATH_BUILD_GRADLE) $(PATH_BUILD_ASSETS) $(PATH_BUILD_LIBSCUMMVM) | $(PATH_BUILD)
+	(cd $(PATH_BUILD); ./gradlew bundleDebug)
+	$(CP) $(PATH_BUILD)/build/outputs/bundle/debug/$(AAB_MAIN) $@
+	
+$(AAB_MAIN_RELEASE): $(PATH_BUILD_GRADLE) $(PATH_BUILD_ASSETS) $(PATH_BUILD_LIBSCUMMVM) | $(PATH_BUILD)
+	(cd $(PATH_BUILD); ./gradlew bundleRelease)
+	$(CP) $(PATH_BUILD)/build/outputs/bundle/release/$(AAB_MAIN_RELEASE) $@
+
+
+all: $(AAB_MAIN)
 
 clean: androidclean
 
 androidclean:
 	@$(RM) -rf $(PATH_BUILD) *.apk
+	@$(RM) -rf $(PATH_BUILD) *.aab
 
-androidrelease: $(APK_MAIN_RELEASE)
+androidrelease: $(AAB_MAIN_RELEASE)
 
 androidtestmain: $(APK_MAIN)
 	(cd $(PATH_BUILD); ./gradlew installDebug)
@@ -67,16 +79,16 @@ androidtest: $(APK_MAIN)
 	(cd $(PATH_BUILD); ./gradlew installDebug)
 
 # used by buildbot!
-androiddistdebug: all
+androiddistdebug: $(AAB_MAIN)
 	$(MKDIR) debug
-	$(CP) $(APK_MAIN) debug/
+	$(CP) $(AAB_MAIN) debug/
 	for i in $(DIST_FILES_DOCS); do \
 		sed 's/$$/\r/' < $$i > debug/`basename $$i`.txt; \
 	done
 
-androiddistrelease: androidrelease
+androiddistrelease: $(AAB_MAIN_RELEASE)
 	$(MKDIR) release
-	$(CP) $(APK_MAIN_RELEASE) release/
+	$(CP) $(AAB_MAIN_RELEASE) release/
 	for i in $(DIST_FILES_DOCS); do \
 		sed 's/$$/\r/' < $$i > release/`basename $$i`.txt; \
 	done
