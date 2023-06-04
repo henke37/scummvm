@@ -6642,6 +6642,10 @@ if test "$_printing" = "no"; then
 	echo "no"
 else
 	case $_host_os in
+	android)
+		echo "android"
+		_printing=yes
+		;;
 	mingw*)
 		echo "win32"
 		_printing=yes

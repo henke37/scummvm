@@ -58,6 +58,7 @@
 #include "backends/fs/android/android-fs.h"
 #include "backends/fs/android/android-fs-factory.h"
 #include "backends/fs/posix/posix-iostream.h"
+#include "backends/printing/android/android-printman.h"
 
 #include "backends/graphics/android/android-graphics.h"
 #include "backends/graphics3d/android/android-graphics3d.h"
@@ -570,6 +571,10 @@ void OSystem_Android::initBackend() {
 
 	_eventManager = new DefaultEventManager(this);
 	_audiocdManager = new DefaultAudioCDManager();
+	
+#if defined(USE_PRINTING)
+	_printingManager = createAndroidPrintingManager();
+#endif
 
 	BaseBackend::initBackend();
 }
@@ -633,6 +638,12 @@ bool OSystem_Android::hasFeature(Feature f) {
 			f == kFeatureJoystickDeadzone) {
 		return true;
 	}
+	
+#ifdef USE_PRINTING
+	if (f == kFeaturePrinting)
+		return true;
+#endif
+
 	/* Even if we are using the 2D graphics manager,
 	 * we are at one initGraphics3d call of supporting GLES2 */
 	if (f == kFeatureOpenGLForGame) return true;

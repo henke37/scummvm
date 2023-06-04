@@ -300,6 +300,7 @@ MODULE_OBJS += \
 	graphics3d/opengl/surfacerenderer.o \
 	graphics3d/opengl/texture.o \
 	graphics3d/opengl/tiledsurface.o \
+	printing/android/android-printman.o \
 	mutex/pthread/pthread-mutex.o
 endif
 
