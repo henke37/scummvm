@@ -723,6 +723,12 @@ public class ScummVMActivity extends Activity implements OnKeyboardVisibilityLis
 			}
 			return true;
 		}
+		
+		@Override
+		protected boolean hasSystemFeature(String feature) {
+			PackageManager pm = getApplicationContext().getPackageManager();
+			return pm.hasSystemFeature(feature);
+		}
 
 		@Override
 		protected void setWindowCaption(final String caption) {

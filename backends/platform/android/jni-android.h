@@ -84,6 +84,7 @@ public:
 	static Common::U32String getTextFromClipboard();
 	static bool setTextInClipboard(const Common::U32String &text);
 	static bool isConnectionLimited();
+	static bool hasSystemFeature(const Common::U32String &text);
 	static void showVirtualKeyboard(bool enable);
 	static void showKeyboardControl(bool enable);
 	static Graphics::Surface *getBitmapResource(BitmapResources resource);
@@ -145,6 +146,7 @@ private:
 	static jmethodID _MID_getTextFromClipboard;
 	static jmethodID _MID_setTextInClipboard;
 	static jmethodID _MID_isConnectionLimited;
+	static jmethodID _MID_hasSystemFeature;
 	static jmethodID _MID_setWindowCaption;
 	static jmethodID _MID_showVirtualKeyboard;
 	static jmethodID _MID_showKeyboardControl;

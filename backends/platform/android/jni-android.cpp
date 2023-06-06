@@ -88,6 +88,7 @@ jmethodID JNI::_MID_hasTextInClipboard = 0;
 jmethodID JNI::_MID_getTextFromClipboard = 0;
 jmethodID JNI::_MID_setTextInClipboard = 0;
 jmethodID JNI::_MID_isConnectionLimited = 0;
+jmethodID JNI::_MID_hasSystemFeature = 0;
 jmethodID JNI::_MID_setWindowCaption = 0;
 jmethodID JNI::_MID_showVirtualKeyboard = 0;
 jmethodID JNI::_MID_showKeyboardControl = 0;
@@ -375,6 +376,24 @@ bool JNI::isConnectionLimited() {
 	}
 
 	return limited;
+}
+
+bool JNI::hasSystemFeature(const Common::U32String &text) {
+	JNIEnv *env = JNI::getEnv();
+	jstring javaText = convertToJString(env, text);
+	
+	bool hasFeature = env->CallBooleanMethod(_jobj, _MID_hasSystemFeature, javaText);
+	
+	if (env->ExceptionCheck()) {
+		LOGE("hasSystemFeature failed");
+
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		hasFeature = false;
+	}
+	
+	env->DeleteLocalRef(javaText);
+	return hasFeature;
 }
 
 void JNI::setWindowCaption(const Common::U32String &caption) {
@@ -781,6 +800,7 @@ void JNI::create(JNIEnv *env, jobject self, jobject asset_manager,
 	FIND_METHOD(, getTextFromClipboard, "()Ljava/lang/String;");
 	FIND_METHOD(, setTextInClipboard, "(Ljava/lang/String;)Z");
 	FIND_METHOD(, isConnectionLimited, "()Z");
+	FIND_METHOD(, hasSystemFeature, "(Ljava/lang/String;)Z");
 	FIND_METHOD(, showVirtualKeyboard, "(Z)V");
 	FIND_METHOD(, showKeyboardControl, "(Z)V");
 	FIND_METHOD(, getBitmapResource, "(I)Landroid/graphics/Bitmap;");

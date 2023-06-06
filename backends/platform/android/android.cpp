@@ -641,7 +641,7 @@ bool OSystem_Android::hasFeature(Feature f) {
 	
 #ifdef USE_PRINTING
 	if (f == kFeaturePrinting)
-		return true;
+		return JNI::hasSystemFeature(Common::U32String("android.software.print"));
 #endif
 
 	/* Even if we are using the 2D graphics manager,
