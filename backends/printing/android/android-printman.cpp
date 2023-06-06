@@ -43,6 +43,7 @@ class AndroidPrintSettings;
 
 class AndroidPrintingManager : public PrintingManager {
 public:
+	AndroidPrintingManager();
 	virtual ~AndroidPrintingManager();
 	
 	PrintJob *createJob(const Common::String &jobName, PrintSettings *settings);
@@ -98,13 +99,29 @@ public:
 	void setLandscapeOrientation(bool);
 	bool getColorPrinting() const;
 	void setColorPrinting(bool);
-
+	
+	jobject toManaged() const;
+	
 private:
+	int duplexMode=0;
+	int colorMode=0;
 };
+
+jobject surf2Bitmap(const Graphics::ManagedSurface &surf);
+
+void initJNI();
+
+AndroidPrintingManager::AndroidPrintingManager() {
+	initJNI();
+}
 
 AndroidPrintingManager::~AndroidPrintingManager() {}
 
-jobject surf2Bitmap(const Graphics::ManagedSurface &surf);
+jmethodID MID_bitmap_createBitmap;
+jmethodID MID_printAttsBuilder_ctor;
+jmethodID MID_printAttsBuilder_build;
+jmethodID MID_printAttsBuilder_setDuplexMode;
+jmethodID MID_printAttsBuilder_setColorMode;
 
 PrintJob *AndroidPrintingManager::createJob(const Common::String &jobName, PrintSettings *settings) {
 	return new AndroidPrintJob(jobName, (AndroidPrintSettings*)settings);
@@ -198,9 +215,34 @@ PrintingManager *createAndroidPrintingManager() {
 	return new AndroidPrintingManager();
 }
 
-PrintSettings::DuplexMode AndroidPrintSettings::getDuplexMode() const {}
+PrintSettings::DuplexMode AndroidPrintSettings::getDuplexMode() const {
+	switch(duplexMode) {
+		case 1:
+			return PrintSettings::DuplexMode::Simplex;
+		case 2:
+			return PrintSettings::DuplexMode::Vertical;
+		case 4:
+			return PrintSettings::DuplexMode::Horizontal;
+		default:
+			return PrintSettings::DuplexMode::Unknown;
+	}
+}
 
 void AndroidPrintSettings::setDuplexMode(PrintSettings::DuplexMode mode) {
+	switch(mode) {
+		case PrintSettings::DuplexMode::Simplex:
+			duplexMode = 1;
+		break;		
+		case PrintSettings::DuplexMode::Vertical:
+			duplexMode = 2;
+		break;
+		case PrintSettings::DuplexMode::Horizontal:
+			duplexMode = 4;
+		break;
+		default:
+			duplexMode = 0;
+		break;
+	}
 }
 
 bool AndroidPrintSettings::getLandscapeOrientation() const {
@@ -211,10 +253,33 @@ void AndroidPrintSettings::setLandscapeOrientation(bool landscapeOrientation) {
 }
 
 bool AndroidPrintSettings::getColorPrinting() const {
-	return true;
+	return colorMode != 1;
 }
 
 void AndroidPrintSettings::setColorPrinting(bool colorPrinting) {
+	colorMode = colorPrinting ? 2 : 1;
+}
+
+jobject AndroidPrintSettings::toManaged() const {
+	JNIEnv *env = JNI::getEnv();
+	
+	jclass printAttsBuilderClazz = env->FindClass("android/print/PrintAttributes$Builder");
+	if(!printAttsBuilderClazz) {
+		error("Failed to FindClass(PrintAttributes$Builder)");
+	}
+	
+	jobject builderObj=env->NewObject(printAttsBuilderClazz, MID_printAttsBuilder_ctor);
+	
+	jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
+	env->DeleteLocalRef(junk);
+	junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);
+	env->DeleteLocalRef(junk);
+	
+	jobject attsObj = env->CallObjectMethod(builderObj, MID_printAttsBuilder_build);
+	
+	env->DeleteLocalRef(printAttsBuilderClazz);
+	
+	return attsObj;
 }
 
 jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
@@ -226,18 +291,8 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 		return nullptr;
 	}
 	
-	jmethodID MID_bitmapCreateBitmap = env->GetStaticMethodID(bitmapClazz,
-		"createBitmap",
-		"(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;"
-	);	
-	if(!MID_bitmapCreateBitmap) {
-		error("Failed to GetStaticMethodId(createBitmap)");
-		return nullptr;
-	}
-	
 	jclass bitmapConfigClass = env->FindClass("android/graphics/Bitmap$Config");
-    jfieldID FID_ARGB888 = env->GetStaticFieldID(bitmapConfigClass, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");
-    
+    jfieldID FID_ARGB888 = env->GetStaticFieldID(bitmapConfigClass, "ARGB_8888", "Landroid/graphics/Bitmap$Config;");  
 	if(!FID_ARGB888) {
 		error("Failed to GetStaticFieldID(ARGB_8888)");
 		return nullptr;
@@ -247,16 +302,18 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 		error("Failed to GetStaticObjectField(ARGB_8888)");
 		return nullptr;
 	}
+	env->DeleteLocalRef(bitmapConfigClass);
 	
 	jobject bitmapObj = env->CallStaticObjectMethod(
 		bitmapClazz,
-		MID_bitmapCreateBitmap,
+		MID_bitmap_createBitmap,
 		srcSurf.w,
 		srcSurf.h,
 		argb8888Config
 	);
 	
 	env->DeleteLocalRef(argb8888Config);
+	env->DeleteLocalRef(bitmapClazz);
 	
 	if(!bitmapObj) {
 		error("Failed to create Bitmap object");
@@ -312,6 +369,71 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 	}
 	
 	return bitmapObj;
+}
+
+void initJNI() {
+	JNIEnv *env = JNI::getEnv();
+	
+	jclass bitmapClazz = env->FindClass("android/graphics/Bitmap");
+	if(!bitmapClazz) {
+		error("Failed to FindClass(Bitmap)");
+	}
+	
+	MID_bitmap_createBitmap = env->GetStaticMethodID(bitmapClazz,
+		"createBitmap",
+		"(IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;"
+	);	
+	if(!MID_bitmap_createBitmap) {
+		error("Failed to GetStaticMethodId(createBitmap)");
+	}
+	
+	env->DeleteLocalRef(bitmapClazz);
+	
+	jclass printAttsClazz = env->FindClass("android/print/PrintAttributes");
+	if(!printAttsClazz) {
+		error("Failed to FindClass(PrintAttributes)");
+	}
+	
+	env->DeleteLocalRef(printAttsClazz);
+	
+	jclass printAttsBuilderClazz = env->FindClass("android/print/PrintAttributes$Builder");
+	if(!printAttsBuilderClazz) {
+		error("Failed to FindClass(PrintAttributes$Builder)");
+	}
+	
+	MID_printAttsBuilder_ctor = env->GetMethodID(
+		printAttsBuilderClazz, "<init>", 
+		"()V"
+	);	
+	if(!MID_printAttsBuilder_ctor) {
+		error("Failed to GetMethodId(ctor)");
+	}
+	
+	MID_printAttsBuilder_build = env->GetMethodID(
+		printAttsBuilderClazz, "build", 
+		"()Landroid/print/PrintAttributes;"
+	);	
+	if(!MID_printAttsBuilder_build) {
+		error("Failed to GetMethodId(build)");
+	}
+	
+	MID_printAttsBuilder_setColorMode = env->GetMethodID(
+		printAttsBuilderClazz, "setColorMode", 
+		"(I)Landroid/print/PrintAttributes$Builder;"
+	);	
+	if(!MID_printAttsBuilder_setColorMode) {
+		error("Failed to GetMethodId(setColorMode)");
+	}
+	
+	MID_printAttsBuilder_setDuplexMode = env->GetMethodID(
+		printAttsBuilderClazz, "setDuplexMode", 
+		"(I)Landroid/print/PrintAttributes$Builder;"
+	);	
+	if(!MID_printAttsBuilder_setDuplexMode) {
+		error("Failed to GetMethodId(setDuplexMode)");
+	}
+	
+	env->DeleteLocalRef(printAttsBuilderClazz);
 }
 
 
