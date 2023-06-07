@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -882,6 +884,17 @@ public class ScummVMActivity extends Activity implements OnKeyboardVisibilityLis
 		@RequiresApi(api = Build.VERSION_CODES.N)
 		protected SAFFSTree findSAFTree(String name) {
 			return SAFFSTree.findTree(ScummVMActivity.this, name);
+		}
+		
+		
+		@Override
+		protected PrintJob startPrintJob(String name, PrintAttributes atts) {
+			PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+			if(printManager == null) {
+				Log.e(ScummVM.LOG_TAG, "No PrintManager!");
+				return null;
+			}
+			return new PrintJob(printManager, name, atts);
 		}
 	}
 

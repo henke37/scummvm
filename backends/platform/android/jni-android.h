@@ -120,6 +120,8 @@ public:
 	static jobject getNewSAFTree(bool folder, bool writable, const Common::String &initURI, const Common::String &prompt);
 	static Common::Array<jobject> getSAFTrees();
 	static jobject findSAFTree(const Common::String &name);
+	
+	static jobject startPrintJob(const Common::String &name, jobject printAtts);
 
 private:
 	static pthread_key_t _env_tls;
@@ -165,6 +167,7 @@ private:
 	static jmethodID _MID_getNewSAFTree;
 	static jmethodID _MID_getSAFTrees;
 	static jmethodID _MID_findSAFTree;
+	static jmethodID _MID_startPrintJob;
 
 	static jmethodID _MID_EGL10_eglSwapBuffers;
 

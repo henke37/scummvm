@@ -82,6 +82,7 @@ public:
 
 private:
 	AndroidPrintSettings *settings;
+	jobject jobObj;
 
 	friend class AndroidPrintSettings;
 };
@@ -129,10 +130,21 @@ PrintJob *AndroidPrintingManager::createJob(const Common::String &jobName, Print
 
 
 AndroidPrintJob::AndroidPrintJob(const Common::String &jobName, AndroidPrintSettings *settings) : settings(settings) {
+	JNIEnv *env = JNI::getEnv();
+	
+	jobject printSettingsObj = settings->toManaged();
+	
+	jobObj = JNI::startPrintJob(jobName, printSettingsObj);
+	
+	env->DeleteLocalRef(printSettingsObj);
 }
 
 AndroidPrintJob::~AndroidPrintJob() {
+	JNIEnv *env = JNI::getEnv();
+
 	delete settings;
+	
+	env->DeleteLocalRef(jobObj);
 }
 
 void AndroidPrintJob::drawBitmap(const Graphics::ManagedSurface &surf, Common::Point pos) {

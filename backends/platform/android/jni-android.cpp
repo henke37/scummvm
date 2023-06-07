@@ -107,6 +107,7 @@ jmethodID JNI::_MID_eglVersion = 0;
 jmethodID JNI::_MID_getNewSAFTree = 0;
 jmethodID JNI::_MID_getSAFTrees = 0;
 jmethodID JNI::_MID_findSAFTree = 0;
+jmethodID JNI::_MID_startPrintJob = 0;
 
 jmethodID JNI::_MID_EGL10_eglSwapBuffers = 0;
 
@@ -819,6 +820,7 @@ void JNI::create(JNIEnv *env, jobject self, jobject asset_manager,
 	            "(ZZLjava/lang/String;Ljava/lang/String;)Lorg/scummvm/scummvm/SAFFSTree;");
 	FIND_METHOD(, getSAFTrees, "()[Lorg/scummvm/scummvm/SAFFSTree;");
 	FIND_METHOD(, findSAFTree, "(Ljava/lang/String;)Lorg/scummvm/scummvm/SAFFSTree;");
+	FIND_METHOD(, startPrintJob, "(Ljava/lang/String;Landroid/print/PrintAttributes;)Lorg/scummvm/scummvm/PrintJob;");
 
 	_jobj_egl = env->NewGlobalRef(egl);
 	_jobj_egl_display = env->NewGlobalRef(egl_display);
@@ -1169,4 +1171,24 @@ jobject JNI::findSAFTree(const Common::String &name) {
 	return tree;
 }
 
+jobject JNI::startPrintJob(const Common::String &name, jobject printAtts) {
+	JNIEnv *env = JNI::getEnv();
+	
+	jstring nameObj = env->NewStringUTF(name.c_str());
+	
+	jobject jobObj = env->CallObjectMethod(_jobj, _MID_startPrintJob, nameObj, printAtts);
+	
+	env->DeleteLocalRef(nameObj);
+	
+	if (env->ExceptionCheck()) {
+		LOGE("startPrintJob: error");
+
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+
+		return nullptr;
+	}
+	
+	return jobObj;
+}
 #endif

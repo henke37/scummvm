@@ -8,6 +8,7 @@ import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.print.PrintAttributes;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -91,6 +92,7 @@ public abstract class ScummVM implements SurfaceHolder.Callback, Runnable {
 	abstract protected SAFFSTree getNewSAFTree(boolean folder, boolean write, String initialURI, String prompt);
 	abstract protected SAFFSTree[] getSAFTrees();
 	abstract protected SAFFSTree findSAFTree(String name);
+	abstract protected PrintJob startPrintJob(String name, PrintAttributes atts);
 
 	public ScummVM(AssetManager asset_manager, SurfaceHolder holder, final MyScummVMDestroyedCallback scummVMDestroyedCallback) {
 		_asset_manager = asset_manager;
