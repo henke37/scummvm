@@ -280,14 +280,28 @@ jobject AndroidPrintSettings::toManaged() const {
 		error("Failed to FindClass(PrintAttributes$Builder)");
 	}
 	
-	jobject builderObj=env->NewObject(printAttsBuilderClazz, MID_printAttsBuilder_ctor);
+	#define errCheck(msg) 	if (env->ExceptionCheck()) { \
+		error(msg); \
+		env->ExceptionDescribe(); \
+		env->ExceptionClear();\
+		return nullptr; \
+	}
+	
+	jobject builderObj=env->NewObject(printAttsBuilderClazz, MID_printAttsBuilder_ctor);	
+	errCheck("printAttsbuilder::ctor failed!");
 	
 	jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
-	env->DeleteLocalRef(junk);
+	env->DeleteLocalRef(junk);	
+	errCheck("printAttsbuilder::setColorMode failed!");
+	
 	junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);
 	env->DeleteLocalRef(junk);
+	errCheck("printAttsbuilder::setDuplexMode failed!");
 	
 	jobject attsObj = env->CallObjectMethod(builderObj, MID_printAttsBuilder_build);
+	errCheck("printAttsbuilder::build failed!");
+	
+	#undef errCheck
 	
 	env->DeleteLocalRef(printAttsBuilderClazz);
 	
