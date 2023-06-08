@@ -89,7 +89,7 @@ private:
 
 class AndroidPrintSettings : public PrintSettings {
 public:
-	AndroidPrintSettings() {};
+	AndroidPrintSettings() : duplexMode(0), colorMode(0) {};
 	~AndroidPrintSettings() {
 	}
 
@@ -104,8 +104,8 @@ public:
 	jobject toManaged() const;
 	
 private:
-	int duplexMode=0;
-	int colorMode=0;
+	jint duplexMode;
+	jint colorMode;
 };
 
 jobject surf2Bitmap(const Graphics::ManagedSurface &surf);
@@ -289,13 +289,17 @@ jobject AndroidPrintSettings::toManaged() const {
 	jobject builderObj=env->NewObject(printAttsBuilderClazz, MID_printAttsBuilder_ctor);	
 	errCheck("printAttsbuilder::ctor failed!");
 	
-	jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
-	env->DeleteLocalRef(junk);
-	errCheck("printAttsbuilder::setColorMode failed!");
+	if(colorMode) {
+		jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
+		env->DeleteLocalRef(junk);
+		errCheck("printAttsbuilder::setColorMode failed!");
+	}
 	
-	junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);
-	env->DeleteLocalRef(junk);
-	errCheck("printAttsbuilder::setDuplexMode failed!");
+	if(duplexMode) {
+		jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);
+		env->DeleteLocalRef(junk);
+		errCheck("printAttsbuilder::setDuplexMode failed!");
+	}
 	
 	jobject attsObj = env->CallObjectMethod(builderObj, MID_printAttsBuilder_build);
 	errCheck("printAttsbuilder::build failed!");
