@@ -70,6 +70,7 @@ public:
 
 		return fetchEnv();
 	}
+	
 
 	static void attachThread();
 	static void detachThread();
@@ -96,6 +97,7 @@ public:
 	static Common::String getScummVMConfigPath();
 	static Common::String getScummVMLogPath();
 	static jint getAndroidSDKVersionId();
+	static void logException();
 
 	static inline bool haveSurface();
 	static inline bool swapBuffers();
@@ -168,6 +170,7 @@ private:
 	static jmethodID _MID_getSAFTrees;
 	static jmethodID _MID_findSAFTree;
 	static jmethodID _MID_startPrintJob;
+	static jmethodID _MID_logException;
 
 	static jmethodID _MID_EGL10_eglSwapBuffers;
 

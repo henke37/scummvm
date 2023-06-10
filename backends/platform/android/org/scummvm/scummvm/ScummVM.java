@@ -93,6 +93,7 @@ public abstract class ScummVM implements SurfaceHolder.Callback, Runnable {
 	abstract protected SAFFSTree[] getSAFTrees();
 	abstract protected SAFFSTree findSAFTree(String name);
 	abstract protected PrintJob startPrintJob(String name, PrintAttributes atts);
+	abstract protected void logException(Throwable exception);
 
 	public ScummVM(AssetManager asset_manager, SurfaceHolder holder, final MyScummVMDestroyedCallback scummVMDestroyedCallback) {
 		_asset_manager = asset_manager;

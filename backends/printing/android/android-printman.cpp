@@ -281,9 +281,8 @@ jobject AndroidPrintSettings::toManaged() const {
 	}
 	
 	#define errCheck(msg) 	if (env->ExceptionCheck()) { \
+		JNI::logException(); \
 		error(msg); \
-		env->ExceptionDescribe(); \
-		env->ExceptionClear();\
 		return nullptr; \
 	}
 	
@@ -291,7 +290,7 @@ jobject AndroidPrintSettings::toManaged() const {
 	errCheck("printAttsbuilder::ctor failed!");
 	
 	jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
-	env->DeleteLocalRef(junk);	
+	env->DeleteLocalRef(junk);
 	errCheck("printAttsbuilder::setColorMode failed!");
 	
 	junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);

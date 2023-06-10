@@ -108,6 +108,7 @@ jmethodID JNI::_MID_getNewSAFTree = 0;
 jmethodID JNI::_MID_getSAFTrees = 0;
 jmethodID JNI::_MID_findSAFTree = 0;
 jmethodID JNI::_MID_startPrintJob = 0;
+jmethodID JNI::_MID_logException = 0;
 
 jmethodID JNI::_MID_EGL10_eglSwapBuffers = 0;
 
@@ -191,6 +192,23 @@ JNIEnv *JNI::fetchEnv() {
 	pthread_setspecific(_env_tls, env);
 
 	return env;
+}
+
+void JNI::logException() {
+	JNIEnv *env = JNI::getEnv();
+	
+	jthrowable errObj = env->ExceptionOccurred();
+	if(!errObj) return;
+	
+	env->ExceptionClear();
+
+	env->CallVoidMethod(_jobj, _MID_logException, errObj);
+	
+	if(env->ExceptionCheck()) {
+		LOGE("Error trying to log exception");
+	}
+	
+	env->DeleteLocalRef(errObj);
 }
 
 void JNI::attachThread() {
@@ -821,6 +839,7 @@ void JNI::create(JNIEnv *env, jobject self, jobject asset_manager,
 	FIND_METHOD(, getSAFTrees, "()[Lorg/scummvm/scummvm/SAFFSTree;");
 	FIND_METHOD(, findSAFTree, "(Ljava/lang/String;)Lorg/scummvm/scummvm/SAFFSTree;");
 	FIND_METHOD(, startPrintJob, "(Ljava/lang/String;Landroid/print/PrintAttributes;)Lorg/scummvm/scummvm/PrintJob;");
+	FIND_METHOD(, logException, "(Ljava/lang/Throwable;)V");
 
 	_jobj_egl = env->NewGlobalRef(egl);
 	_jobj_egl_display = env->NewGlobalRef(egl_display);

@@ -59,6 +59,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -895,6 +897,11 @@ public class ScummVMActivity extends Activity implements OnKeyboardVisibilityLis
 				return null;
 			}
 			return new PrintJob(printManager, name, atts);
+		}
+		
+		@Override
+		protected void logException(Throwable exception) {
+			Log.e(ScummVM.LOG_TAG, "Uncaught JNI exception", exception);
 		}
 	}
 
