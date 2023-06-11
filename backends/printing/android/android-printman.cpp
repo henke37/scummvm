@@ -45,17 +45,18 @@ class AndroidPrintingManager : public PrintingManager {
 public:
 	AndroidPrintingManager();
 	virtual ~AndroidPrintingManager();
-	
-	PrintJob *createJob(const Common::String &jobName, PrintSettings *settings);
 
 	PrintSettings *getDefaultPrintSettings() const;
+	
+protected:
+	PrintJob *createJob(PrintCallback cb, const Common::String &jobName, PrintSettings *settings) override;
 };
 
 class AndroidPrintJob : public PrintJob {
 public:
 	friend class AndroidPrintingManager;
 
-	AndroidPrintJob(const Common::String &jobName, AndroidPrintSettings *settings);
+	AndroidPrintJob(PrintCallback cb, const Common::String &jobName, AndroidPrintSettings *settings);
 	~AndroidPrintJob();
 
 	void drawBitmap(const Graphics::ManagedSurface &surf, Common::Point pos);
@@ -79,12 +80,16 @@ public:
 	void endPage();
 	void endDoc();
 	void abortJob();
+	
+	static void doLayout(JNIEnv *env, jobject self);
 
 private:
 	AndroidPrintSettings *settings;
 	jobject jobObj;
 
 	friend class AndroidPrintSettings;
+protected:
+	void print() override;
 };
 
 class AndroidPrintSettings : public PrintSettings {
@@ -112,6 +117,10 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &surf);
 
 void initJNI();
 
+const JNINativeMethod natives[] = {
+	{ "doLayout", "()V", (void *)AndroidPrintJob::doLayout}
+};
+
 AndroidPrintingManager::AndroidPrintingManager() {
 	initJNI();
 }
@@ -123,20 +132,41 @@ jmethodID MID_printAttsBuilder_ctor;
 jmethodID MID_printAttsBuilder_build;
 jmethodID MID_printAttsBuilder_setDuplexMode;
 jmethodID MID_printAttsBuilder_setColorMode;
+jmethodID MID_printJob_print;
+jmethodID MID_printJob_beginPage;
+jmethodID MID_printJob_endPage;
+jmethodID MID_printJob_endDoc;
+jmethodID MID_printJob_abortJob;
+jfieldID FID_printJob_nativePtr;
 
-PrintJob *AndroidPrintingManager::createJob(const Common::String &jobName, PrintSettings *settings) {
-	return new AndroidPrintJob(jobName, (AndroidPrintSettings*)settings);
+#define errCheckPtr(msg) 	if (env->ExceptionCheck()) { \
+		JNI::logException(); \
+		error(msg); \
+		return nullptr; \
+	}
+#define errCheckV(msg) 	if (env->ExceptionCheck()) { \
+		JNI::logException(); \
+		error(msg); \
+		return; \
+	}
+
+PrintJob *AndroidPrintingManager::createJob(PrintCallback cb, const Common::String &jobName, PrintSettings *settings) {
+	return new AndroidPrintJob(cb, jobName, (AndroidPrintSettings*)settings);
 }
 
 
-AndroidPrintJob::AndroidPrintJob(const Common::String &jobName, AndroidPrintSettings *settings) : settings(settings) {
+AndroidPrintJob::AndroidPrintJob(PrintCallback cb, const Common::String &jobName, AndroidPrintSettings *settings) : PrintJob(cb), settings(settings) {
 	JNIEnv *env = JNI::getEnv();
 	
 	jobject printSettingsObj = settings->toManaged();
 	
 	jobObj = JNI::startPrintJob(jobName, printSettingsObj);
 	
+	jobObj = env->NewGlobalRef(jobObj);
+	
 	env->DeleteLocalRef(printSettingsObj);
+	
+	env->SetLongField(jobObj, FID_printJob_nativePtr, (jlong)this);
 }
 
 AndroidPrintJob::~AndroidPrintJob() {
@@ -144,7 +174,20 @@ AndroidPrintJob::~AndroidPrintJob() {
 
 	delete settings;
 	
-	env->DeleteLocalRef(jobObj);
+	env->DeleteGlobalRef(jobObj);
+}
+
+void AndroidPrintJob::print() {
+	JNIEnv *env = JNI::getEnv();
+	
+	env->CallVoidMethod(jobObj, MID_printJob_print);
+	errCheckV("print failed!");
+}
+
+void AndroidPrintJob::doLayout(JNIEnv *env, jobject self) {
+	AndroidPrintJob *that=(AndroidPrintJob*)env->GetLongField(self, FID_printJob_nativePtr);
+	
+	(*that->printCallback)(that);
 }
 
 void AndroidPrintJob::drawBitmap(const Graphics::ManagedSurface &surf, Common::Point pos) {
@@ -208,15 +251,31 @@ Common::Rect AndroidPrintJob::getPaperDimensions() const {
 }
 
 void AndroidPrintJob::beginPage() {
+	JNIEnv *env = JNI::getEnv();
+	
+	env->CallVoidMethod(jobObj, MID_printJob_beginPage);
+	errCheckV("beginPage failed!");
 }
 
 void AndroidPrintJob::endPage() {
+	JNIEnv *env = JNI::getEnv();
+	
+	env->CallVoidMethod(jobObj, MID_printJob_endPage);
+	errCheckV("endPage failed!");
 }
 
 void AndroidPrintJob::endDoc() {
+	JNIEnv *env = JNI::getEnv();
+	
+	env->CallVoidMethod(jobObj, MID_printJob_endDoc);
+	errCheckV("endDoc failed!");
 }
 
 void AndroidPrintJob::abortJob() {
+	JNIEnv *env = JNI::getEnv();
+	
+	env->CallVoidMethod(jobObj, MID_printJob_abortJob);
+	errCheckV("abortJob failed!");
 }
 
 PrintSettings *AndroidPrintingManager::getDefaultPrintSettings() const {
@@ -280,31 +339,23 @@ jobject AndroidPrintSettings::toManaged() const {
 		error("Failed to FindClass(PrintAttributes$Builder)");
 	}
 	
-	#define errCheck(msg) 	if (env->ExceptionCheck()) { \
-		JNI::logException(); \
-		error(msg); \
-		return nullptr; \
-	}
-	
 	jobject builderObj=env->NewObject(printAttsBuilderClazz, MID_printAttsBuilder_ctor);	
-	errCheck("printAttsbuilder::ctor failed!");
+	errCheckPtr("printAttsbuilder::ctor failed!");
 	
 	if(colorMode) {
 		jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setColorMode, colorMode);
 		env->DeleteLocalRef(junk);
-		errCheck("printAttsbuilder::setColorMode failed!");
+		errCheckPtr("printAttsbuilder::setColorMode failed!");
 	}
 	
 	if(duplexMode) {
 		jobject junk = env->CallObjectMethod(builderObj, MID_printAttsBuilder_setDuplexMode, duplexMode);
 		env->DeleteLocalRef(junk);
-		errCheck("printAttsbuilder::setDuplexMode failed!");
+		errCheckPtr("printAttsbuilder::setDuplexMode failed!");
 	}
 	
 	jobject attsObj = env->CallObjectMethod(builderObj, MID_printAttsBuilder_build);
-	errCheck("printAttsbuilder::build failed!");
-	
-	#undef errCheck
+	errCheckPtr("printAttsbuilder::build failed!");
 	
 	env->DeleteLocalRef(printAttsBuilderClazz);
 	
@@ -463,6 +514,63 @@ void initJNI() {
 	}
 	
 	env->DeleteLocalRef(printAttsBuilderClazz);
+	
+	jclass printJobClazz = env->FindClass("org/scummvm/scummvm/PrintJob");
+	if(!printJobClazz) {
+		error("Failed to FindClass(PrintJob)");
+	}
+	
+	FID_printJob_nativePtr = env->GetFieldID(printJobClazz, "nativePtr", "J");
+	if(!FID_printJob_nativePtr) {
+		error("Failed to GetFieldID(nativePtr)");
+	}
+		
+	MID_printJob_print = env->GetMethodID(
+		printJobClazz, "print", 
+		"()V"
+	);	
+	if(!MID_printJob_print) {
+		error("Failed to GetMethodId(print)");
+	}
+	
+	MID_printJob_beginPage = env->GetMethodID(
+		printJobClazz, "beginPage", 
+		"()V"
+	);	
+	if(!MID_printJob_beginPage) {
+		error("Failed to GetMethodId(beginPage)");
+	}
+	
+	MID_printJob_endPage = env->GetMethodID(
+		printJobClazz, "endPage", 
+		"()V"
+	);	
+	if(!MID_printJob_endPage) {
+		error("Failed to GetMethodId(endPage)");
+	}
+	
+	MID_printJob_endDoc = env->GetMethodID(
+		printJobClazz, "endDoc", 
+		"()V"
+	);	
+	if(!MID_printJob_endDoc) {
+		error("Failed to GetMethodId(endDoc)");
+	}
+	
+	MID_printJob_abortJob = env->GetMethodID(
+		printJobClazz, "abortJob", 
+		"()V"
+	);	
+	if(!MID_printJob_abortJob) {
+		error("Failed to GetMethodId(abortJob)");
+	}
+	
+	if (env->RegisterNatives(printJobClazz, natives, ARRAYSIZE(natives)) < 0) {
+		error("Failed to RegisterNatives");
+	}
+	
+	env->DeleteLocalRef(printJobClazz);
+	
 }
 
 
