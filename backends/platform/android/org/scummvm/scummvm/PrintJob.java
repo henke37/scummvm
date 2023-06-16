@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfDocument.PageInfo;
 import android.graphics.pdf.PdfDocument.PageInfo.Builder;
@@ -105,6 +107,10 @@ public class PrintJob {
 	private void abortJob() {
 		Log.d(ScummVM.LOG_TAG, "abortJob");
 		layoutCallback.onLayoutFailed("Job aborted");
+	}
+	
+	private void drawBitmap(Bitmap bm, Rect dst) {
+		Log.d(ScummVM.LOG_TAG, "drawBitmap");
 	}
 	
 	private native void doLayout();

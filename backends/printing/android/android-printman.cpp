@@ -88,6 +88,8 @@ private:
 	jobject jobObj;
 
 	friend class AndroidPrintSettings;
+	
+	static jobject rectAsManaged(Common::Rect posAndSize);
 protected:
 	void print() override;
 };
@@ -128,6 +130,7 @@ AndroidPrintingManager::AndroidPrintingManager() {
 AndroidPrintingManager::~AndroidPrintingManager() {}
 
 jmethodID MID_bitmap_createBitmap;
+jmethodID MID_rect_ctor;
 jmethodID MID_printAttsBuilder_ctor;
 jmethodID MID_printAttsBuilder_build;
 jmethodID MID_printAttsBuilder_setDuplexMode;
@@ -137,6 +140,7 @@ jmethodID MID_printJob_beginPage;
 jmethodID MID_printJob_endPage;
 jmethodID MID_printJob_endDoc;
 jmethodID MID_printJob_abortJob;
+jmethodID MID_printJob_drawBitmap;
 jfieldID FID_printJob_nativePtr;
 
 #define errCheckPtr(msg) 	if (env->ExceptionCheck()) { \
@@ -191,11 +195,7 @@ void AndroidPrintJob::doLayout(JNIEnv *env, jobject self) {
 }
 
 void AndroidPrintJob::drawBitmap(const Graphics::ManagedSurface &surf, Common::Point pos) {
-	JNIEnv *env = JNI::getEnv();
-	
-	jobject bitmapObj = surf2Bitmap(surf);
-	
-	env->DeleteLocalRef(bitmapObj);
+	drawBitmap(surf, Common::Rect(pos.x, pos.y, pos.x+surf.w, pos.y+surf.h));
 }
 
 void AndroidPrintJob::drawBitmap(const Graphics::ManagedSurface &surf, Common::Rect posAndSize) {
@@ -203,6 +203,13 @@ void AndroidPrintJob::drawBitmap(const Graphics::ManagedSurface &surf, Common::R
 	
 	jobject bitmapObj = surf2Bitmap(surf);
 	
+	jobject dstObj = rectAsManaged(posAndSize);
+	
+	env->CallVoidMethod(jobObj, MID_printJob_drawBitmap, bitmapObj, dstObj);
+	
+	errCheckV("drawBitmap failed");
+	
+	env->DeleteLocalRef(dstObj);
 	env->DeleteLocalRef(bitmapObj);
 }
 
@@ -362,6 +369,27 @@ jobject AndroidPrintSettings::toManaged() const {
 	return attsObj;
 }
 
+jobject AndroidPrintJob::rectAsManaged(Common::Rect rect) {
+	JNIEnv *env = JNI::getEnv();
+	
+	jclass rectClazz = env->FindClass("android/graphics/Rect");
+	if(!rectClazz) {
+		error("Failed to FindClass(Rect)");
+	}
+	
+	jobject rectObj = env->NewObject(
+		rectClazz, MID_rect_ctor, 
+		rect.left, rect.top,
+		rect.right, rect.bottom
+	);
+	
+	errCheckPtr("new Rect");
+	
+	env->DeleteLocalRef(rectClazz);
+	
+	return rectObj;
+}
+
 jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 	JNIEnv *env = JNI::getEnv();
 	
@@ -453,6 +481,21 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 
 void initJNI() {
 	JNIEnv *env = JNI::getEnv();
+	
+	jclass rectClazz = env->FindClass("android/graphics/Rect");
+	if(!rectClazz) {
+		error("Failed to FindClass(Rect)");
+	}
+	
+	MID_rect_ctor = env->GetMethodID(rectClazz,
+		"<init>",
+		"(IIII)V"
+	);	
+	if(!MID_rect_ctor) {
+		error("Failed to GetMethodId(Rect::init)");
+	}
+	
+	env->DeleteLocalRef(rectClazz);
 	
 	jclass bitmapClazz = env->FindClass("android/graphics/Bitmap");
 	if(!bitmapClazz) {
@@ -563,6 +606,14 @@ void initJNI() {
 	);	
 	if(!MID_printJob_abortJob) {
 		error("Failed to GetMethodId(abortJob)");
+	}
+	
+	MID_printJob_drawBitmap = env->GetMethodID(
+		printJobClazz, "drawBitmap", 
+		"(Landroid/graphics/Bitmap;Landroid/graphics/Rect;)V"
+	);	
+	if(!MID_printJob_drawBitmap) {
+		error("Failed to GetMethodId(drawBitmap)");
 	}
 	
 	if (env->RegisterNatives(printJobClazz, natives, ARRAYSIZE(natives)) < 0) {
