@@ -89,7 +89,8 @@ private:
 
 	friend class AndroidPrintSettings;
 	
-	static jobject rectAsManaged(Common::Rect posAndSize);
+	static jobject rectAsManaged(Common::Rect rect);
+	static Common::Rect rectAsNative(jobject rectObj);
 protected:
 	void print() override;
 };
@@ -140,8 +141,13 @@ jmethodID MID_printJob_beginPage;
 jmethodID MID_printJob_endPage;
 jmethodID MID_printJob_endDoc;
 jmethodID MID_printJob_abortJob;
+jmethodID MID_printJob_getContentRect;
 jmethodID MID_printJob_drawBitmap;
 jfieldID FID_printJob_nativePtr;
+jfieldID FID_rect_left;
+jfieldID FID_rect_top;
+jfieldID FID_rect_right;
+jfieldID FID_rect_bottom;
 
 #define errCheckPtr(msg) 	if (env->ExceptionCheck()) { \
 		JNI::logException(); \
@@ -237,10 +243,20 @@ Common::Rational AndroidPrintJob::getPixelAspectRatio() const {
 }
 
 Common::Rect AndroidPrintJob::getPrintableArea() const {
-	return Common::Rect(
-		0,
-		0
-	);
+	JNIEnv *env = JNI::getEnv();
+	
+	jobject areaObj = env->CallObjectMethod(jobObj, MID_printJob_getContentRect);
+	if(env->ExceptionCheck()) {
+		JNI::logException();
+		error("getPrintableArea failed");
+		return Common::Rect();
+	}
+	
+	Common::Rect area = rectAsNative(areaObj);
+	
+	env->DeleteLocalRef(areaObj);
+	
+	return area;
 }
 
 Common::Point AndroidPrintJob::getPrintableAreaOffset() const {
@@ -390,6 +406,17 @@ jobject AndroidPrintJob::rectAsManaged(Common::Rect rect) {
 	return rectObj;
 }
 
+Common::Rect AndroidPrintJob::rectAsNative(jobject rectObj) {
+	JNIEnv *env = JNI::getEnv();
+	
+	return Common::Rect(
+		env->GetIntField(rectObj, FID_rect_left),
+		env->GetIntField(rectObj, FID_rect_top),
+		env->GetIntField(rectObj, FID_rect_right),
+		env->GetIntField(rectObj, FID_rect_bottom)
+	);
+}
+
 jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 	JNIEnv *env = JNI::getEnv();
 	
@@ -493,6 +520,23 @@ void initJNI() {
 	);	
 	if(!MID_rect_ctor) {
 		error("Failed to GetMethodId(Rect::init)");
+	}
+	
+	FID_rect_left = env->GetFieldID(rectClazz, "left", "I");
+	if(!FID_rect_left) {
+		error("Failed to GetFieldID(Rect::left)");
+	}
+	FID_rect_top = env->GetFieldID(rectClazz, "top", "I");
+	if(!FID_rect_top) {
+		error("Failed to GetFieldID(Rect::top)");
+	}
+	FID_rect_right = env->GetFieldID(rectClazz, "right", "I");
+	if(!FID_rect_right) {
+		error("Failed to GetFieldID(Rect::right)");
+	}
+	FID_rect_bottom = env->GetFieldID(rectClazz, "bottom", "I");
+	if(!FID_rect_bottom) {
+		error("Failed to GetFieldID(Rect::bottom)");
 	}
 	
 	env->DeleteLocalRef(rectClazz);
@@ -607,6 +651,15 @@ void initJNI() {
 	if(!MID_printJob_abortJob) {
 		error("Failed to GetMethodId(abortJob)");
 	}
+	
+	MID_printJob_getContentRect = env->GetMethodID(
+		printJobClazz, "getContentRect", 
+		"()Landroid/graphics/Rect;"
+	);	
+	if(!MID_printJob_getContentRect) {
+		error("Failed to GetMethodId(getContentRect)");
+	}
+	
 	
 	MID_printJob_drawBitmap = env->GetMethodID(
 		printJobClazz, "drawBitmap", 

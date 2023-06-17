@@ -113,6 +113,10 @@ public class PrintJob {
 		Log.d(ScummVM.LOG_TAG, "drawBitmap");
 	}
 	
+	private Rect getContentRect() {
+		return page.getInfo().getContentRect();
+	}
+	
 	private native void doLayout();
 
 	private class PrintDocAdapter extends PrintDocumentAdapter {
