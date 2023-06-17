@@ -498,6 +498,8 @@ jobject surf2Bitmap(const Graphics::ManagedSurface &srcSurf) {
 		dstSurf.format=dstFmt;
 		dstSurf.setPixels(dst_pixels);
 		
+		memset(dst_pixels, 0xAA, 4*bitmap_info.width*bitmap_info.height);
+		
 		dstSurf.blitFrom(srcSurf);
 
 		AndroidBitmap_unlockPixels(env, bitmapObj);

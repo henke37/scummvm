@@ -110,7 +110,9 @@ public class PrintJob {
 	}
 	
 	private void drawBitmap(Bitmap bm, Rect dst) {
-		Log.d(ScummVM.LOG_TAG, "drawBitmap");
+		Log.d(ScummVM.LOG_TAG, "drawBitmap "+dst.toString());
+		
+		pageCanvas.drawBitmap(bm, null, dst, null);
 	}
 	
 	private Rect getContentRect() {
@@ -160,6 +162,7 @@ public class PrintJob {
 				pdf.writeTo(fileOutputStream);
 				fileOutputStream.close();
 				pdf.close();
+				pdf=null;
 				
 				callback.onWriteFinished(pages);
 			} catch(IOException err) {
