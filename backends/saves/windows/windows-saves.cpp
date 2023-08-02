@@ -40,7 +40,7 @@ WindowsSaveFileManager::WindowsSaveFileManager(bool isPortable) {
 		Win32::getProcessDirectory(defaultSavepath, MAX_PATH);
 	} else {
 		// Use the Application Data directory of the user profile
-		if (!Win32::getApplicationDataDirectory(defaultSavepath)) {
+		if (!Win32::getRoamingApplicationDataDirectory(defaultSavepath)) {
 			return;
 		}
 	}

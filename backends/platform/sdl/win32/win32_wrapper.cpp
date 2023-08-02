@@ -88,8 +88,27 @@ HRESULT SHGetFolderPathFunc(HWND hwnd, int csidl, HANDLE hToken, DWORD dwFlags, 
 
 namespace Win32 {
 
-bool getApplicationDataDirectory(TCHAR *applicationDataDirectory) {
+bool getRoamingApplicationDataDirectory(TCHAR *applicationDataDirectory) {
 	HRESULT hr = SHGetFolderPathFunc(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, applicationDataDirectory);
+	if (hr != S_OK) {
+		if (hr != E_NOTIMPL) {
+			warning("Unable to locate application data directory");
+		}
+		return false;
+	}
+
+	_tcscat(applicationDataDirectory, TEXT("\\ScummVM"));
+	if (!CreateDirectory(applicationDataDirectory, NULL)) {
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {
+			error("Cannot create ScummVM application data folder");
+		}
+	}
+
+	return true;
+}
+
+bool getLocalApplicationDataDirectory(TCHAR *applicationDataDirectory) {
+	HRESULT hr = SHGetFolderPathFunc(NULL, CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, applicationDataDirectory);
 	if (hr != S_OK) {
 		if (hr != E_NOTIMPL) {
 			warning("Unable to locate application data directory");

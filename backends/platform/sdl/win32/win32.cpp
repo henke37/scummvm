@@ -264,7 +264,7 @@ Common::String OSystem_Win32::getDefaultIconsPath() {
 		_tcscat(iconsPath, TEXT("\\Icons\\"));
 	} else {
 		// Use the Application Data directory of the user profile
-		if (!Win32::getApplicationDataDirectory(iconsPath)) {
+		if (!Win32::getLocalApplicationDataDirectory(iconsPath)) {
 			return Common::String();
 		}
 		_tcscat(iconsPath, TEXT("\\Icons\\"));
@@ -326,7 +326,7 @@ Common::String OSystem_Win32::getDefaultConfigFileName() {
 		_tcscat(configFile, TEXT("\\" DEFAULT_CONFIG_FILE));
 	} else {
 		// Use the Application Data directory of the user profile
-		if (Win32::getApplicationDataDirectory(configFile)) {
+		if (Win32::getRoamingApplicationDataDirectory(configFile)) {
 			_tcscat(configFile, TEXT("\\" DEFAULT_CONFIG_FILE));
 
 			FILE *tmp = nullptr;
@@ -366,7 +366,7 @@ Common::String OSystem_Win32::getDefaultLogFileName() {
 		Win32::getProcessDirectory(logFile, MAX_PATH);
 	} else {
 		// Use the Application Data directory of the user profile
-		if (!Win32::getApplicationDataDirectory(logFile)) {
+		if (!Win32::getLocalApplicationDataDirectory(logFile)) {
 			return Common::String();
 		}
 		_tcscat(logFile, TEXT("\\Logs"));

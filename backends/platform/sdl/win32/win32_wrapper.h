@@ -42,7 +42,22 @@ namespace Win32 {
  * @note if the user's profile directory is found but the "ScummVM"
  * subdirectory can't be created then this function calls error().
  */
-bool getApplicationDataDirectory(TCHAR *profileDirectory);
+bool getRoamingApplicationDataDirectory(TCHAR *profileDirectory);
+
+
+/**
+ * Gets the full path to the ScummVM application data directory
+ * in the user's profile and creates it if it doesn't exist.
+ *
+ * @param profileDirectory MAX_PATH sized output array
+ *
+ * @return True if the user's profile directory was found, false if
+ * it was not.
+ *
+ * @note if the user's profile directory is found but the "ScummVM"
+ * subdirectory can't be created then this function calls error().
+ */
+bool getLocalApplicationDataDirectory(TCHAR *profileDirectory);
 
 /**
  * Gets the full path to the directory that the currently executing
