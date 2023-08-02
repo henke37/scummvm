@@ -944,7 +944,7 @@ StringList BuildSetup::getEngineDefines() const {
 
 	for (EngineDescList::const_iterator i = engines.begin(); i != engines.end(); ++i) {
 		if (i->enable) {
-			if (featureEnabled("dynamic-modules")) {
+			if (featureEnabled("dynamic-modules") && !isSubEngine(i->name,engines)) {
 				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=DYNAMIC_PLUGIN");
 			} else {
 				result.push_back("ENABLE_" + CreateProjectTool::toUpper(i->name) + "=STATIC_PLUGIN");
