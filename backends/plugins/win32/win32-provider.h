@@ -26,11 +26,30 @@
 
 #if defined(DYNAMIC_MODULES) && defined(_WIN32)
 
+#include "backends/plugins/dynamic-plugin.h"
+
 class Win32PluginProvider final : public FilePluginProvider {
 protected:
 	Plugin* createPlugin(const Common::FSNode &node) const override;
 
 	bool isPluginFilename(const Common::FSNode &node) const override;
+};
+
+class Win32Plugin final : public DynamicPlugin {
+protected:
+	void *_dlHandle;
+
+	VoidFunc findSymbol(const char *symbol) override;
+
+public:
+	Win32Plugin(const Common::String &filename)
+		: DynamicPlugin(filename), _dlHandle(0) {}
+
+	bool loadPlugin() override;
+
+	void unloadPlugin() override;
+
+	Win32::Win32ResourceArchive *_arch;
 };
 
 #endif // defined(DYNAMIC_MODULES) && defined(_WIN32)

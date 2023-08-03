@@ -34,6 +34,7 @@
 
 #include "common/scummsys.h"
 #include "common/textconsole.h"
+#include "common/memstream.h"
 #include "backends/platform/sdl/win32/win32_wrapper.h"
 
 // VerSetConditionMask, VerifyVersionInfo and SHGetFolderPath didn't appear until Windows 2000,
@@ -218,5 +219,69 @@ void freeArgvUtf8(int argc, char **argv) {
 	free(argv);
 }
 #endif
+
+BOOL CALLBACK EnumResNameProc(HMODULE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG_PTR lParam) {
+	if (IS_INTRESOURCE(lpszName))
+		return TRUE;
+
+	Win32ResourceArchive *arch = (Win32ResourceArchive *)lParam;
+	Common::String filename = Win32::tcharToString(lpszName);
+	arch->_files.push_back(filename);
+	return TRUE;
+}
+
+Win32ResourceArchive::Win32ResourceArchive(HMODULE module) : _module(module) {
+	EnumResourceNames(module, MAKEINTRESOURCE(256), &EnumResNameProc, (LONG_PTR)this);
+}
+
+bool Win32ResourceArchive::hasFile(const Common::Path &path) const {
+	Common::String name = path.toString();
+	for (FilenameList::const_iterator i = _files.begin(); i != _files.end(); ++i) {
+		if (i->equalsIgnoreCase(name))
+			return true;
+	}
+
+	return false;
+}
+
+int Win32ResourceArchive::listMembers(Common::ArchiveMemberList &list) const {
+	int count = 0;
+
+	for (FilenameList::const_iterator i = _files.begin(); i != _files.end(); ++i, ++count)
+		list.push_back(Common::ArchiveMemberPtr(new Common::GenericArchiveMember(*i, *this)));
+
+	return count;
+}
+
+const Common::ArchiveMemberPtr Win32ResourceArchive::getMember(const Common::Path &path) const {
+	return Common::ArchiveMemberPtr(new Common::GenericArchiveMember(path, *this));
+}
+
+Common::SeekableReadStream *Win32ResourceArchive::createReadStreamForMember(const Common::Path &path) const {
+	Common::String name = path.toString();
+	TCHAR *tName = Win32::stringToTchar(name);
+	HRSRC resource = FindResource(_module, tName, MAKEINTRESOURCE(256));
+	free(tName);
+
+	if (resource == nullptr)
+		return nullptr;
+
+	HGLOBAL handle = LoadResource(_module, resource);
+
+	if (handle == nullptr)
+		return nullptr;
+
+	const byte *data = (const byte *)LockResource(handle);
+
+	if (data == nullptr)
+		return nullptr;
+
+	uint32 size = SizeofResource(_module, resource);
+
+	if (size == 0)
+		return nullptr;
+
+	return new Common::MemoryReadStream(data, size);
+}
 
 } // End of namespace Win32

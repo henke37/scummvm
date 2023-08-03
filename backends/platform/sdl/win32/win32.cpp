@@ -48,6 +48,7 @@
 #include "backends/taskbar/win32/win32-taskbar.h"
 #include "backends/updates/win32/win32-updates.h"
 #include "backends/dialogs/win32/win32-dialogs.h"
+#include "backends/plugins/win32/win32-provider.h"
 
 #include "common/memstream.h"
 #include "common/ustr.h"
@@ -428,91 +429,18 @@ bool OSystem_Win32::detectPortableConfigFile() {
 	return true;
 }
 
-namespace {
-
-class Win32ResourceArchive final : public Common::Archive {
-	friend BOOL CALLBACK EnumResNameProc(HMODULE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG_PTR lParam);
-public:
-	Win32ResourceArchive();
-
-	bool hasFile(const Common::Path &path) const override;
-	int listMembers(Common::ArchiveMemberList &list) const override;
-	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
-	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override;
-private:
-	typedef Common::List<Common::String> FilenameList;
-
-	FilenameList _files;
-};
-
-BOOL CALLBACK EnumResNameProc(HMODULE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG_PTR lParam) {
-	if (IS_INTRESOURCE(lpszName))
-		return TRUE;
-
-	Win32ResourceArchive *arch = (Win32ResourceArchive *)lParam;
-	Common::String filename = Win32::tcharToString(lpszName);
-	arch->_files.push_back(filename);
-	return TRUE;
-}
-
-Win32ResourceArchive::Win32ResourceArchive() {
-	EnumResourceNames(nullptr, MAKEINTRESOURCE(256), &EnumResNameProc, (LONG_PTR)this);
-}
-
-bool Win32ResourceArchive::hasFile(const Common::Path &path) const {
-	Common::String name = path.toString();
-	for (FilenameList::const_iterator i = _files.begin(); i != _files.end(); ++i) {
-		if (i->equalsIgnoreCase(name))
-			return true;
-	}
-
-	return false;
-}
-
-int Win32ResourceArchive::listMembers(Common::ArchiveMemberList &list) const {
-	int count = 0;
-
-	for (FilenameList::const_iterator i = _files.begin(); i != _files.end(); ++i, ++count)
-		list.push_back(Common::ArchiveMemberPtr(new Common::GenericArchiveMember(*i, *this)));
-
-	return count;
-}
-
-const Common::ArchiveMemberPtr Win32ResourceArchive::getMember(const Common::Path &path) const {
-	return Common::ArchiveMemberPtr(new Common::GenericArchiveMember(path, *this));
-}
-
-Common::SeekableReadStream *Win32ResourceArchive::createReadStreamForMember(const Common::Path &path) const {
-	Common::String name = path.toString();
-	TCHAR *tName = Win32::stringToTchar(name);
-	HRSRC resource = FindResource(nullptr, tName, MAKEINTRESOURCE(256));
-	free(tName);
-
-	if (resource == nullptr)
-		return nullptr;
-
-	HGLOBAL handle = LoadResource(nullptr, resource);
-
-	if (handle == nullptr)
-		return nullptr;
-
-	const byte *data = (const byte *)LockResource(handle);
-
-	if (data == nullptr)
-		return nullptr;
-
-	uint32 size = SizeofResource(nullptr, resource);
-
-	if (size == 0)
-		return nullptr;
-
-	return new Common::MemoryReadStream(data, size);
-}
-
-} // End of anonymous namespace
-
 void OSystem_Win32::addSysArchivesToSearchSet(Common::SearchSet &s, int priority) {
-	s.add("Win32Res", new Win32ResourceArchive(), priority);
+	s.add("Win32Res", new Win32::Win32ResourceArchive(NULL), priority);
+
+	auto plugins = PluginMan.getPlugins(PLUGIN_TYPE_ENGINE);
+	for (PluginList::const_iterator iter = plugins.begin(); iter != plugins.end(); iter++) {
+		Win32Plugin *dynPlug = dynamic_cast<Win32Plugin *>(*iter);
+
+		if (!dynPlug || !dynPlug->isLoaded())
+			continue;
+
+		s.add(dynPlug->getFileName(), dynPlug->_arch, priority, false);
+	}
 
 	OSystem_SDL::addSysArchivesToSearchSet(s, priority);
 }

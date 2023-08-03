@@ -24,6 +24,7 @@
 
 #include "common/scummsys.h"
 #include "common/str.h"
+#include "common/archive.h"
 
 HRESULT SHGetFolderPathFunc(HWND hwnd, int csidl, HANDLE hToken, DWORD dwFlags, LPTSTR pszPath);
 
@@ -135,6 +136,25 @@ char **getArgvUtf8(int *argc);
  * @param argv argument array created by getArgvUtf8()
  */
 void freeArgvUtf8(int argc, char **argv);
+
+class Win32ResourceArchive final : public Common::Archive {
+	friend BOOL CALLBACK EnumResNameProc(HMODULE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG_PTR lParam);
+
+public:
+	Win32ResourceArchive(HMODULE module);
+
+	bool hasFile(const Common::Path &path) const override;
+	int listMembers(Common::ArchiveMemberList &list) const override;
+	const Common::ArchiveMemberPtr getMember(const Common::Path &path) const override;
+	Common::SeekableReadStream *createReadStreamForMember(const Common::Path &path) const override;
+
+private:
+	typedef Common::List<Common::String> FilenameList;
+
+	HMODULE _module;
+	FilenameList _files;
+};
+
 #endif
 
 } // End of namespace Win32

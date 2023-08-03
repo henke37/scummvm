@@ -36,49 +36,45 @@
 #include "common/debug.h"
 #include "common/fs.h"
 
-class Win32Plugin final : public DynamicPlugin {
-protected:
-	void *_dlHandle;
+DynamicPlugin::VoidFunc Win32Plugin::findSymbol(const char *symbol) {
+	FARPROC func = GetProcAddress((HMODULE)_dlHandle, symbol);
+	if (!func)
+		debug("Failed loading symbol '%s' from plugin '%s'", symbol, _filename.c_str());
 
-	VoidFunc findSymbol(const char *symbol) override {
-		FARPROC func = GetProcAddress((HMODULE)_dlHandle, symbol);
-		if (!func)
-			debug("Failed loading symbol '%s' from plugin '%s'", symbol, _filename.c_str());
+	return (void (*)())func;
+}
 
-		return (void (*)())func;
+bool Win32Plugin::loadPlugin() {
+	assert(!_dlHandle);
+	TCHAR *tFilename = Win32::stringToTchar(_filename);
+	_dlHandle = LoadLibrary(tFilename);
+	free(tFilename);
+
+	if (!_dlHandle) {
+		debug("Failed loading plugin '%s' (error code %d)", _filename.c_str(), (int32) GetLastError());
+		return false;
+	} else {
+		debug(1, "Success loading plugin '%s', handle %p", _filename.c_str(), _dlHandle);
 	}
 
-public:
-	Win32Plugin(const Common::String &filename)
-		: DynamicPlugin(filename), _dlHandle(0) {}
+	SearchMan.add(_filename, new Win32::Win32ResourceArchive((HMODULE)_dlHandle), -1, false);
 
-	bool loadPlugin() override {
-		assert(!_dlHandle);
-		TCHAR *tFilename = Win32::stringToTchar(_filename);
-		_dlHandle = LoadLibrary(tFilename);
-		free(tFilename);
+	return DynamicPlugin::loadPlugin();
+}
 
-		if (!_dlHandle) {
-			warning("Failed loading plugin '%s' (error code %d)", _filename.c_str(), (int32) GetLastError());
-			return false;
-		} else {
-			debug(1, "Success loading plugin '%s', handle %p", _filename.c_str(), _dlHandle);
-		}
 
-		return DynamicPlugin::loadPlugin();
+void Win32Plugin::unloadPlugin() {
+	SearchMan.remove(_filename);
+
+	DynamicPlugin::unloadPlugin();
+	if (_dlHandle) {
+		if (!FreeLibrary((HMODULE)_dlHandle))
+			warning("Failed unloading plugin '%s'", _filename.c_str());
+		else
+			debug(1, "Success unloading plugin '%s'", _filename.c_str());
+		_dlHandle = 0;
 	}
-
-	void unloadPlugin() override {
-		DynamicPlugin::unloadPlugin();
-		if (_dlHandle) {
-			if (!FreeLibrary((HMODULE)_dlHandle))
-				warning("Failed unloading plugin '%s'", _filename.c_str());
-			else
-				debug(1, "Success unloading plugin '%s'", _filename.c_str());
-			_dlHandle = 0;
-		}
-	}
-};
+}
 
 
 Plugin* Win32PluginProvider::createPlugin(const Common::FSNode &node) const {
