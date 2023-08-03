@@ -1564,6 +1564,15 @@ void createDirectory(const std::string &dir) {
 #endif
 }
 
+void addFileIfExisting(StringList &list, const std::string fileName) {
+	std::ifstream rcFile;
+	rcFile.open(fileName);
+
+	if (rcFile.is_open()) {
+		list.push_back(fileName);
+	}
+}
+
 /**
  * Scans the specified directory against files, which should be included
  * in the project files. It will not include files present in the exclude list.
@@ -1658,7 +1667,8 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 		const std::string moduleDir = setup.srcDir + targetFolder + i->first;
 
 		createModuleList(moduleDir, setup.defines, setup.testDirs, in, ex, pchDirs, pchEx);
-		createProjectFile(i->first, i->second, setup, moduleDir, in, ex, setup.srcDir + targetFolder, pchDirs, pchEx);
+		addResourceFiles(setup, i->first, in, ex);
+		createProjectFile(i->first, i->second, setup, setup.srcDir, in, ex, setup.srcDir + targetFolder, pchDirs, pchEx);
 	}
 
 	// Create engine-detection submodules.
@@ -1718,7 +1728,7 @@ void ProjectProvider::createProject(BuildSetup &setup) {
 			createModuleList(setup.srcDir + "/test", setup.defines, setup.testDirs, in, ex, pchDirs, pchEx);
 		} else {
 			// Resource files
-			addResourceFiles(setup, in, ex);
+			addResourceFiles(setup, setup.projectName, in, ex);
 
 			// Various text files
 			in.push_back(setup.srcDir + "/AUTHORS");

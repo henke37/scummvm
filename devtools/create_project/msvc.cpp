@@ -252,9 +252,15 @@ void MSVCProvider::createOtherBuildFiles(const BuildSetup &setup) {
 	}
 }
 
-void MSVCProvider::addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) {
-	includeList.push_back(setup.srcDir + "/icons/" + setup.projectName + ".ico");
-	includeList.push_back(setup.srcDir + "/dists/" + setup.projectName + ".rc");
+void MSVCProvider::addResourceFiles(const BuildSetup &setup, const std::string &project, StringList &includeList, StringList &excludeList) {
+	if (project == setup.projectName) {
+		includeList.push_back(setup.srcDir + "/icons/" + setup.projectName + ".ico");
+	}
+
+	if (project == setup.projectName || setup.featureEnabled("dynamic-modules")) {
+		std::string fileName = setup.srcDir + "/dists/" + project + ".rc";
+		addFileIfExisting(includeList, fileName);
+	}
 }
 
 void MSVCProvider::createGlobalProp(const BuildSetup &setup) {

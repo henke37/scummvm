@@ -224,9 +224,15 @@ void CodeBlocksProvider::createProjectFile(const std::string &name, const std::s
 
 }
 
-void CodeBlocksProvider::addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) {
-	includeList.push_back(setup.srcDir + "/icons/" + setup.projectName + ".ico");
-	includeList.push_back(setup.srcDir + "/dists/" + setup.projectName + ".rc");
+void CodeBlocksProvider::addResourceFiles(const BuildSetup &setup, const std::string &project, StringList &includeList, StringList &excludeList) {
+	if (project == setup.projectName) {
+		includeList.push_back(setup.srcDir + "/icons/" + setup.projectName + ".ico");
+	}
+
+	if (project == setup.projectName || setup.featureEnabled("dynamic-modules")) {
+		std::string fileName = setup.srcDir + "/dists/" + project + ".rc";
+		addFileIfExisting(includeList, fileName);
+	}
 }
 
 void CodeBlocksProvider::writeWarnings(const std::string &name, std::ofstream &output) const {

@@ -56,7 +56,7 @@ protected:
 
 	void createOtherBuildFiles(const BuildSetup &setup) override;
 
-	void addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) override;
+	void addResourceFiles(const BuildSetup &setup, const std::string &project, StringList &includeList, StringList &excludeList) override;
 
 	/**
 	 * Create the global project properties.

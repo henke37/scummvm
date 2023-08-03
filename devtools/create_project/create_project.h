@@ -482,6 +482,11 @@ FileList listDirectory(const std::string &dir);
 void createDirectory(const std::string &dir);
 
 /**
+* Adds a file to the list only if it exists
+*/
+void addFileIfExisting(StringList &list, const std::string fileName);
+
+/**
  * Structure representing a file tree. This contains two
  * members: name and children. "name" holds the name of
  * the node. "children" does contain all the node's children.
@@ -559,7 +564,7 @@ protected:
 	 *
 	 * @param setup Description of the desired build setup.
 	 */
-	virtual void addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) = 0;
+	virtual void addResourceFiles(const BuildSetup &setup, const std::string &project, StringList &includeList, StringList &excludeList) = 0;
 
 	/**
 	 * Create a project file for the specified list of files.

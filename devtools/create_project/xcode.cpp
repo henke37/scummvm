@@ -298,7 +298,9 @@ XcodeProvider::XcodeProvider(StringList &global_warnings, std::map<std::string, 
 	_rootSourceGroup = nullptr;
 }
 
-void XcodeProvider::addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) {
+void XcodeProvider::addResourceFiles(const BuildSetup &setup, const std::string &project, StringList &includeList, StringList &excludeList) {
+	if (project != setup.projectName) return;
+
 	includeList.push_back(setup.srcDir + "/dists/ios7/Info.plist");
 	includeList.push_back(setup.srcDir + "/dists/tvos/Info.plist");
 

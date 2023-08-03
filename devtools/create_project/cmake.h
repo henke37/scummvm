@@ -42,7 +42,7 @@ protected:
 
 	void createOtherBuildFiles(const BuildSetup &) final {}
 
-	void addResourceFiles(const BuildSetup &setup, StringList &includeList, StringList &excludeList) final {}
+	void addResourceFiles(const BuildSetup &setup, const std::string &name, StringList &includeList, StringList &excludeList) final {}
 
 	void createProjectFile(const std::string &name, const std::string &uuid, const BuildSetup &setup, const std::string &moduleDir,
 						   const StringList &includeList, const StringList &excludeList, const std::string &pchIncludeRoot, const StringList &pchDirs, const StringList &pchExclude) final;
