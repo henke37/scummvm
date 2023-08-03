@@ -1,0 +1,46 @@
+#include "winresrc.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "base/internal_plugins.h" // for PLUGIN_ENABLED_STATIC
+#include "base/internal_version.h"
+
+#define FILE 256
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION     SCUMMVM_VER_MAJOR,SCUMMVM_VER_MINOR,SCUMMVM_VER_PATCH,0
+ PRODUCTVERSION  SCUMMVM_VER_MAJOR,SCUMMVM_VER_MINOR,SCUMMVM_VER_PATCH,0
+ FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS       VS_FF_DEBUG
+#else
+ FILEFLAGS       0
+#endif
+ FILEOS          VOS_NT_WINDOWS32
+ FILETYPE        VFT_DLL
+ FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0" // US English, Unicode
+        BEGIN
+            VALUE "Comments", "I'm selling these fine leather jackets\0"
+            VALUE "CompanyName", "scummvm.org\0"
+            VALUE "FileDescription", "Scumm engine plugin\0"
+            VALUE "FileVersion", SCUMMVM_VERSION "\0"
+            VALUE "InternalName", "scumm\0"
+            VALUE "LegalCopyright", "Copyright \xA9 2001-2023 The ScummVM Team\0"
+            VALUE "LegalTrademarks", "'SCUMM', and all SCUMM games are a TM of LucasArts. \0"
+            VALUE "OriginalFilename", "scumm.dll\0"
+            VALUE "ProductName", "ScummVM\0"
+            VALUE "ProductVersion", SCUMMVM_VERSION "\0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200 // US English, Unicode
+    END
+END
