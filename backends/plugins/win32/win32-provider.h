@@ -37,13 +37,13 @@ protected:
 
 class Win32Plugin final : public DynamicPlugin {
 protected:
-	void *_dlHandle;
+	HMODULE _dlHandle;
 
 	VoidFunc findSymbol(const char *symbol) override;
 
 public:
 	Win32Plugin(const Common::String &filename)
-		: DynamicPlugin(filename), _dlHandle(0) {}
+		: DynamicPlugin(filename), _dlHandle(0), _arch(nullptr) {}
 
 	bool loadPlugin() override;
 

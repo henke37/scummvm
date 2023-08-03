@@ -37,11 +37,11 @@
 #include "common/fs.h"
 
 DynamicPlugin::VoidFunc Win32Plugin::findSymbol(const char *symbol) {
-	FARPROC func = GetProcAddress((HMODULE)_dlHandle, symbol);
+	FARPROC func = GetProcAddress(_dlHandle, symbol);
 	if (!func)
 		debug("Failed loading symbol '%s' from plugin '%s'", symbol, _filename.c_str());
 
-	return (void (*)())func;
+	return (DynamicPlugin::VoidFunc)func;
 }
 
 bool Win32Plugin::loadPlugin() {
@@ -57,7 +57,9 @@ bool Win32Plugin::loadPlugin() {
 		debug(1, "Success loading plugin '%s', handle %p", _filename.c_str(), _dlHandle);
 	}
 
-	SearchMan.add(_filename, new Win32::Win32ResourceArchive((HMODULE)_dlHandle), -1, false);
+	_arch = new Win32::Win32ResourceArchive(_dlHandle);
+
+	SearchMan.add(_filename, _arch, -1, false);
 
 	return DynamicPlugin::loadPlugin();
 }
@@ -65,6 +67,9 @@ bool Win32Plugin::loadPlugin() {
 
 void Win32Plugin::unloadPlugin() {
 	SearchMan.remove(_filename);
+
+	delete _arch;
+	_arch = nullptr;
 
 	DynamicPlugin::unloadPlugin();
 	if (_dlHandle) {
