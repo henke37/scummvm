@@ -1,0 +1,57 @@
+#include "winresrc.h"
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "base/internal_plugins.h" // for PLUGIN_ENABLED_STATIC
+#include "base/internal_version.h"
+
+#define FILE 256
+#define IDI_ICON  1001
+#define IDI_COUNT 1002
+#define ID_GDF_XML __GDF_XML
+
+// Engine or feature specific resources
+#ifdef BUILTIN_RESOURCES
+
+#if PLUGIN_ENABLED_DYNAMIC(ACCESS)
+access.dat             FILE    "dists/engine-data/access.dat"
+#endif
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION     SCUMMVM_VER_MAJOR,SCUMMVM_VER_MINOR,SCUMMVM_VER_PATCH,0
+ PRODUCTVERSION  SCUMMVM_VER_MAJOR,SCUMMVM_VER_MINOR,SCUMMVM_VER_PATCH,0
+ FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS       VS_FF_DEBUG
+#else
+ FILEFLAGS       0
+#endif
+ FILEOS          VOS_NT_WINDOWS32
+ FILETYPE        VFT_DLL
+ FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0" // US English, Unicode
+        BEGIN
+            ;VALUE "Comments", "\0"
+            VALUE "CompanyName", "scummvm.org\0"
+            VALUE "FileDescription", "Access Engine\0"
+            VALUE "FileVersion", SCUMMVM_VERSION "\0"
+            VALUE "InternalName", "access\0"
+            VALUE "LegalCopyright", "Copyright \xA9 2001-2023 The ScummVM Team\0"
+            ;VALUE "LegalTrademarks", " \0"
+            VALUE "OriginalFilename", "access.dll\0"
+            VALUE "ProductName", "ScummVM\0"
+            VALUE "ProductVersion", SCUMMVM_VERSION "\0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200 // US English, Unicode
+    END
+END
