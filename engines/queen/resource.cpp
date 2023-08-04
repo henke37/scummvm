@@ -64,7 +64,9 @@ Resource::Resource()
 Resource::~Resource() {
 	_resourceFile.close();
 
+#ifndef BUILTIN_RESOURCES
 	if (_resourceTable != _resourceTablePEM10)
+#endif
 		delete[] _resourceTable;
 }
 
@@ -156,13 +158,18 @@ void Resource::readTableFile(uint8 version, uint32 offset) {
 		tableFile.seek(offset);
 		readTableEntries(&tableFile);
 	} else {
+#ifndef BUILTIN_RESOURCES
 		// check if it is the english floppy version, for which we have a hardcoded version of the table
 		if (strcmp(_version.str, "PEM10") == 0) {
 			_resourceEntries = 1076;
 			_resourceTable = _resourceTablePEM10;
 		} else {
+#endif
 			error("Could not find tablefile '%s'", _tableFilename);
+
+#ifndef BUILTIN_RESOURCES
 		}
+#endif
 	}
 }
 

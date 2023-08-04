@@ -109,8 +109,10 @@ protected:
 	//! resource table filename (queen.tbl)
 	static const char *const _tableFilename;
 
+#ifndef BUILTIN_RESOURCES
 	//! resource table for english floppy version
 	static ResourceEntry _resourceTablePEM10[];
+#endif
 };
 
 } // End of namespace Queen
