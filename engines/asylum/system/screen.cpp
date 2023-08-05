@@ -526,7 +526,7 @@ void Screen::setPaletteGamma(byte *data, byte *target) {
 		if (data[2] > color)
 			color = data[2];
 
-		int gamma = color + (Config.gammaLevel * (63 - color) + 31) / 63;
+		int gamma = color + (_vm->config()->gammaLevel * (63 - color) + 31) / 63;
 
 		if (gamma && color != 0) {
 			if (data[0])
@@ -544,7 +544,7 @@ void Screen::setPaletteGamma(byte *data, byte *target) {
 }
 
 void Screen::setGammaLevel(ResourceId id) {
-	if (!Config.gammaLevel)
+	if (!_vm->config()->gammaLevel)
 		return;
 
 	if (!id)
@@ -706,7 +706,7 @@ void Screen::drawGraphicsInQueue() {
 		const GraphicQueueItem *item = i;
 
 		if (item->type == kGraphicItemNormal) {
-			if (item->transTableNum <= 0 || Config.performance <= 1)
+			if (item->transTableNum <= 0 || _vm->config()->performance <= 1)
 				draw(item->resourceId, item->frameIndex, item->source, item->flags);
 			else
 				drawTransparent(item->resourceId, item->frameIndex, item->source, item->flags, (uint32)(item->transTableNum - 1));

@@ -23,19 +23,9 @@
 
 #include "asylum/system/sound.h"
 
-namespace Common {
-DECLARE_SINGLETON(Asylum::ConfigurationManager);
-}
-
 namespace Asylum {
 
-static bool g_config_initialized = false;
-
 ConfigurationManager::ConfigurationManager() {
-	if (!g_config_initialized) {
-		g_config_initialized = true;
-	}
-
 	// Register engine-specific options
 	ConfMan.registerDefault("show_encounter_subtitles", true);
 	ConfMan.registerDefault("gamma_level", 0);

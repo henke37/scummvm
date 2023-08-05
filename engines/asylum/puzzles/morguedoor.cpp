@@ -135,14 +135,14 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	if (mousePos.x > 347 && mousePos.x < 357
 	 && mousePos.y > 124 && mousePos.y < 154) {
 		 _frameIndexes[kTopSmallLever] = 1;
-		 getSound()->playSound(getWorld()->soundResourceIds[6], false, Config.sfxVolume - 10);
+		 getSound()->playSound(getWorld()->soundResourceIds[6], false, _vm->config()->sfxVolume - 10);
 	}
 
 	// Bottom small lever
 	if (mousePos.x > 346 && mousePos.x < 356
 	 && mousePos.y > 339 && mousePos.y < 386) {
 		_frameIndexes[kBottomSmallLever] = 1;
-		getSound()->playSound(getWorld()->soundResourceIds[6], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[6], false, _vm->config()->sfxVolume - 10);
 	}
 
 	// Top Right Valve
@@ -150,7 +150,7 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	 && mousePos.y > 41  && mousePos.y < 120) {
 		if (_frameIndexes[kTopRightValve] == 0) {
 			_frameIndexes[kTopRightValve] = 1;
-			getSound()->playSound(getWorld()->soundResourceIds[1], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[1], false, _vm->config()->sfxVolume - 10);
 		}
 
 		return true;
@@ -161,7 +161,7 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	 && mousePos.y > 190 && mousePos.y < 320) {
 		if (_frameIndexes[kCenterValve] == 0) {
 			_frameIndexes[kCenterValve] = 1;
-			getSound()->playSound(getWorld()->soundResourceIds[0], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[0], false, _vm->config()->sfxVolume - 10);
 			_data_4572B0 = true;
 		}
 
@@ -173,7 +173,7 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	 && mousePos.y > 190 && mousePos.y < 320) {
 		if (_frameIndexes[kCenterValve] == 0) {
 			_frameIndexes[kCenterValve] = 14;
-			getSound()->playSound(getWorld()->soundResourceIds[0], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[0], false, _vm->config()->sfxVolume - 10);
 			_data_4572B0 = false;
 		}
 
@@ -184,7 +184,7 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	if (mousePos.x > 507 && mousePos.x < 556
 	 && mousePos.y > 124 && mousePos.y < 177) {
 		if (_frameIndexes[kTopRightLever] == 4) {
-			getSound()->playSound(getWorld()->soundResourceIds[2], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[2], false, _vm->config()->sfxVolume - 10);
 			_data_4572A4 = true;
 			_data_4572AC = true;
 		}
@@ -196,7 +196,7 @@ bool PuzzleMorgueDoor::mouseLeftDown(const AsylumEvent &evt) {
 	if (mousePos.x > 556 && mousePos.x < 605
 	 && mousePos.y > 124 && mousePos.y < 177) {
 		if (_frameIndexes[kTopRightLever] == 4) {
-			getSound()->playSound(getWorld()->soundResourceIds[2], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[2], false, _vm->config()->sfxVolume - 10);
 			_data_4572A8 = true;
 			_data_4572AC = false;
 		}
@@ -390,9 +390,9 @@ void PuzzleMorgueDoor::updateState() {
 
 			if (_frameIndexes[kRightGear] == 14) {
 				if (_data_45A9D8 < 3)
-					getSound()->playSound(getWorld()->soundResourceIds[7], false, Config.sfxVolume, getWorld()->reverseStereo ? 2000 : -2000);
+					getSound()->playSound(getWorld()->soundResourceIds[7], false, _vm->config()->sfxVolume, getWorld()->reverseStereo ? 2000 : -2000);
 
-				getSound()->playSound(getWorld()->soundResourceIds[5], false, Config.sfxVolume - 100, getWorld()->reverseStereo ? -3000 : 3000);
+				getSound()->playSound(getWorld()->soundResourceIds[5], false, _vm->config()->sfxVolume - 100, getWorld()->reverseStereo ? -3000 : 3000);
 				_flag5 = true;
 			}
 		}
@@ -406,9 +406,9 @@ void PuzzleMorgueDoor::updateState() {
 
 				if (_frameIndexes[kRightGear] == 14) {
 					if (_data_45A9D8 < 3)
-						getSound()->playSound(getWorld()->soundResourceIds[7], false, Config.sfxVolume, getWorld()->reverseStereo ? 2000 : -2000);
+						getSound()->playSound(getWorld()->soundResourceIds[7], false, _vm->config()->sfxVolume, getWorld()->reverseStereo ? 2000 : -2000);
 
-					getSound()->playSound(getWorld()->soundResourceIds[5], false, Config.sfxVolume - 100, getWorld()->reverseStereo ? -3000 : 3000);
+					getSound()->playSound(getWorld()->soundResourceIds[5], false, _vm->config()->sfxVolume - 100, getWorld()->reverseStereo ? -3000 : 3000);
 					_flag5 = true;
 				}
 			}
@@ -436,7 +436,7 @@ void PuzzleMorgueDoor::updateState() {
 					// Update top lever
 					if (_frameIndexes[kTopLever] >= 15) {
 						if (_frameIndexes[kTopLever] == 15)
-							getSound()->playSound(getWorld()->soundResourceIds[4], false, Config.sfxVolume - 10);
+							getSound()->playSound(getWorld()->soundResourceIds[4], false, _vm->config()->sfxVolume - 10);
 
 						if (_frameIndexes[kTopLever] >= _frameCounts[kTopLever] - 1) {
 							_frameIndexes[kCenterValve] = 0;
@@ -455,7 +455,7 @@ void PuzzleMorgueDoor::updateState() {
 					// Update bottom lever
 					if (_frameIndexes[kBottomLever] >= 15) {
 						if (_frameIndexes[kBottomLever] == 15)
-							getSound()->playSound(getWorld()->soundResourceIds[4], false, Config.sfxVolume - 10);
+							getSound()->playSound(getWorld()->soundResourceIds[4], false, _vm->config()->sfxVolume - 10);
 
 						if (_frameIndexes[kBottomLever] >= _frameCounts[kBottomLever] - 1) {
 							_frameIndexes[kCenterValve] = 0;
@@ -488,7 +488,7 @@ void PuzzleMorgueDoor::updateState() {
 			// Top lever
 			if (_frameIndexes[kTopLever] >= 15) {
 				if (_frameIndexes[kTopLever] == 20)
-					getSound()->playSound(getWorld()->soundResourceIds[3], false, Config.sfxVolume - 10);
+					getSound()->playSound(getWorld()->soundResourceIds[3], false, _vm->config()->sfxVolume - 10);
 
 				if (_frameIndexes[kTopLever] <= 15) {
 					_frameIndexes[kCenterValve] = 0;
@@ -505,7 +505,7 @@ void PuzzleMorgueDoor::updateState() {
 			// Bottom lever
 			if (_frameIndexes[kBottomLever] >= 15) {
 				if (_frameIndexes[kBottomLever] == 20)
-					getSound()->playSound(getWorld()->soundResourceIds[3], false, Config.sfxVolume - 10);
+					getSound()->playSound(getWorld()->soundResourceIds[3], false, _vm->config()->sfxVolume - 10);
 
 				if (_frameIndexes[kBottomLever] <= 15) {
 					_frameIndexes[kCenterValve] = 0;
@@ -560,7 +560,7 @@ updateIndices:
 			_frameIndexes[kTopSmallLever] = 0;
 
 			if (_data_45A9D8 > 0) {
-				getSound()->playSound(getWorld()->soundResourceIds[8], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[8], false, _vm->config()->sfxVolume - 10);
 				_moveTopGear = true;
 			}
 
@@ -576,7 +576,7 @@ updateIndices:
 			_frameIndexes[kBottomSmallLever] = 0;
 
 			if (_data_45A9DC > 0) {
-				getSound()->playSound(getWorld()->soundResourceIds[8], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[8], false, _vm->config()->sfxVolume - 10);
 				_moveBottomGear = true;
 			}
 		}

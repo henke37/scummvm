@@ -126,7 +126,7 @@ void PuzzleTicTacToe::updateScreen()  {
 			}
 		} else {
 			if (_ticker > 40) {
-				getSound()->playSound(getWorld()->soundResourceIds[13], false, Config.sfxVolume - 100);
+				getSound()->playSound(getWorld()->soundResourceIds[13], false, _vm->config()->sfxVolume - 100);
 
 				_ticker = 0;
 			}
@@ -158,7 +158,7 @@ bool PuzzleTicTacToe::mouseLeftDown(const AsylumEvent &evt) {
 	for (uint32 i = 0; i < ARRAYSIZE(_board); i++) {
 		if (hitTest(&puzzleTicTacToePolygons[i * 4], evt.mouse, 0)) {
 			if (_board[i] == ' ') {
-				getSound()->playSound(getWorld()->soundResourceIds[11], false, Config.sfxVolume - 100);
+				getSound()->playSound(getWorld()->soundResourceIds[11], false, _vm->config()->sfxVolume - 100);
 				_board[i] = 'X';
 				_currentPos = i;
 				_frameIndex = 0;
@@ -573,7 +573,7 @@ void PuzzleTicTacToe::computerMoves() {
 
 	_board[_currentPos] = 'O';
 
-	getSound()->playSound(getWorld()->soundResourceIds[12], false, Config.sfxVolume - 100);
+	getSound()->playSound(getWorld()->soundResourceIds[12], false, _vm->config()->sfxVolume - 100);
 }
 
 } // End of namespace Asylum

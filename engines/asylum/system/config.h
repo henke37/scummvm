@@ -23,7 +23,6 @@
 #define ASYLUM_SYSTEM_CONFIG_H
 
 #include "common/array.h"
-#include "common/singleton.h"
 #include "common/config-manager.h"
 
 namespace Asylum {
@@ -34,7 +33,7 @@ namespace Asylum {
  *
  * These options can be set through the main menu
  */
-class ConfigurationManager: public Common::Singleton<ConfigurationManager> {
+class ConfigurationManager {
 public:
 
 	//////////////////////////////////////////////////////////////////////////
@@ -94,15 +93,10 @@ public:
 	 */
 	bool isKeyAssigned(char key) const;
 
-private:
-	friend class Common::Singleton<SingletonBaseType>;
-
 	ConfigurationManager();
 	virtual ~ConfigurationManager();
 
 };
-
-#define Config (::Asylum::ConfigurationManager::instance())
 
 } // end of namespace Asylum
 

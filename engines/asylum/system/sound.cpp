@@ -156,7 +156,7 @@ void Sound::setMusicVolume(int32 volume) {
 }
 
 void Sound::setPanning(ResourceId resourceId, int32 panning) {
-	if (Config.performance == 1)
+	if (_vm->config()->performance == 1)
 		return;
 
 	SoundQueueItem *item = getPlayingItem(resourceId);

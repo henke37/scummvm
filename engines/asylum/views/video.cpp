@@ -159,7 +159,7 @@ void VideoPlayer::play(uint32 videoNumber, EventHandler *handler) {
 		filename = Common::String::format("mov%03d.avi", videoNumber);
 	else
 		filename = Common::String::format("mov%03d.smk", videoNumber);
-	play(filename, Config.showMovieSubtitles);
+	play(filename, _vm->config()->showMovieSubtitles);
 
 	// Cleanup and switch to previous event handler
 	getCursor()->show();

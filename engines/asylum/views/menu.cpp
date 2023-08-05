@@ -145,7 +145,7 @@ void Menu::setup() {
 		_dword_455D4C = false;
 		_dword_455D5C = false;
 
-		getSound()->playSound(MAKE_RESOURCE(kResourcePackShared, 56), false, Config.voiceVolume);
+		getSound()->playSound(MAKE_RESOURCE(kResourcePackShared, 56), false, _vm->config()->voiceVolume);
 	} else {
 		getText()->loadFont(MAKE_RESOURCE(kResourcePackShared, 25));
 		getScreen()->setPalette(MAKE_RESOURCE(kResourcePackShared, 26));
@@ -210,9 +210,9 @@ Menu::MenuScreen Menu::findMousePosition() {
 
 void Menu::playTestSounds() {
 	_testSoundsPlaying = true;
-	getSound()->playSound(kAmbientSound, true, Config.ambientVolume);
-	getSound()->playSound(kSfxSound, true, Config.sfxVolume);
-	getSound()->playSound(kVoiceSound, true, Config.voiceVolume);
+	getSound()->playSound(kAmbientSound, true, _vm->config()->ambientVolume);
+	getSound()->playSound(kSfxSound, true, _vm->config()->sfxVolume);
+	getSound()->playSound(kVoiceSound, true, _vm->config()->voiceVolume);
 }
 
 void Menu::stopTestSounds() {
@@ -232,23 +232,23 @@ void Menu::adjustMasterVolume(int32 delta) const {
 			error("[Menu::adjustMasterVolume] Invalid volume index (%d)", volumeIndex);
 
 		case 1:
-			volume = &Config.musicVolume;
+			volume = &_vm->config()->musicVolume;
 			break;
 
 		case 2:
-			volume = &Config.ambientVolume;
+			volume = &_vm->config()->ambientVolume;
 			break;
 
 		case 3:
-			volume = &Config.sfxVolume;
+			volume = &_vm->config()->sfxVolume;
 			break;
 
 		case 4:
-			volume = &Config.voiceVolume;
+			volume = &_vm->config()->voiceVolume;
 			break;
 
 		case 5:
-			volume = &Config.movieVolume;
+			volume = &_vm->config()->movieVolume;
 			break;
 		}
 
@@ -277,24 +277,24 @@ void Menu::adjustMasterVolume(int32 delta) const {
 }
 
 void Menu::adjustTestVolume() {
-	getSound()->setMusicVolume(Config.musicVolume);
-	if ((Config.movieVolume / 250 + 20) <= 0)
+	getSound()->setMusicVolume(_vm->config()->musicVolume);
+	if ((_vm->config()->movieVolume / 250 + 20) <= 0)
 		getSound()->playMusic(_musicResourceId);
 
 	if (getSound()->isPlaying(kAmbientSound))
-		getSound()->setVolume(kAmbientSound, Config.ambientVolume);
+		getSound()->setVolume(kAmbientSound, _vm->config()->ambientVolume);
 	else if (_testSoundsPlaying)
-		getSound()->playSound(kAmbientSound, true, Config.ambientVolume);
+		getSound()->playSound(kAmbientSound, true, _vm->config()->ambientVolume);
 
 	if (getSound()->isPlaying(kSfxSound))
-		getSound()->setVolume(kSfxSound, Config.sfxVolume);
+		getSound()->setVolume(kSfxSound, _vm->config()->sfxVolume);
 	else if (_testSoundsPlaying)
-		getSound()->playSound(kSfxSound, true, Config.sfxVolume);
+		getSound()->playSound(kSfxSound, true, _vm->config()->sfxVolume);
 
 	if (getSound()->isPlaying(kVoiceSound))
-		getSound()->setVolume(kVoiceSound, Config.voiceVolume);
+		getSound()->setVolume(kVoiceSound, _vm->config()->voiceVolume);
 	else if (_testSoundsPlaying)
-		getSound()->playSound(kVoiceSound, true, Config.voiceVolume);
+		getSound()->playSound(kVoiceSound, true, _vm->config()->voiceVolume);
 }
 
 void Menu::setupMusic() {
@@ -469,7 +469,7 @@ bool Menu::update() {
 
 					if (_soundResourceId != MAKE_RESOURCE(kResourcePackShared, icon + 44) || !getSound()->isPlaying(_soundResourceId)) {
 						_soundResourceId = MAKE_RESOURCE(kResourcePackShared, icon + 44);
-						getSound()->playSound(_soundResourceId, false, Config.voiceVolume);
+						getSound()->playSound(_soundResourceId, false, _vm->config()->voiceVolume);
 					}
 				}
 			} else {
@@ -1343,16 +1343,16 @@ void Menu::updateTextOptions() {
 
 	getText()->draw(Common::Point(320, 150), MAKE_RESOURCE(kResourcePackText, 1412));
 
-	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, Config.showMovieSubtitles ? 1414 : 1415))) || cursor.y < 150 || cursor.y > 174);
+	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, _vm->config()->showMovieSubtitles ? 1414 : 1415))) || cursor.y < 150 || cursor.y > 174);
 	getText()->setPosition(Common::Point(350, 150));
-	getText()->draw(MAKE_RESOURCE(kResourcePackText, Config.showMovieSubtitles ? 1414 : 1415));
+	getText()->draw(MAKE_RESOURCE(kResourcePackText, _vm->config()->showMovieSubtitles ? 1414 : 1415));
 
 	getText()->loadFont(kFontYellow);
 	getText()->draw(Common::Point(320, 179), MAKE_RESOURCE(kResourcePackText, 1413));
 
-	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, Config.showEncounterSubtitles ? 1414 : 1415))) || cursor.y < 179 || cursor.y > 203);
+	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, _vm->config()->showEncounterSubtitles ? 1414 : 1415))) || cursor.y < 179 || cursor.y > 203);
 	getText()->setPosition(Common::Point(350, 179));
-	getText()->draw(MAKE_RESOURCE(kResourcePackText, Config.showEncounterSubtitles ? 1414 : 1415));
+	getText()->draw(MAKE_RESOURCE(kResourcePackText, _vm->config()->showEncounterSubtitles ? 1414 : 1415));
 
 	switchFont(cursor.x < 300 || cursor.x > (300 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, 1416))) || cursor.y < 340 || cursor.y > (340 + 24));
 	getText()->setPosition(Common::Point(300, 340));
@@ -1392,23 +1392,23 @@ void Menu::updateAudioOptions() {
 			break;
 
 		case 1:
-			volumeValue = Config.musicVolume / 250 + 20;
+			volumeValue = _vm->config()->musicVolume / 250 + 20;
 			break;
 
 		case 2:
-			volumeValue = Config.ambientVolume / 250 + 20;
+			volumeValue = _vm->config()->ambientVolume / 250 + 20;
 			break;
 
 		case 3:
-			volumeValue = Config.sfxVolume / 250 + 20;
+			volumeValue = _vm->config()->sfxVolume / 250 + 20;
 			break;
 
 		case 4:
-			volumeValue = Config.voiceVolume / 250 + 20;
+			volumeValue = _vm->config()->voiceVolume / 250 + 20;
 			break;
 
 		case 5:
-			volumeValue = Config.movieVolume / 250 + 20;
+			volumeValue = _vm->config()->movieVolume / 250 + 20;
 			break;
 		}
 
@@ -1432,9 +1432,9 @@ void Menu::updateAudioOptions() {
 	getText()->loadFont(kFontYellow);
 	getText()->draw(Common::Point(320, (int16)(29 *volumeIndex + 150)), MAKE_RESOURCE(kResourcePackText, 1427));
 
-	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(Config.reverseStereo ? MAKE_RESOURCE(kResourcePackText, 1428) : MAKE_RESOURCE(kResourcePackText, 1429))) || cursor.y < (29 * volumeIndex + 150) || cursor.y > (29 * (volumeIndex + 6)));
+	switchFont(cursor.x < 350 || cursor.x > (350 + getText()->getWidth(_vm->config()->reverseStereo ? MAKE_RESOURCE(kResourcePackText, 1428) : MAKE_RESOURCE(kResourcePackText, 1429))) || cursor.y < (29 * volumeIndex + 150) || cursor.y > (29 * (volumeIndex + 6)));
 	getText()->setPosition(Common::Point(350, (int16)(29 * volumeIndex + 150)));
-	getText()->draw(Config.reverseStereo ? MAKE_RESOURCE(kResourcePackText, 1428) : MAKE_RESOURCE(kResourcePackText, 1429));
+	getText()->draw(_vm->config()->reverseStereo ? MAKE_RESOURCE(kResourcePackText, 1428) : MAKE_RESOURCE(kResourcePackText, 1429));
 
 	switchFont(cursor.x < 220 || cursor.x > (220 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, 1430))) || cursor.y < 360 || cursor.y > (360 + 24));
 	getText()->setPosition(Common::Point(220, 360));
@@ -1471,11 +1471,11 @@ void Menu::updateSettings() {
 
 	getText()->setPosition(Common::Point(sizeMinus + sizePlus + 365, 150));
 	getText()->loadFont(kFontYellow);
-	if (Config.gammaLevel) {
-		for (int32 i = 0; i < Config.gammaLevel; i++)
+	if (_vm->config()->gammaLevel) {
+		for (int32 i = 0; i < _vm->config()->gammaLevel; i++)
 			getText()->drawASCII(']');
 
-		if (Config.gammaLevel == 8)
+		if (_vm->config()->gammaLevel == 8)
 			getText()->drawASCII('*');
 	} else {
 		getText()->draw(MAKE_RESOURCE(kResourcePackText, 1435));
@@ -1496,13 +1496,13 @@ void Menu::updateSettings() {
 
 	getText()->setPosition(Common::Point(sizeMinus + sizePlus + 365, 179));
 	getText()->loadFont(kFontYellow);
-	if (Config.performance == 5) {
+	if (_vm->config()->performance == 5) {
 		getText()->draw(MAKE_RESOURCE(kResourcePackText, 1436));
 	} else {
-		for (int32 i = 5; i > Config.performance; --i) // This has ] augmenting when pressing - which is a bit convoluted (perf == speed == more ])
+		for (int32 i = 5; i > _vm->config()->performance; --i) // This has ] augmenting when pressing - which is a bit convoluted (perf == speed == more ])
 			getText()->drawASCII(']');
 
-		if (!Config.performance)
+		if (!_vm->config()->performance)
 			getText()->drawASCII('*');
 	}
 
@@ -1547,7 +1547,7 @@ void Menu::updateSettings() {
 	getText()->setPosition(Common::Point(sizeMinus + sizePlus + 365, 209));
 	getText()->loadFont(kFontYellow);
 
-	for (int i = 1; i <= Config.animationsSpeed; i++)
+	for (int i = 1; i <= _vm->config()->animationsSpeed; i++)
 		getText()->drawASCII(']');
 
 	//////////////////////////////////////////////////////////////////////////
@@ -2117,17 +2117,17 @@ void Menu::clickQuitGame() {
 void Menu::clickTextOptions() {
 	Common::Point cursor = getCursor()->position();
 
-	if (cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, Config.showMovieSubtitles ? 1414 : 1415))) || cursor.y < 150 || cursor.y > 174) {
-		if (cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, Config.showEncounterSubtitles ? 1414 : 1415))) || cursor.y < 179 || cursor.y > 203) {
+	if (cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, _vm->config()->showMovieSubtitles ? 1414 : 1415))) || cursor.y < 150 || cursor.y > 174) {
+		if (cursor.x < 350 || cursor.x > (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, _vm->config()->showEncounterSubtitles ? 1414 : 1415))) || cursor.y < 179 || cursor.y > 203) {
 			if (cursor.x >= 300 && cursor.x <= (300 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, 1416))) && cursor.y >= 340 && cursor.y <= (340 + 24)) {
-				Config.write();
+				_vm->config()->write();
 				leave();
 			}
 		} else {
-			Config.showEncounterSubtitles = !Config.showEncounterSubtitles;
+			_vm->config()->showEncounterSubtitles = !_vm->config()->showEncounterSubtitles;
 		}
 	} else {
-		Config.showMovieSubtitles = !Config.showMovieSubtitles;
+		_vm->config()->showMovieSubtitles = !_vm->config()->showMovieSubtitles;
 	}
 }
 
@@ -2140,7 +2140,7 @@ void Menu::clickAudioOptions() {
 
 	if (cursor.x >= 220 && cursor.x <= (220 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, 1430))) && cursor.y >= 360 && cursor.y <= (360 + 24)) {
 		stopTestSounds();
-		Config.write();
+		_vm->config()->write();
 		_vm->syncSoundSettings();
 		leave();
 		return;
@@ -2177,23 +2177,23 @@ void Menu::clickAudioOptions() {
 				break;
 
 			case 1:
-				volume = &Config.musicVolume;
+				volume = &_vm->config()->musicVolume;
 				break;
 
 			case 2:
-				volume = &Config.ambientVolume;
+				volume = &_vm->config()->ambientVolume;
 				break;
 
 			case 3:
-				volume = &Config.sfxVolume;
+				volume = &_vm->config()->sfxVolume;
 				break;
 
 			case 4:
-				volume = &Config.voiceVolume;
+				volume = &_vm->config()->voiceVolume;
 				break;
 
 			case 5:
-				volume = &Config.movieVolume;
+				volume = &_vm->config()->movieVolume;
 				break;
 			}
 
@@ -2236,9 +2236,9 @@ void Menu::clickAudioOptions() {
 
 			if (volumeIndex >= 6) {
 				if (!found) {
-					if (cursor.x >= 350 && cursor.x <= (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, Config.reverseStereo ? 1428 : 1429)))
+					if (cursor.x >= 350 && cursor.x <= (350 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, _vm->config()->reverseStereo ? 1428 : 1429)))
 					 && cursor.y >= (29 * volumeIndex + 150) && cursor.y <= (29 * (volumeIndex + 6))) {
-						Config.reverseStereo = !Config.reverseStereo;
+						_vm->config()->reverseStereo = !_vm->config()->reverseStereo;
 						_vm->updateReverseStereo();
 					}
 				}
@@ -2264,7 +2264,7 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Back to main menu
 	if (cursor.x >= 300 && cursor.x <= (300 + getText()->getWidth(MAKE_RESOURCE(kResourcePackText, 1437))) && cursor.y >= 340 && cursor.y <= (340 + 24)) {
-		Config.write();
+		_vm->config()->write();
 		leave();
 		return;
 	}
@@ -2272,10 +2272,10 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Performance minus
 	if (cursor.x >= 350 && cursor.x <= (sizeMinus + 350) && cursor.y >= 179 && cursor.y <= 203) {
-		if (!Config.performance)
+		if (!_vm->config()->performance)
 			return;
 
-		Config.performance -= 1;
+		_vm->config()->performance -= 1;
 		adjustPerformance();
 
 		return;
@@ -2284,10 +2284,10 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Performance plus
 	if (cursor.x >= sizeMinus + 360 && cursor.x <= (sizeMinus + sizePlus + 360) && cursor.y >= 179 && cursor.y <= 203) {
-		if (Config.performance >= 5)
+		if (_vm->config()->performance >= 5)
 			return;
 
-		Config.performance += 1;
+		_vm->config()->performance += 1;
 		adjustPerformance();
 
 		return;
@@ -2296,10 +2296,10 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Gamma level minus
 	if (cursor.x >= 350 && cursor.x <= (sizeMinus + 350) && cursor.y >= 150 && cursor.y <= 174) {
-		if (!Config.gammaLevel)
+		if (!_vm->config()->gammaLevel)
 			return;
 
-		Config.gammaLevel -= 1;
+		_vm->config()->gammaLevel -= 1;
 		getScreen()->setGammaLevel(MAKE_RESOURCE(kResourcePackShared, 17));
 
 		return;
@@ -2308,11 +2308,11 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Gamma level plus
 	if (cursor.x >= (sizeMinus + 360) && cursor.x <= (sizeMinus + sizePlus + 360) && cursor.y >= 150 && cursor.y <= 174) {
-		if (Config.gammaLevel >= 8)
+		if (_vm->config()->gammaLevel >= 8)
 			return;
 
 
-		Config.gammaLevel += 1;
+		_vm->config()->gammaLevel += 1;
 		getScreen()->setGammaLevel(MAKE_RESOURCE(kResourcePackShared, 17));
 
 		return;
@@ -2321,10 +2321,10 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Animations speed minus
 	if (cursor.x >= 350 && cursor.x <= (sizeMinus + 350) && cursor.y >= 209 && cursor.y <= 233) {
-		if (Config.animationsSpeed == 1)
+		if (_vm->config()->animationsSpeed == 1)
 			return;
 
-		Config.animationsSpeed--;
+		_vm->config()->animationsSpeed--;
 
 		return;
 	}
@@ -2332,10 +2332,10 @@ void Menu::clickSettings() {
 	//////////////////////////////////////////////////////////////////////////
 	// Animations speed plus
 	if (cursor.x >= (sizeMinus + 360) && cursor.x <= (sizeMinus + sizePlus + 360) && cursor.y >= 209 && cursor.y <= 233) {
-		if (Config.animationsSpeed == 9)
+		if (_vm->config()->animationsSpeed == 9)
 			return;
 
-		Config.animationsSpeed++;
+		_vm->config()->animationsSpeed++;
 
 		return;
 	}
@@ -2360,7 +2360,7 @@ void Menu::clickKeyboardConfig() {
 			++keyIndex;
 		} while (keyIndex < 6);
 	} else {
-		Config.write();
+		_vm->config()->write();
 		leave();
 	}
 }

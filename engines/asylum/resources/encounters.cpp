@@ -345,8 +345,8 @@ void Encounter::exitEncounter() {
 
 	getSharedData()->setFlag(kFlagEncounterDisablePlayerOnExit, false);
 
-	if (getSound()->getMusicVolume() != Config.musicVolume)
-		getSound()->setMusicVolume(Config.musicVolume);
+	if (getSound()->getMusicVolume() != _vm->config()->musicVolume)
+		getSound()->setMusicVolume(_vm->config()->musicVolume);
 
 	// Restore scene event handler
 	_vm->switchEventHandler(getScene());
@@ -391,8 +391,8 @@ bool Encounter::handleEvent(const AsylumEvent &evt) {
 
 bool Encounter::init() {
 	// Lower music volume while we are in the encounter
-	if (getSound()->getMusicVolume() != Config.musicVolume - 500)
-		getSound()->setMusicVolume(Config.musicVolume - 500);
+	if (getSound()->getMusicVolume() != _vm->config()->musicVolume - 500)
+		getSound()->setMusicVolume(_vm->config()->musicVolume - 500);
 
 	if (!getSharedData()->getMatteBarHeight()) {
 		getSharedData()->setFlag(kFlagIsEncounterRunning, true);
@@ -431,8 +431,8 @@ bool Encounter::init() {
 
 bool Encounter::update() {
 	// Check that the music volume is lowered
-	if (getSound()->getMusicVolume() != Config.musicVolume - 500)
-		getSound()->setMusicVolume(Config.musicVolume - 500);
+	if (getSound()->getMusicVolume() != _vm->config()->musicVolume - 500)
+		getSound()->setMusicVolume(_vm->config()->musicVolume - 500);
 
 	uint32 tick = _vm->getTick();
 	ResourceId id = kResourceNone;
@@ -908,7 +908,7 @@ bool Encounter::isSpeaking() {
 // Drawing
 //////////////////////////////////////////////////////////////////////////
 bool Encounter::drawBackground() {
-	if (Config.performance > 1) {
+	if (_vm->config()->performance > 1) {
 		if (_vm->isGameFlagSet(kGameFlag528)) {
 			Common::Point origin;
 
@@ -1465,7 +1465,7 @@ bool Encounter::updateScreen() {
 			return false;
 		}
 
-		if (Config.showEncounterSubtitles) {
+		if (_vm->config()->showEncounterSubtitles) {
 			drawSubtitle(getSpeech()->getTextDataPos(), getWorld()->font3, _point.y);
 			drawSubtitle(getSpeech()->getTextData(), getWorld()->font1, _point.y);
 		}
@@ -1477,7 +1477,7 @@ bool Encounter::updateScreen() {
 			if (!_data_455BDC && !_objectId1 && !_objectId2 && !_actorIndex)
 				error("[Encounter::updateScreen] Invalid encounter resources!");
 
-			getSound()->playSound(_soundResourceId/*getSpeech()->getSoundResourceId()*/, false, Config.voiceVolume); // TODO replace with speech
+			getSound()->playSound(_soundResourceId/*getSpeech()->getSoundResourceId()*/, false, _vm->config()->voiceVolume); // TODO replace with speech
 		}
 
 		return false;

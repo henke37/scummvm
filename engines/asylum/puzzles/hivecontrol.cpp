@@ -123,7 +123,7 @@ bool PuzzleHiveControl::init(const AsylumEvent &) {
 	getScreen()->selectTransTable(0);
 
 	getSound()->playSound(getWorld()->graphicResourceIds[73], true, _soundVolume);
-	getSound()->playSound(getWorld()->graphicResourceIds[74], true, Config.ambientVolume);
+	getSound()->playSound(getWorld()->graphicResourceIds[74], true, _vm->config()->ambientVolume);
 
 	return true;
 }
@@ -139,7 +139,7 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 
 	case kControlWingsButton1:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[81], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[81], false, _vm->config()->sfxVolume - 10);
 
 		if (_wingsState[1] != _wingsState[2]) {
 			if (_wingsState[0])
@@ -156,7 +156,7 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 
 	case kControlWingsButton2:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[81], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[81], false, _vm->config()->sfxVolume - 10);
 
 		if (_wingsState[0] != _wingsState[2]) {
 			if (_wingsState[1])
@@ -173,7 +173,7 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 
 	case kControlWingsButton3:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[81], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[81], false, _vm->config()->sfxVolume - 10);
 
 		if (_wingsState[0] != _wingsState[1]) {
 			if (_wingsState[2])
@@ -190,32 +190,32 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 
 	case kControlReset:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[78], false, Config.sfxVolume - 10);
-		getSound()->playSound(getWorld()->graphicResourceIds[79], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[78], false, _vm->config()->sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[79], false, _vm->config()->sfxVolume - 10);
 		_resetFlag = true;
 		reset();
 		break;
 
 	case kControlWheelLeft:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[80], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[80], false, _vm->config()->sfxVolume - 10);
 		_colorL = (_colorL + 1) % 3;
 		break;
 
 	case kControlWheelRight:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[80], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[80], false, _vm->config()->sfxVolume - 10);
 		_colorR = (_colorR + 1) % 3;
 		break;
 
 	case kControlButtonLeft:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[77], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[77], false, _vm->config()->sfxVolume - 10);
 
 		if (!_glyphFlags[0][_leverPosition]) {
 			_glyphFlags[0][_leverPosition] = puzzleHiveControlHieroglyphs[0][_leverPosition] == _frameIndexes[kElementLensLeft];
 			if (_glyphFlags[0][_leverPosition]) {
-				getSound()->playSound(getWorld()->graphicResourceIds[83], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->graphicResourceIds[83], false, _vm->config()->sfxVolume - 10);
 				++_frameIndexes[kElementSwirlRim];
 
 				// Check for puzzle completion
@@ -236,11 +236,11 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 
 	case kControlButtonRight:
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[77], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[77], false, _vm->config()->sfxVolume - 10);
 		if (!_glyphFlags[1][_leverPosition]) {
 			_glyphFlags[1][_leverPosition] = puzzleHiveControlHieroglyphs[1][_leverPosition] == _frameIndexes[kElementLensRight];
 			if (_glyphFlags[1][_leverPosition]) {
-				getSound()->playSound(getWorld()->graphicResourceIds[83], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->graphicResourceIds[83], false, _vm->config()->sfxVolume - 10);
 				++_frameIndexes[kElementSwirlRim];
 
 				// Check for puzzle completion
@@ -268,7 +268,7 @@ bool PuzzleHiveControl::mouseLeftDown(const AsylumEvent &) {
 		_leverPosition = _currentControl - 49;
 		_leverDelta = (uint32)abs((double)_leverPosition - (double)_prevLeverPosition) * (GraphicResource::getFrameCount(_vm, getWorld()->graphicResourceIds[kElementLever]) - 1) / 5;
 		if (_leverDelta)
-			getSound()->playSound(getWorld()->graphicResourceIds[76], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->graphicResourceIds[76], false, _vm->config()->sfxVolume - 10);
 	}
 
 	return true;
@@ -348,7 +348,7 @@ void PuzzleHiveControl::updateScreen() {
 		if (_frameIndexes[_currentControl] == 0) {
 			getCursor()->show();
 			if (_currentControl == kControlWheelLeft || _currentControl == kControlWheelRight) {
-				getSound()->playSound(getWorld()->graphicResourceIds[75], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->graphicResourceIds[75], false, _vm->config()->sfxVolume - 10);
 				if (_currentControl == kControlWheelLeft)
 					_frameIndexes[kElementLensLeft] = (_frameIndexes[kElementLensLeft] + 8) % GraphicResource::getFrameCount(_vm, getWorld()->graphicResourceIds[kElementLensLeft]);
 				else

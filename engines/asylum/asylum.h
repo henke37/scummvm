@@ -52,6 +52,7 @@ struct ADGameDescription;
 
 namespace Asylum {
 
+class ConfigurationManager;
 class Cursor;
 class Encounter;
 class Menu;
@@ -129,6 +130,8 @@ public:
 	 */
 	uint32 screenUpdateCount;
 	uint32 lastScreenUpdate;
+
+	ConfigurationManager *config() { return _config; }
 
 	// Game
 	Cursor          *cursor()    { return _cursor; }
@@ -211,6 +214,7 @@ private:
 	// Misc
 	Console              *_console;
 	Common::RandomSource *_rnd;
+	ConfigurationManager *_config;
 
 	// Game
 	Cursor          *_cursor;

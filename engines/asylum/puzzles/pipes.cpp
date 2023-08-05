@@ -322,7 +322,7 @@ bool PuzzlePipes::init(const AsylumEvent &) {
 	if (_previousMusicVolume >= -1000)
 		getSound()->setMusicVolume(-1000);
 
-	getSound()->playSound(getWorld()->graphicResourceIds[41], true, Config.ambientVolume);
+	getSound()->playSound(getWorld()->graphicResourceIds[41], true, _vm->config()->ambientVolume);
 	getScreen()->setPalette(getWorld()->graphicResourceIds[0]);
 	getScreen()->setGammaLevel(getWorld()->graphicResourceIds[0]);
 
@@ -441,18 +441,18 @@ bool PuzzlePipes::mouseLeftDown(const AsylumEvent &) {
 		if (!_frameIndexLever)
 			++_frameIndexLever;
 		getCursor()->hide();
-		getSound()->playSound(getWorld()->graphicResourceIds[43], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->graphicResourceIds[43], false, _vm->config()->sfxVolume - 10);
 	} else {
 		if (_rectIndex != -1) {
 			if (_rectIndex < ARRAYSIZE(connectorPoints)) {
-				getSound()->playSound(getWorld()->graphicResourceIds[42], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->graphicResourceIds[42], false, _vm->config()->sfxVolume - 10);
 
 				_connectors[_rectIndex].turn();
 				startUpWater();
 				memset(_levelFlags, false, sizeof(_levelFlags));
 				_levelFlags[checkFlags()] = true;
 			} else {
-				getSound()->playSound(getWorld()->graphicResourceIds[44], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->graphicResourceIds[44], false, _vm->config()->sfxVolume - 10);
 				_spiders[_rectIndex - ARRAYSIZE(connectorPoints)]->smash();
 				_frameIndexSpider[_rectIndex - ARRAYSIZE(connectorPoints)] = 0;
 			}

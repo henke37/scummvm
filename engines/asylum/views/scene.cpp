@@ -413,7 +413,7 @@ bool Scene::update() {
 			getSharedData()->setEventUpdate(getSharedData()->getEventUpdate() ^ 1);
 
 			getSharedData()->setFlag(kFlagRedraw, false);
-			getSharedData()->setNextScreenUpdate(ticks + 55 / Config.animationsSpeed);
+			getSharedData()->setNextScreenUpdate(ticks + 55 / _vm->config()->animationsSpeed);
 			++_vm->screenUpdateCount;
 		}
 	}
@@ -625,7 +625,7 @@ bool Scene::updateScreen() {
 		return true;
 
 #if 0
-	if (Config.performance <= 4) {
+	if (_vm->config()->performance <= 4) {
 		// TODO: implement skip drawing frames to screen
 	} else {
 #endif
@@ -851,7 +851,7 @@ void Scene::updateAmbientSounds() {
 	if (!_ws)
 		error("[Scene::updateAmbientSounds] WorldStats not initialized properly!");
 
-	if (Config.performance <= 3)
+	if (_vm->config()->performance <= 3)
 		return;
 
 	// The original loops for each actor, but the volume calculation is always the same
@@ -884,7 +884,7 @@ void Scene::updateAmbientSounds() {
 			if (_vm->sound()->isPlaying(snd->resourceId)) {
 
 				if (snd->field_0) {
-					int32 volume = Config.ambientVolume + getSound()->calculateVolumeAdjustement(snd->point, snd->attenuation, snd->delta);
+					int32 volume = _vm->config()->ambientVolume + getSound()->calculateVolumeAdjustement(snd->point, snd->attenuation, snd->delta);
 
 					if (volume <= 0) {
 						if (volume < -10000)
@@ -905,7 +905,7 @@ void Scene::updateAmbientSounds() {
 				else
 					volume = -(int32)pow((double)snd->delta, 2);
 
-				volume += Config.ambientVolume;
+				volume += _vm->config()->ambientVolume;
 
 
 				if (LOBYTE(snd->flags) & 1) {
@@ -1007,12 +1007,12 @@ void Scene::updateMusic() {
 
 		case 8:
 			_musicVolume += 150;
-			if (_musicVolume < Config.musicVolume) {
+			if (_musicVolume < _vm->config()->musicVolume) {
 				getSound()->setMusicVolume(_musicVolume);
 				break;
 			}
 
-			getSound()->setMusicVolume(Config.musicVolume);
+			getSound()->setMusicVolume(_vm->config()->musicVolume);
 			getWorld()->musicStatus = getWorld()->musicStatusExt;
 			getWorld()->musicResourceIndex = kMusicStopped;
 			getWorld()->musicStatusExt = 0;
@@ -2397,7 +2397,7 @@ void Scene::changePlayerUpdate(ActorIndex index) {
 // Scene drawing
 //////////////////////////////////////////////////////////////////////////
 void Scene::preload() {
-	if (!Config.showSceneLoading || _vm->checkGameVersion("Demo"))
+	if (!_vm->config()->showSceneLoading || _vm->checkGameVersion("Demo"))
 		return;
 
 	SceneTitle *title = new SceneTitle(_vm);

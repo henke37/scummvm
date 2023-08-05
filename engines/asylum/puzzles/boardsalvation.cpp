@@ -193,7 +193,7 @@ bool PuzzleBoardSalvation::mouseRightDown(const AsylumEvent &) {
 //////////////////////////////////////////////////////////////////////////
 void PuzzleBoardSalvation::checkANALText() {
 	if (!strcmp(_solvedText, "A N A L "))
-		getSound()->playSound(MAKE_RESOURCE(kResourcePackSpeech, puzzleSalvationSoundResourceIndex[rnd(11)]), false, Config.voiceVolume);
+		getSound()->playSound(MAKE_RESOURCE(kResourcePackSpeech, puzzleSalvationSoundResourceIndex[rnd(11)]), false, _vm->config()->voiceVolume);
 }
 
 } // End of namespace Asylum

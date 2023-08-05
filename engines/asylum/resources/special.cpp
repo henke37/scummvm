@@ -655,7 +655,7 @@ void Special::chapter8(Object *object, ActorIndex actorIndex) {
 		 && getWorld()->wheels[6]->getFrameIndex() == 27) {
 			_vm->setGameFlag(kGameFlag866);
 
-			getSound()->playSound(getWorld()->soundResourceIds[6], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[6], false, _vm->config()->sfxVolume - 10);
 		}
 	}
 }
@@ -737,11 +737,11 @@ void Special::chapter11(Object *object, ActorIndex actorIndex) {
 				if (!getSound()->isPlaying(getSpeech()->getSoundResourceId()))
 					_vm->clearGameFlag(kGameFlag219);
 				if (!getWorld()->field_E848C && !getSound()->isPlaying(getWorld()->soundResourceIds[3]))
-					getSound()->playSound(getWorld()->soundResourceIds[3], false, Config.sfxVolume);
+					getSound()->playSound(getWorld()->soundResourceIds[3], false, _vm->config()->sfxVolume);
 				if (getWorld()->field_E848C == 1 && !getSound()->isPlaying(getWorld()->soundResourceIds[4]))
-					getSound()->playSound(getWorld()->soundResourceIds[4], false, Config.sfxVolume);
+					getSound()->playSound(getWorld()->soundResourceIds[4], false, _vm->config()->sfxVolume);
 				if (getWorld()->field_E848C == 2 && !getSound()->isPlaying(getWorld()->soundResourceIds[5]))
-					getSound()->playSound(getWorld()->soundResourceIds[5], false, Config.sfxVolume);
+					getSound()->playSound(getWorld()->soundResourceIds[5], false, _vm->config()->sfxVolume);
 			}
 
 			if (_vm->isGameFlagNotSet(kGameFlag1099)) {
@@ -822,7 +822,7 @@ void Special::chapter11(Object *object, ActorIndex actorIndex) {
 			if (object->getFrameIndex() != 9)
 				object->setFrameIndex(object->getFrameIndex() + 1);
 			if (object->getFrameIndex() == 8) {
-				getSound()->playSound(object->getSoundResourceId(), false, Config.sfxVolume);
+				getSound()->playSound(object->getSoundResourceId(), false, _vm->config()->sfxVolume);
 
 				switch (getWorld()->field_E8494) {
 				default:
@@ -1204,7 +1204,7 @@ void Special::playChapterSound(Object *object, ActorIndex actorIndex) {
 	if (id != kResourceNone && getSound()->isPlaying(id))
 		return;
 
-	if (Config.performance <= 2)
+	if (_vm->config()->performance <= 2)
 		return;
 
 	switch (getWorld()->chapter) {
@@ -1766,7 +1766,7 @@ void Special::setPaletteGamma(ResourceId palette1, ResourceId palette2) {
 		if (_paletteTick2 < _vm->getTick()) {
 			_paletteFlag = false;
 
-			getSound()->playSound(getWorld()->ambientSounds[rnd(5) + 2].resourceId, false, Config.ambientVolume);
+			getSound()->playSound(getWorld()->ambientSounds[rnd(5) + 2].resourceId, false, _vm->config()->ambientVolume);
 
 			_paletteTick1 = _vm->getTick() + 5000;
 		}
@@ -1812,7 +1812,7 @@ void Special::setPaletteGamma(ResourceId palette1, ResourceId palette2) {
 }
 
 void Special::playSoundPanning(ResourceId resourceId, int32 attenuation, Object *object) {
-	int32 adjustedVolume = Config.voiceVolume;
+	int32 adjustedVolume = _vm->config()->voiceVolume;
 	Common::Point point;
 
 	switch (object->getId()) {
@@ -1862,7 +1862,7 @@ void Special::playSoundPanning(ResourceId resourceId, int32 attenuation, ActorIn
 	Actor *actor = getScene()->getActor(actorIndex);
 
 	// Calculate volume adjustment
-	int32 adjustedVolume = Config.voiceVolume;
+	int32 adjustedVolume = _vm->config()->voiceVolume;
 	adjustedVolume += getSound()->calculateVolumeAdjustement(*actor->getPoint1(), attenuation, 0);
 
 	// Calculate panning
@@ -2023,7 +2023,7 @@ void Special::rock(ActorIndex actorIndex, GameFlag flag1, GameFlag flag2, GameFl
 		actor->getPoint1()->y -= 160;
 
 		actor->changeStatus(kActorStatusEnabled2);
-		getSound()->playSound(getWorld()->soundResourceIds[0], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[0], false, _vm->config()->sfxVolume - 10);
 		_vm->setGameFlag(flag3);
 		getScene()->getActor(actorIndex)->show();
 	} else if (getWorld()->tickValueArray[actorIndex] == -666 || _vm->getTick() > (uint32)getWorld()->tickValueArray[actorIndex]) {
@@ -2044,7 +2044,7 @@ void Special::rock(ActorIndex actorIndex, GameFlag flag1, GameFlag flag2, GameFl
 					actor->hide();
 			} else {
 				actor->setField944(3);
-				getSound()->playSound(getWorld()->soundResourceIds[1], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[1], false, _vm->config()->sfxVolume - 10);
 				actor->changeStatus(kActorStatusAttacking);
 				actor->setFrameIndex(4);
 

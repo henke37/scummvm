@@ -804,7 +804,7 @@ IMPLEMENT_OPCODE(JumpIfSoundPlayingAndPlaySound)
 		else
 			cmd->param2 = 1;
 	} else if (!_vm->sound()->isPlaying(resource)) {
-		int32 vol = getSound()->getAdjustedVolume(abs(Config.sfxVolume));
+		int32 vol = getSound()->getAdjustedVolume(abs(_vm->config()->sfxVolume));
 		getSound()->playSound(resource, (bool)cmd->param4, -((abs(cmd->param3) + vol) * (abs(cmd->param3) + vol)), 0);
 
 		if (cmd->param2 == 1) {
@@ -1169,7 +1169,7 @@ IMPLEMENT_OPCODE(SetVolume)
 	AmbientSoundItem item = getWorld()->ambientSounds[cmd->param1];
 	int var = cmd->param2 + item.delta;
 
-	int32 volume = -((Config.sfxVolume + var) * (Config.ambientVolume + var));
+	int32 volume = -((_vm->config()->sfxVolume + var) * (_vm->config()->ambientVolume + var));
 
 	if (volume < 0) {
 		if (volume < -10000)

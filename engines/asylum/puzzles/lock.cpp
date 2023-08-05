@@ -97,7 +97,7 @@ bool PuzzleLock::update(const AsylumEvent &)  {
 		getScreen()->copyBackBufferToScreen();
 	} else {
 		if (_frameIndexes[6] == 5)
-			getSound()->playSound(getWorld()->soundResourceIds[15], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[15], false, _vm->config()->sfxVolume - 10);
 
 		getScreen()->addGraphicToQueue(getWorld()->graphicResourceIds[16], (uint32)_frameIndexes[6], Common::Point(0, 264), kDrawFlagNone, 0, 1);
 
@@ -110,7 +110,7 @@ bool PuzzleLock::update(const AsylumEvent &)  {
 				getCursor()->hide();
 				getSharedData()->setFlag(kFlag1, true);
 				_vm->setGameFlag(kGameFlag52);
-				getSound()->playSound(getWorld()->soundResourceIds[16], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[16], false, _vm->config()->sfxVolume - 10);
 				_frameIndexes[6] = 0;
 				_counter = 0;
 				getSharedData()->reset();
@@ -192,7 +192,7 @@ bool PuzzleLock::mouseLeftDown(const AsylumEvent &evt) {
 	for (uint32 i = 0; i < 3; i++) {
 		if (hitTest(&puzzleLockPolygons[0], mousePos, 8 + 2 * i)) {
 			if (!(_frameIndexes[i] % ~3))
-				getSound()->playSound(getWorld()->soundResourceIds[14], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[14], false, _vm->config()->sfxVolume - 10);
 
 			_incrementLock = true;
 
@@ -206,7 +206,7 @@ bool PuzzleLock::mouseLeftDown(const AsylumEvent &evt) {
 	for (uint32 i = 0; i < 3; i++) {
 		if (hitTest(&puzzleLockPolygons[0], mousePos, 2 * i)) {
 			if (!(_frameIndexes[i] % ~3))
-				getSound()->playSound(getWorld()->soundResourceIds[14], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[14], false, _vm->config()->sfxVolume - 10);
 
 			_incrementLock = false;
 

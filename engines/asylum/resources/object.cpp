@@ -260,7 +260,7 @@ void Object::draw() {
 	Common::Point point;
 	adjustCoordinates(&point);
 
-	if (_transparency <= 0 || _transparency >= 4 || Config.performance <= 1) {
+	if (_transparency <= 0 || _transparency >= 4 || _vm->config()->performance <= 1) {
 		getScreen()->addGraphicToQueue(_resourceId, _frameIndex, point, (DrawFlags)((flags >> 11) & kDrawFlagMirrorLeftRight), _transparency - 3, _priority);
 	} else {
 		getScreen()->addGraphicToQueueCrossfade(_resourceId, _frameIndex, point, getWorld()->backgroundImage, Common::Point(getWorld()->xLeft, getWorld()->yTop), (uint32)(_transparency - 1));
@@ -446,14 +446,14 @@ void Object::playSounds() {
 			continue;
 
 		if (item->field_4 && !getSound()->isPlaying(item->resourceId)) {
-			int32 volume = Config.sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_8, item->field_C);
+			int32 volume = _vm->config()->sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_8, item->field_C);
 
 			if (volume > -5000)
 				getSound()->playSound(item->resourceId, true, volume, getSound()->calculatePanningAtPoint(point));
 		}
 
 		if (getSound()->isPlaying(item->resourceId)) {
-			int32 volume = Config.sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_8, item->field_C);
+			int32 volume = _vm->config()->sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_8, item->field_C);
 
 			if (volume > -5000) {
 				if (volume > 0)
@@ -484,7 +484,7 @@ void Object::playSounds() {
 				_soundItems[item->index].field_C = item->field_14;
 
 				if (!getSound()->isPlaying(item->resourceId)) {
-					int32 volume = Config.sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_C, item->field_14);
+					int32 volume = _vm->config()->sfxVolume + getSound()->calculateVolumeAdjustement(point, item->field_C, item->field_14);
 
 					if (volume > -5000)
 						getSound()->playSound(item->resourceId, item->field_10, volume, getSound()->calculatePanningAtPoint(point));
@@ -536,7 +536,7 @@ void Object::setVolume() {
 
 	// Compute volume
 	Common::Point coords((int16)Common::Rational(frameRect.width(), 2).toInt() + x, (int16)Common::Rational(frameRect.height(), 2).toInt() + y);
-	int32 volume = Config.voiceVolume + getSound()->calculateVolumeAdjustement(coords, _field_6A4, 0);
+	int32 volume = _vm->config()->voiceVolume + getSound()->calculateVolumeAdjustement(coords, _field_6A4, 0);
 	if (volume < -10000)
 		volume = -10000;
 

@@ -242,7 +242,7 @@ void Speech::prepareSpeech() {
 		if (!getSound()->isPlaying(_soundResourceId) || (_tick && startTick >= _tick))
 			process();
 
-		if (Config.showEncounterSubtitles) {
+		if (_vm->config()->showEncounterSubtitles) {
 			Common::Point point;
 			Actor *actor = getScene()->getActor();
 			actor->adjustCoordinates(&point);
@@ -270,7 +270,7 @@ void Speech::process() {
 		_textDataPos = nullptr;
 
 		getText()->loadFont(getWorld()->font1);
-		getSound()->playSound(_soundResourceId, false, Config.voiceVolume, 0);
+		getSound()->playSound(_soundResourceId, false, _vm->config()->voiceVolume, 0);
 	} else {
 		_textData = nullptr;
 		_textDataPos = txt;
@@ -280,7 +280,7 @@ void Speech::process() {
 		}
 
 		getText()->loadFont(getWorld()->font3);
-		getSound()->playSound(_soundResourceId, false, Config.voiceVolume, 0);
+		getSound()->playSound(_soundResourceId, false, _vm->config()->voiceVolume, 0);
 	}
 }
 

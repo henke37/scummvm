@@ -103,6 +103,8 @@ AsylumEngine::~AsylumEngine() {
 
 	delete _rnd;
 
+	delete _config;
+
 	// Zero passed pointers
 	_gameDescription = nullptr;
 }
@@ -155,7 +157,8 @@ Common::Error AsylumEngine::run() {
 			menu()->setLoadingDuringStartup();
 
 		// Load config
-		Config.read();
+		_config = new ConfigurationManager();
+		_config->read();
 	}
 
 	// Setup mixer
@@ -334,7 +337,7 @@ void AsylumEngine::playIntro() {
 	if (!_introPlayed) {
 		_cursor->hide();
 		_cursor->setForceHide(true);
-		if (!Config.showIntro && !checkGameVersion("Demo")) {
+		if (!_config->showIntro && !checkGameVersion("Demo")) {
 			if (_scene->worldstats()->chapter == kChapter1)
 				_sound->playMusic(MAKE_RESOURCE(kResourcePackMusic, _scene->worldstats()->musicCurrentResourceIndex));
 		} else {
@@ -546,7 +549,7 @@ void AsylumEngine::notify(AsylumEventType type, int32 param1, int32 param2) {
 
 void AsylumEngine::updateReverseStereo() {
 	if (_scene && _scene->worldstats())
-		_scene->worldstats()->reverseStereo = Config.reverseStereo;
+		_scene->worldstats()->reverseStereo = _config->reverseStereo;
 }
 
 void AsylumEngine::saveLoadWithSerializer(Common::Serializer &s) {

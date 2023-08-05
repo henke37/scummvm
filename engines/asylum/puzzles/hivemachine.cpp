@@ -148,7 +148,7 @@ void PuzzleHiveMachine::updateScreen() {
 		if (_counterGreen > 1)
 			--_counterGreen;
 		else if (_counterGreen-- == 1) {
-			getSound()->playSound(getWorld()->graphicResourceIds[86], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->graphicResourceIds[86], false, _vm->config()->sfxVolume - 10);
 			_vm->setGameFlag(kGameFlagSolveHiveMachine);
 			_vm->switchEventHandler(getScene());
 		}
@@ -157,7 +157,7 @@ void PuzzleHiveMachine::updateScreen() {
 		if (_counterRed == 1)
 			_notesNumber = 0;
 		else if (_counterRed == 30)
-			getSound()->playSound(getWorld()->graphicResourceIds[85], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->graphicResourceIds[85], false, _vm->config()->sfxVolume - 10);
 		getScreen()->addGraphicToQueue(getWorld()->graphicResourceIds[10], 0, Common::Point(318, 372), kDrawFlagNone, 0, 1);
 
 		--_counterRed;
@@ -193,7 +193,7 @@ void PuzzleHiveMachine::playSound() {
 		error("[PuzzleHiveMachine::playSound] Invalid sound resource id");
 
 	uint32 soundMap[] = {4, 2, 3, 0, 1};
-	getSound()->playSound(getWorld()->graphicResourceIds[soundMap[_soundingNote] + 23], false, Config.sfxVolume - 10);
+	getSound()->playSound(getWorld()->graphicResourceIds[soundMap[_soundingNote] + 23], false, _vm->config()->sfxVolume - 10);
 }
 
 } // End of namespace Asylum

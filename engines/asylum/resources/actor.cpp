@@ -1727,11 +1727,11 @@ void Actor::move(ActorDirection actorDir, uint32 dist) {
 		if (_walkingSound1 != kResourceNone) {
 
 			// Compute volume
-			int32 vol = (int32)sqrt((double)-Config.sfxVolume);
+			int32 vol = (int32)sqrt((double)-_vm->config()->sfxVolume);
 			if (_index != getSharedData()->getPlayerIndex())
 				vol += (int32)sqrt((double)abs(getSound()->calculateVolumeAdjustement(sum, 10, 0)));
 
-			int32 volume = (Config.sfxVolume + vol) * (Config.sfxVolume + vol);
+			int32 volume = (_vm->config()->sfxVolume + vol) * (_vm->config()->sfxVolume + vol);
 			if (volume > 10000)
 				volume = 10000;
 
@@ -1768,7 +1768,7 @@ void Actor::move(ActorDirection actorDir, uint32 dist) {
 			if (_index != getSharedData()->getPlayerIndex())
 				vol += (int32)sqrt((double)abs(getSound()->calculateVolumeAdjustement(sum, 10, 0)));
 
-			int32 volume = (Config.sfxVolume + vol) * (Config.sfxVolume + vol);
+			int32 volume = (_vm->config()->sfxVolume + vol) * (_vm->config()->sfxVolume + vol);
 			if (volume > 10000)
 				volume = 10000;
 
@@ -2087,7 +2087,7 @@ void Actor::updatePumpkin(GameFlag flagToCheck, GameFlag flagToSet, ObjectId obj
 		getSharedData()->setChapter2Counter(5, getSharedData()->getChapter2Counter(5) + 1);
 
 		getWorld()->getObjectById(objectToUpdate)->setNextFrame(8);
-		getSound()->playSound(getWorld()->soundResourceIds[17], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[17], false, _vm->config()->sfxVolume - 10);
 		getWorld()->getObjectById(objectToDisable)->disable();
 	}
 }
@@ -2559,7 +2559,7 @@ void Actor::CrowDives() {
 	}
 
 	if (_frameIndex == 1)
-		getSound()->playSound(getWorld()->soundResourceIds[1], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[1], false, _vm->config()->sfxVolume - 10);
 
 	if (player->getStatus() == kActorStatusRestarting && _frameIndex < 6)
 		changeStatus(kActorStatusEnabled);
@@ -2650,7 +2650,7 @@ void Actor::MaxGetsHit() {
 			getSound()->stop(getWorld()->soundResourceIds[5]);
 
 		if (!getSound()->isPlaying(getWorld()->soundResourceIds[6]))
-			getSound()->playSound(getWorld()->soundResourceIds[6], true, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[6], true, _vm->config()->sfxVolume - 10);
 		break;
 
 	case 1:
@@ -2660,7 +2660,7 @@ void Actor::MaxGetsHit() {
 			getSound()->stop(getWorld()->soundResourceIds[6]);
 
 		if (!getSound()->isPlaying(getWorld()->soundResourceIds[7]))
-			getSound()->playSound(getWorld()->soundResourceIds[7], true, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[7], true, _vm->config()->sfxVolume - 10);
 		break;
 
 	case 2:
@@ -2698,7 +2698,7 @@ void Actor::MaxAttacks() {
 	_frameIndex++;
 
 	if (_frameIndex == 1)
-		getSound()->playSound(getWorld()->soundResourceIds[3], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[3], false, _vm->config()->sfxVolume - 10);
 
 	ActorIndex actorIndex = getSharedData()->getChapter2ActorIndex();
 	if (_frameIndex == 3) {
@@ -2779,7 +2779,7 @@ void Actor::MaxAttacks() {
 				}
 
 				otherActor->changeStatus(kActorStatusRestarting);
-				getSound()->playSound(getWorld()->soundResourceIds[2], false, Config.sfxVolume - 10);
+				getSound()->playSound(getWorld()->soundResourceIds[2], false, _vm->config()->sfxVolume - 10);
 			}
 		}
 
@@ -2810,12 +2810,12 @@ void Actor::checkScareCrowDeath() {
 		actor40->getPoint1()->y = actor->getPoint1()->y;
 
 		if (actor11->getFrameIndex() <= 7) {
-			getSound()->playSound(getWorld()->soundResourceIds[9], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[9], false, _vm->config()->sfxVolume - 10);
 		} else if (getSharedData()->getChapter2Counter(5) <= 6) {
-			getSound()->playSound(getWorld()->soundResourceIds[9], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[9], false, _vm->config()->sfxVolume - 10);
 		} else {
 			getScene()->getActor(11)->changeStatus(kActorStatusRestarting);
-			getSound()->playSound(getWorld()->soundResourceIds[10], false, Config.sfxVolume - 10);
+			getSound()->playSound(getWorld()->soundResourceIds[10], false, _vm->config()->sfxVolume - 10);
 		}
 	}
 }
@@ -2838,7 +2838,7 @@ void Actor::ScareCrowAttacks() {
 		break;
 
 	case 1:
-		getSound()->playSound(getWorld()->soundResourceIds[4], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[4], false, _vm->config()->sfxVolume - 10);
 		break;
 
 	case 9:
@@ -3104,7 +3104,7 @@ void Actor::CrowSwoops() {
 		changeStatus(kActorStatusEnabled2);
 
 		_point1.y += 54;
-		getSound()->playSound(getWorld()->soundResourceIds[1], false, Config.sfxVolume - 10);
+		getSound()->playSound(getWorld()->soundResourceIds[1], false, _vm->config()->sfxVolume - 10);
 
 		getSharedData()->crowsData[_index - 2] -= 54;
 	}
@@ -3628,7 +3628,7 @@ void Actor::setVolume() {
 		return;
 
 	// Compute volume
-	int32 volume = Config.voiceVolume + getSound()->calculateVolumeAdjustement(_point1 + _point2, _field_968, 0);
+	int32 volume = _vm->config()->voiceVolume + getSound()->calculateVolumeAdjustement(_point1 + _point2, _field_968, 0);
 	if (volume < -10000)
 		volume = -10000;
 

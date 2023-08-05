@@ -30,6 +30,7 @@
 #include "asylum/system/config.h"
 
 #include "asylum/shared.h"
+#include "asylum/asylum.h"
 
 namespace Asylum {
 
@@ -116,7 +117,8 @@ public:
 	 * @param volume 	 The volume.
 	 * @param panning    The panning.
 	 */
-	void playSound(ResourceId resourceId, bool looping = false, int32 volume = Config.sfxVolume, int32 panning = 0);
+	void playSound(ResourceId resourceId, bool looping, int32 volume, int32 panning = 0);
+	void playSound(ResourceId resourceId, bool looping = false) { playSound(resourceId, looping, _vm->config()->sfxVolume); }
 
 	/**
 	 * Play music
@@ -124,7 +126,8 @@ public:
 	 * @param resourceId Identifier for the resource.
 	 * @param volume 	 The volume.
 	 */
-	void playMusic(ResourceId resourceId, int32 volume = Config.musicVolume);
+	void playMusic(ResourceId resourceId, int32 volume);
+	void playMusic(ResourceId resourceId) { playMusic(resourceId, _vm->config()->musicVolume); }
 
 	/**
 	 * Change music

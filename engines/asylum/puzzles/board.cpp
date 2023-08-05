@@ -127,7 +127,7 @@ void PuzzleBoard::updateScreen()  {
 			_solved = true;
 			getCursor()->hide();
 			stopSound();
-			getSound()->playSound(MAKE_RESOURCE(kResourcePackSpeech, 1), false, Config.voiceVolume);
+			getSound()->playSound(MAKE_RESOURCE(kResourcePackSpeech, 1), false, _vm->config()->voiceVolume);
 		}
 	}
 }
@@ -183,7 +183,7 @@ void PuzzleBoard::playSound() {
 
 	if (!_soundResourceId || !getSound()->isPlaying(_soundResourceId)) {
 		_soundResourceId = MAKE_RESOURCE(kResourcePackSharedSound, 2401 + _data.soundResources[index].index);
-		getSound()->playSound(_soundResourceId, false, Config.voiceVolume);
+		getSound()->playSound(_soundResourceId, false, _vm->config()->voiceVolume);
 		_data.soundResources[index].played = true;
 	}
 }
