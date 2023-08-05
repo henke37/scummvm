@@ -101,6 +101,24 @@ private:
 	// Double click handling
 	static const uint _doubleClickDelay = 500; // ms
 	uint _lastClickTime;
+
+public:
+	ArchiveLoader *archiveLoader;
+	DialogPlayer *dialogPlayer;
+	Diary *diary;
+	Gfx::Driver *gfx;
+	Global *global;
+	ResourceProvider *resourceProvider;
+	Common::RandomSource *randomSource;
+	Scene *scene;
+	StaticProvider *staticProvider;
+	GameInterface *gameInterface;
+	UserInterface *userInterface;
+	FontProvider *fontProvider;
+	Settings *settings;
+	GameChapter *gameChapter;
+	GameMessage *gameMessage;
+	StateProvider *stateProvider;
 };
 
 } // End of namespace Stark

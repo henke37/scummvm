@@ -70,24 +70,22 @@ StarkEngine::StarkEngine(OSystem *syst, const ADGameDescription *gameDesc) :
 }
 
 StarkEngine::~StarkEngine() {
-	delete StarkServices::instance().gameInterface;
-	delete StarkServices::instance().diary;
-	delete StarkServices::instance().dialogPlayer;
-	delete StarkServices::instance().randomSource;
-	delete StarkServices::instance().scene;
-	delete StarkServices::instance().staticProvider;
-	delete StarkServices::instance().resourceProvider;
-	delete StarkServices::instance().global;
-	delete StarkServices::instance().stateProvider;
-	delete StarkServices::instance().archiveLoader;
-	delete StarkServices::instance().userInterface;
-	delete StarkServices::instance().fontProvider;
-	delete StarkServices::instance().settings;
-	delete StarkServices::instance().gameChapter;
-	delete StarkServices::instance().gameMessage;
-	delete StarkServices::instance().gfx;
-
-	StarkServices::destroy();
+	delete gameInterface;
+	delete diary;
+	delete dialogPlayer;
+	delete randomSource;
+	delete scene;
+	delete staticProvider;
+	delete resourceProvider;
+	delete global;
+	delete stateProvider;
+	delete archiveLoader;
+	delete userInterface;
+	delete fontProvider;
+	delete settings;
+	delete gameChapter;
+	delete gameMessage;
+	delete gfx;
 
 	delete _frameLimiter;
 }
@@ -109,33 +107,32 @@ Common::Error StarkEngine::run() {
 	checkRecommendedDatafiles();
 
 	// Setup the public services
-	StarkServices &services = StarkServices::instance();
-	services.gfx = gfx;
-	services.archiveLoader = new ArchiveLoader();
-	services.stateProvider = new StateProvider();
-	services.global = new Global();
-	services.resourceProvider = new ResourceProvider(services.archiveLoader, services.stateProvider, services.global);
-	services.staticProvider = new StaticProvider(services.archiveLoader);
-	services.randomSource = new Common::RandomSource("stark");
-	services.fontProvider = new FontProvider();
-	services.scene = new Scene(services.gfx);
-	services.dialogPlayer = new DialogPlayer();
-	services.diary = new Diary();
-	services.gameInterface = new GameInterface();
-	services.userInterface = new UserInterface(this, services.gfx);
-	services.settings = new Settings(_mixer, _gameDescription);
-	services.gameChapter = new GameChapter();
-	services.gameMessage = new GameMessage();
+	gfx = gfx;
+	archiveLoader = new ArchiveLoader();
+	stateProvider = new StateProvider();
+	global = new Global();
+	resourceProvider = new ResourceProvider(archiveLoader, stateProvider, global);
+	staticProvider = new StaticProvider(archiveLoader);
+	randomSource = new Common::RandomSource("stark");
+	fontProvider = new FontProvider();
+	scene = new Scene(gfx);
+	dialogPlayer = new DialogPlayer();
+	diary = new Diary();
+	gameInterface = new GameInterface();
+	userInterface = new UserInterface(this, gfx);
+	settings = new Settings(_mixer, _gameDescription);
+	gameChapter = new GameChapter();
+	gameMessage = new GameMessage();
 
 	// Load global resources
-	services.staticProvider->init();
-	services.fontProvider->initFonts();
+	staticProvider->init();
+	fontProvider->initFonts();
 
 	// Apply the sound volume settings
 	syncSoundSettings();
 
 	// Initialize the UI
-	services.userInterface->init();
+	userInterface->init();
 
 	// Load through ScummVM launcher
 	if (ConfMan.hasKey("save_slot")) {
@@ -148,8 +145,8 @@ Common::Error StarkEngine::run() {
 	// Start running
 	mainLoop();
 
-	services.staticProvider->shutdown();
-	services.resourceProvider->shutdown();
+	staticProvider->shutdown();
+	resourceProvider->shutdown();
 
 	return Common::kNoError;
 }

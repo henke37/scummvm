@@ -81,7 +81,6 @@ MODULE_OBJS := \
 	services/gameinterface.o \
 	services/global.o \
 	services/resourceprovider.o \
-	services/services.o \
 	services/stateprovider.o \
 	services/staticprovider.o \
 	services/userinterface.o \

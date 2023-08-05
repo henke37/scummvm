@@ -22,8 +22,7 @@
 #ifndef STARK_SERVICES_SERVICES_H
 #define STARK_SERVICES_SERVICES_H
 
-#include "common/singleton.h"
-#include "common/scummsys.h"
+#include "engines/stark/stark.h"
 
 namespace Common {
 class RandomSource;
@@ -50,65 +49,23 @@ class StateProvider;
 class GameChapter;
 class GameMessage;
 
-/**
- * Public services available as a singleton
- */
-class StarkServices : public Common::Singleton<StarkServices> {
-public:
-	StarkServices() {
-		archiveLoader = nullptr;
-		dialogPlayer = nullptr;
-		diary = nullptr;
-		gfx = nullptr;
-		global = nullptr;
-		resourceProvider = nullptr;
-		randomSource = nullptr;
-		scene = nullptr;
-		staticProvider = nullptr;
-		gameInterface = nullptr;
-		userInterface = nullptr;
-		fontProvider = nullptr;
-		settings = nullptr;
-		gameChapter = nullptr;
-		gameMessage = nullptr;
-		stateProvider = nullptr;
-	}
-
-	ArchiveLoader *archiveLoader;
-	DialogPlayer *dialogPlayer;
-	Diary *diary;
-	Gfx::Driver *gfx;
-	Global *global;
-	ResourceProvider *resourceProvider;
-	Common::RandomSource *randomSource;
-	Scene *scene;
-	StaticProvider *staticProvider;
-	GameInterface *gameInterface;
-	UserInterface *userInterface;
-	FontProvider *fontProvider;
-	Settings *settings;
-	GameChapter *gameChapter;
-	GameMessage *gameMessage;
-	StateProvider *stateProvider;
-};
-
 /** Shortcuts for accessing the services. */
-#define StarkArchiveLoader      StarkServices::instance().archiveLoader
-#define StarkDialogPlayer       StarkServices::instance().dialogPlayer
-#define StarkDiary              StarkServices::instance().diary
-#define StarkGfx                StarkServices::instance().gfx
-#define StarkGlobal             StarkServices::instance().global
-#define StarkResourceProvider   StarkServices::instance().resourceProvider
-#define StarkRandomSource       StarkServices::instance().randomSource
-#define StarkScene              StarkServices::instance().scene
-#define StarkStaticProvider     StarkServices::instance().staticProvider
-#define StarkGameInterface      StarkServices::instance().gameInterface
-#define StarkUserInterface      StarkServices::instance().userInterface
-#define StarkFontProvider       StarkServices::instance().fontProvider
-#define StarkSettings           StarkServices::instance().settings
-#define StarkGameChapter        StarkServices::instance().gameChapter
-#define StarkGameMessage        StarkServices::instance().gameMessage
-#define StarkStateProvider      StarkServices::instance().stateProvider
+#define StarkArchiveLoader      ((StarkEngine *)g_engine)->archiveLoader
+#define StarkDialogPlayer       ((StarkEngine *)g_engine)->dialogPlayer
+#define StarkDiary              ((StarkEngine *)g_engine)->diary
+#define StarkGfx                ((StarkEngine *)g_engine)->gfx
+#define StarkGlobal             ((StarkEngine *)g_engine)->global
+#define StarkResourceProvider   ((StarkEngine *)g_engine)->resourceProvider
+#define StarkRandomSource       ((StarkEngine *)g_engine)->randomSource
+#define StarkScene              ((StarkEngine *)g_engine)->scene
+#define StarkStaticProvider     ((StarkEngine *)g_engine)->staticProvider
+#define StarkGameInterface      ((StarkEngine *)g_engine)->gameInterface
+#define StarkUserInterface      ((StarkEngine *)g_engine)->userInterface
+#define StarkFontProvider       ((StarkEngine *)g_engine)->fontProvider
+#define StarkSettings           ((StarkEngine *)g_engine)->settings
+#define StarkGameChapter        ((StarkEngine *)g_engine)->gameChapter
+#define StarkGameMessage        ((StarkEngine *)g_engine)->gameMessage
+#define StarkStateProvider      ((StarkEngine *)g_engine)->stateProvider
 
 } // End of namespace Stark
 
