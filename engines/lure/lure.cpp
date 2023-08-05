@@ -82,6 +82,7 @@ Common::Error LureEngine::init() {
 	Surface::initialize();
 	_room = new Room();
 	_fights = new FightsManager();
+	_sound = new SoundManager();
 
 	_gameToLoad = -1;
 	_initialized = true;
@@ -100,7 +101,7 @@ LureEngine::~LureEngine() {
 	if (_initialized) {
 		// Delete and deinitialize subsystems
 		Surface::deinitialize();
-		Sound.destroy();
+		delete _sound;
 		delete _fights;
 		delete _room;
 		delete _menu;
@@ -143,7 +144,7 @@ Common::Error LureEngine::go() {
 
 		if (ConfMan.getInt("boot_param") == 0) {
 			// Show the introduction
-			Sound.loadSection(Sound.isRoland() ? ROLAND_INTRO_SOUND_RESOURCE_ID : ADLIB_INTRO_SOUND_RESOURCE_ID);
+			_sound->loadSection(_sound->isRoland() ? ROLAND_INTRO_SOUND_RESOURCE_ID : ADLIB_INTRO_SOUND_RESOURCE_ID);
 			Introduction *intro = new Introduction();
 			intro->show();
 			delete intro;
@@ -154,17 +155,17 @@ Common::Error LureEngine::go() {
 	if (!shouldQuit()) {
 		_screen->empty();
 
-		if (Sound.isRoland() && Sound.hasNativeMT32()) {
+		if (_sound->isRoland() && _sound->hasNativeMT32()) {
 			// Initialize Roland MT-32 timbres
-			Sound.loadSection(ROLAND_MAIN_SYSEX_RESOURCE_ID);
-			Sound.initCustomTimbres();
+			_sound->loadSection(ROLAND_MAIN_SYSEX_RESOURCE_ID);
+			_sound->initCustomTimbres();
 		}
 	}
 
 	if (!shouldQuit()) {
 		// Play the game
 		_saveLoadAllowed = true;
-		Sound.loadSection(Sound.isRoland() ? ROLAND_MAIN_SOUND_RESOURCE_ID : ADLIB_MAIN_SOUND_RESOURCE_ID);
+		_sound->loadSection(_sound->isRoland() ? ROLAND_MAIN_SOUND_RESOURCE_ID : ADLIB_MAIN_SOUND_RESOURCE_ID);
 		gameInstance->execute();
 	}
 
@@ -176,9 +177,9 @@ void LureEngine::pauseEngineIntern(bool pause) {
 	Engine::pauseEngineIntern(pause);
 
 	if (pause) {
-		Sound.pause();
+		_sound->pause();
 	} else {
-		Sound.resume();
+		_sound->resume();
 	}
 }
 
@@ -203,7 +204,7 @@ bool LureEngine::saveGame(uint8 slotNumber, Common::String &caption) {
 
 	Resources::getReference().saveToStream(f);
 	Game::getReference().saveToStream(f);
-	Sound.saveToStream(f);
+	_sound->saveToStream(f);
 	Fights.saveToStream(f);
 	Room::getReference().saveToStream(f);
 
@@ -244,7 +245,7 @@ bool LureEngine::loadGame(uint8 slotNumber) {
 	// Load in the data
 	Resources::getReference().loadFromStream(f);
 	Game::getReference().loadFromStream(f);
-	Sound.loadFromStream(f);
+	_sound->loadFromStream(f);
 	Fights.loadFromStream(f);
 	Room::getReference().loadFromStream(f);
 
@@ -255,7 +256,7 @@ bool LureEngine::loadGame(uint8 slotNumber) {
 void LureEngine::syncSoundSettings() {
 	Engine::syncSoundSettings();
 
-	Sound.syncSounds();
+	_sound->syncSounds();
 }
 
 Common::String *LureEngine::detectSave(int slotNumber) {

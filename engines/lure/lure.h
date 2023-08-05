@@ -40,6 +40,7 @@
 #include "lure/room.h"
 #include "lure/fights.h"
 #include "lure/detection.h"
+#include "lure/sound.h"
 
 /**
  * This is the namespace of the Lure engine.
@@ -80,6 +81,7 @@ private:
 	StringData *_strings;
 	Room *_room;
 	FightsManager *_fights;
+	SoundManager *_sound;
 	Common::RandomSource _rnd;
 
 	const char *generateSaveName(int slotNumber);
@@ -107,6 +109,7 @@ public:
 	void pauseEngineIntern(bool pause) override;
 
 	Disk &disk() { return *_disk; }
+	SoundManager &sound() { return *_sound; }
 
 	Common::RandomSource &rnd() { return _rnd; }
 	int gameToLoad() { return _gameToLoad; }

@@ -94,7 +94,7 @@ public:
 	bool isMusic() const { return _isMusic; }
 };
 
-class SoundManager : public Common::Singleton<SoundManager> {
+class SoundManager {
 private:
 	// Outer sound interface properties
 	MemoryBlock *_descs;
@@ -124,7 +124,7 @@ private:
 
 public:
 	SoundManager();
-	~SoundManager() override;
+	~SoundManager();
 
 	void saveToStream(Common::WriteStream *stream);
 	void loadFromStream(Common::ReadStream *stream);
@@ -195,6 +195,6 @@ protected:
 
 } // End of namespace Lure
 
-#define Sound (::Lure::SoundManager::instance())
+#define Sound (((LureEngine*)g_engine)->sound())
 
 #endif
