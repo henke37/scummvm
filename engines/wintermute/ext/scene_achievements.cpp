@@ -28,12 +28,13 @@
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/ext/scene_achievements_tables.h"
 #include "engines/wintermute/ext/wme_steam.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
 void SceneAchievements(const char *sceneFilename) {
 	for (const AchievementsList *i = achievementsList; i->gameId; i++) {
-		if (BaseEngine::instance().getGameId() == i->gameId) {
+		if (WinterBaseEngine->getGameId() == i->gameId) {
 			for (const Achievement *it = i->mapping; it->sceneFilename; it++) {
 				if (strcmp(sceneFilename, it->sceneFilename) == 0) {
 					AchMan.setActiveDomain(getAchievementsInfo());

@@ -51,7 +51,7 @@ SystemClassRegistry::~SystemClassRegistry() {
 
 //////////////////////////////////////////////////////////////////////////
 SystemClassRegistry *SystemClassRegistry::getInstance() {
-	return BaseEngine::instance().getClassRegistry();
+	return WinterBaseEngine->getClassRegistry();
 }
 
 void SystemClassRegistry::unregisterClasses() {

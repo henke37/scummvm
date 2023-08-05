@@ -50,7 +50,7 @@ SXWMEGalaxyAPI::SXWMEGalaxyAPI(BaseGame *inGame, ScStack *stack) : BaseScriptabl
 //////////////////////////////////////////////////////////////////////////
 void SXWMEGalaxyAPI::init() {
 	const MetaEngine *meta = g_engine->getMetaEngine();
-	const Common::String target = BaseEngine::instance().getGameTargetName();
+	const Common::String target = WinterBaseEngine->getGameTargetName();
 	AchMan.setActiveDomain(meta->getAchievementsInfo(target));
 }
 

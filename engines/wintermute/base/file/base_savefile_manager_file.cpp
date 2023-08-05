@@ -28,6 +28,7 @@
 #include "engines/wintermute/base/file/base_savefile_manager_file.h"
 #include "engines/wintermute/base/base_file_manager.h"
 #include "engines/wintermute/base/base_engine.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/system.h"
 #include "common/savefile.h"
 
@@ -44,7 +45,7 @@ Common::String makeSfmFilename(const Common::String &filename) {
 	while (smFilename.hasPrefix("._")) {
 		smFilename = smFilename.substr(2);
 	}
-	return BaseEngine::instance().getGameTargetName() + "." + smFilename;
+	return WinterBaseEngine->getGameTargetName() + "." + smFilename;
 }
 
 bool sfmFileExists(const Common::String &filename) {
@@ -63,7 +64,7 @@ Common::WriteStream *openSfmFileForWrite(const Common::String &filename) {
 }
 
 Common::StringArray sfmFileList(const Common::String &mask) {
-	Common::String prefix = BaseEngine::instance().getGameTargetName() + ".";
+	Common::String prefix = WinterBaseEngine->getGameTargetName() + ".";
 	Common::String smMask = makeSfmFilename(mask);
 	Common::StringArray array = g_system->getSavefileManager()->listSavefiles(smMask);
 	for (uint32 i = 0; i < array.size(); i++) {

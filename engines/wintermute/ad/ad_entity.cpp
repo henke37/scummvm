@@ -53,6 +53,7 @@
 #include "engines/wintermute/video/video_theora_player.h"
 #include "engines/wintermute/utils/utils.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 
 #include "common/str.h"
 
@@ -1265,7 +1266,7 @@ bool AdEntity::persist(BasePersistenceManager *persistMgr) {
 	persistMgr->transferPtr(TMEMBER_PTR(_theora));
 
 #ifdef ENABLE_FOXTAIL
-	if (BaseEngine::instance().isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
+	if (WinterBaseEngine->isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
 	    persistMgr->transferSint32(TMEMBER(_hintX));
 	    persistMgr->transferSint32(TMEMBER(_hintY));
 	}

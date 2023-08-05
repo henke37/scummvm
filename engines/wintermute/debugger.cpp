@@ -314,7 +314,7 @@ bool Console::Cmd_DumpFile(int argc, const char **argv) {
 	Common::String filePath = argv[1];
 	Common::String outFileName = argv[2];
 
-	BaseFileManager *fileManager = BaseEngine::instance().getFileManager();
+	BaseFileManager *fileManager = WinterBaseEngine->getFileManager();
 	Common::SeekableReadStream *inFile = fileManager->openFile(filePath);
 	if (!inFile) {
 		debugPrintf("File '%s' not found\n", argv[1]);

@@ -44,7 +44,7 @@ BaseScriptable *makeSXSteamAPI(BaseGame *inGame, ScStack *stack) {
 //////////////////////////////////////////////////////////////////////////
 Common::AchievementsInfo getAchievementsInfo() {
 	const MetaEngine *meta = g_engine->getMetaEngine();
-	const Common::String target = BaseEngine::instance().getGameTargetName();
+	const Common::String target = WinterBaseEngine->getGameTargetName();
 	return meta->getAchievementsInfo(target);
 }
 

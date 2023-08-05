@@ -49,7 +49,7 @@ public:
 	byte *readWholeFile(const Common::String &filename, uint32 *size = nullptr, bool mustExist = true);
 	uint32 getPackageVersion(const Common::String &filename);
 
-	BaseFileManager(Common::Language lang, bool detectionMode = false);
+	BaseFileManager(Common::Language lang, bool detectionMode, uint32 flags);
 	virtual ~BaseFileManager();
 	// Used only for detection
 	bool registerPackages(const Common::FSList &fslist);
@@ -62,7 +62,7 @@ private:
 	bool reloadPaths();
 	bool initPaths();
 	bool addPath(TPathType type, const Common::FSNode &path);
-	bool registerPackages();
+	bool registerPackages(uint32 flags);
 	void initResources();
 	Common::SeekableReadStream *openFileRaw(const Common::String &filename);
 	Common::WriteStream *openFileForWriteRaw(const Common::String &filename);

@@ -35,6 +35,7 @@
 #include "engines/wintermute/base/scriptables/script_stack.h"
 #include "engines/wintermute/base/scriptables/script_ext_array.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/str.h"
 
 namespace Wintermute {
@@ -111,7 +112,7 @@ BaseSprite *AdTalkHolder::getTalkStance(const char *stance) {
 			ret = _sprite;
 		} else {
 			// TODO: remember last
-			int rnd = BaseEngine::instance().randInt(0, _talkSprites.size() - 1);
+			int rnd = WinterBaseEngine->randInt(0, _talkSprites.size() - 1);
 			ret = _talkSprites[rnd];
 		}
 	}

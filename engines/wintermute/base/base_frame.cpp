@@ -38,6 +38,7 @@
 #include "engines/wintermute/base/scriptables/script_value.h"
 #include "engines/wintermute/base/scriptables/script.h"
 #include "engines/wintermute/base/scriptables/script_stack.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/str.h"
 
 namespace Wintermute {
@@ -270,7 +271,7 @@ bool BaseFrame::loadBuffer(char *buffer, int lifeTime, bool keepLoaded) {
 			}
 			_sound = new BaseSound(_gameRef);
 			if (!_sound || DID_FAIL(_sound->setSound(params, Audio::Mixer::kSFXSoundType, false))) {
-				if (BaseEngine::instance().getSoundMgr()->_soundAvailable) {
+				if (WinterBaseEngine->getSoundMgr()->_soundAvailable) {
 					BaseEngine::LOG(0, "Error loading sound '%s'.", params);
 				}
 				delete _sound;

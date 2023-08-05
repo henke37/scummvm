@@ -37,6 +37,7 @@
 #include "engines/wintermute/base/base_frame.h"
 #include "engines/wintermute/base/base_sprite.h"
 #include "engines/wintermute/base/base_file_manager.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
@@ -142,7 +143,7 @@ int BaseFontBitmap::textHeightDraw(const byte *text, int x, int y, int width, TT
 	bool newLine = false;
 	bool longLine = false;
 #ifdef ENABLE_FOXTAIL
-	bool minimizeSpacing = BaseEngine::instance().isFoxTail();
+	bool minimizeSpacing = WinterBaseEngine->isFoxTail();
 #endif
 
 	if (draw) {
@@ -520,7 +521,7 @@ bool BaseFontBitmap::loadBuffer(char *buffer) {
 	}
 
 #ifdef ENABLE_FOXTAIL
-	if (BaseEngine::instance().isFoxTail()) {
+	if (WinterBaseEngine->isFoxTail()) {
 		for (i = lastWidth; i < NUM_CHARACTERS; i++) {
 			_widths[i]--;
 		}

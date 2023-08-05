@@ -1763,7 +1763,7 @@ bool AdScene::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack,
 		// [HeroCraft] papasEntity
 		// Used in some self-check at "Papa's Daughters 2"
 		//////////////////////////////////////////////////////////////////////////
-		else if (BaseEngine::instance().getTargetExecutable() == WME_HEROCRAFT && strcmp(nodeName,"papasEntity") == 0) {
+		else if (WinterBaseEngine->getTargetExecutable() == WME_HEROCRAFT && strcmp(nodeName, "papasEntity") == 0) {
 			stack->pushInt(777);
 		}
 #endif
@@ -3001,7 +3001,7 @@ bool AdScene::persist(BasePersistenceManager *persistMgr) {
 	persistMgr->transferBool(TMEMBER(_editorShowScale));
 	persistMgr->transferPtr(TMEMBER_PTR(_fader));
 #ifdef ENABLE_WME3D
-	if (BaseEngine::instance().getFlags() & GF_3D) {
+	if (WinterBaseEngine->getFlags() & GF_3D) {
 		persistMgr->transferPtr(TMEMBER(_sceneGeometry));
 	} else {
 		_sceneGeometry = nullptr;
@@ -3034,7 +3034,7 @@ bool AdScene::persist(BasePersistenceManager *persistMgr) {
 	persistMgr->transferUint32(TMEMBER(_scrollTimeV));
 	persistMgr->transferPtr(TMEMBER_PTR(_shieldWindow));
 #ifdef ENABLE_WME3D
-	if (BaseEngine::instance().getFlags() & GF_3D) {
+	if (WinterBaseEngine->getFlags() & GF_3D) {
 		persistMgr->transferBool(TMEMBER(_showGeometry));
 	} else {
 		_showGeometry = false;
@@ -3047,7 +3047,7 @@ bool AdScene::persist(BasePersistenceManager *persistMgr) {
 	persistMgr->transferSint32(TMEMBER(_width));
 
 #ifdef ENABLE_WME3D
-	if (BaseEngine::instance().getFlags() & GF_3D) {
+	if (WinterBaseEngine->getFlags() & GF_3D) {
 		persistMgr->transferSint32(TMEMBER(_editorResolutionWidth));
 		persistMgr->transferSint32(TMEMBER(_editorResolutionHeight));
 		persistMgr->transferFloat(TMEMBER(_fov));

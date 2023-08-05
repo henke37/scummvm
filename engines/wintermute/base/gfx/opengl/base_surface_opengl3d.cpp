@@ -25,6 +25,7 @@
 
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/base/gfx/base_image.h"
+#include "engines/wintermute/wintermute.h"
 
 #if defined(USE_OPENGL_GAME) || defined(USE_OPENGL_SHADERS)
 
@@ -156,11 +157,11 @@ bool BaseSurfaceOpenGL3D::create(const Common::String &filename, bool defaultCK,
 	_imageData = img.getSurface()->convertTo(Graphics::PixelFormat(4, 8, 8, 8, 8, 0, 8, 16, 24), img.getPalette());
 #endif
 
-	if (BaseEngine::instance().getTargetExecutable() < WME_LITE) {
+	if (WinterBaseEngine->getTargetExecutable() < WME_LITE) {
 		// WME 1.x always use colorkey, even for images with transparency
 		needsColorKey = true;
 		replaceAlpha = false;
-	} else if (BaseEngine::instance().isFoxTail()) {
+	} else if (WinterBaseEngine->isFoxTail()) {
 		// FoxTail does not use colorkey
 		needsColorKey = false;
 	} else if (_filename.hasSuffix(".bmp")) {

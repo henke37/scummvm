@@ -95,7 +95,7 @@ void TPackageHeader::readFromStream(Common::ReadStream *stream) {
 	// They provide "xlanguage_*.dcp" packages with 0x00 priority and change priority for a single package in runtime
 	// We already filter unwanted "xlanguage_*.dcp" packages at BaseFileManager::registerPackages()
 	// So, let's just raise the priority for all "xlanguage_*.dcp" here to the value of Windows version packages
-	if (_priority == 0 && BaseEngine::instance().getGameId().hasPrefix("reversion")) {
+	if (_priority == 0 && WinterBaseEngine->getGameId().hasPrefix("reversion")) {
 		_priority = 0x02;
 	}
 

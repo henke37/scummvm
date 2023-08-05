@@ -32,6 +32,7 @@
 #include "engines/wintermute/base/gfx/osystem/base_render_osystem.h"
 #include "engines/wintermute/base/gfx/base_image.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 
 #include "graphics/transparent_surface.h"
 #include "graphics/transform_tools.h"
@@ -168,11 +169,11 @@ bool BaseSurfaceOSystem::finishLoad() {
 		_surface->copyFrom(*image->getSurface());
 	}
 
-	if (BaseEngine::instance().getTargetExecutable() < WME_LITE) {
+	if (WinterBaseEngine->getTargetExecutable() < WME_LITE) {
 		// WME 1.x always use colorkey, even for images with transparency
 		needsColorKey = true;
 		replaceAlpha = false;
-	} else if (BaseEngine::instance().isFoxTail()) {
+	} else if (WinterBaseEngine->isFoxTail()) {
 		// FoxTail does not use colorkey
 		needsColorKey = false;
 	} else if (_filename.hasSuffix(".bmp")) {
@@ -199,7 +200,7 @@ bool BaseSurfaceOSystem::finishLoad() {
 	// Some Rosemary sprites have non-fully transparent pixels
 	// In original WME it wasn't seen because sprites were downscaled
 	// Let's set alpha to 0 if it is smaller then some treshold
-	if (BaseEngine::instance().getGameId() == "rosemary" && _filename.hasPrefix("actors") && _surface->format.bytesPerPixel == 4) {
+	if (WinterBaseEngine->getGameId() == "rosemary" && _filename.hasPrefix("actors") && _surface->format.bytesPerPixel == 4) {
 		uint8 treshold = 16;
 		for (int x = 0; x < _surface->w; x++) {
 			for (int y = 0; y < _surface->h; y++) {

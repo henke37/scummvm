@@ -47,6 +47,7 @@
 #include "engines/wintermute/base/base_sprite.h"
 #include "engines/wintermute/base/base_file_manager.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
@@ -608,7 +609,7 @@ bool UIWindow::loadBuffer(char *buffer, bool complete) {
 	// HACK: Increase window title height by 1 for "5 Lethal Demons" game
 	// For some reason getFontHeight() is off-by-one comparing to height set in TITLE_RECT,
 	// Which made text being bigger then title rect and drawing was skipped.
-	if (BaseEngine::instance().getGameId() == "5ld" && !_titleRect.isRectEmpty() && _text) {
+	if (WinterBaseEngine->getGameId() == "5ld" && !_titleRect.isRectEmpty() && _text) {
 		_titleRect.bottom ++;
 	}
 

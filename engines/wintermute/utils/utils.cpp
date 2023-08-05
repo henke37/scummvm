@@ -132,14 +132,14 @@ int BaseUtils::randomInt(int from, int to) {
 		to = from;
 		from = i;
 	}
-	return BaseEngine::instance().randInt(from, to);
-//	return (rand() % (to - from + 1)) + from;
+	return WinterBaseEngine->randInt(from, to);
+	//	return (rand() % (to - from + 1)) + from;
 }
 
 //////////////////////////////////////////////////////////////////////////
 float BaseUtils::randomFloat(float from, float to) {
 	const uint32 randMax = RAND_MAX;
-	float randNum = (float)BaseEngine::instance().randInt(0, randMax) / (float)randMax;
+	float randNum = (float)WinterBaseEngine->randInt(0, randMax) / (float)randMax;
 	return from + (to - from) * randNum;
 }
 

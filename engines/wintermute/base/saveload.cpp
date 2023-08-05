@@ -61,7 +61,7 @@ bool SaveLoad::loadGame(const Common::String &filename, BaseGame *gameRef) {
 		if (DID_SUCCEED(ret = SystemClassRegistry::getInstance()->loadTable(gameRef,  pm))) {
 			if (DID_SUCCEED(ret = SystemClassRegistry::getInstance()->loadInstances(gameRef,  pm))) {
 				// Restore random-seed:
-				BaseEngine::instance().getRandomSource()->setSeed(pm->getDWORD());
+				WinterBaseEngine->getRandomSource()->setSeed(pm->getDWORD());
 
 				// data initialization after load
 				SaveLoad::initAfterLoad();
@@ -101,7 +101,7 @@ bool SaveLoad::saveGame(int slot, const char *desc, bool quickSave, BaseGame *ga
 		gameRef->_renderer->initSaveLoad(true, quickSave); // TODO: The original code inited the indicator before the conditionals
 		if (DID_SUCCEED(ret = SystemClassRegistry::getInstance()->saveTable(gameRef,  pm, quickSave))) {
 			if (DID_SUCCEED(ret = SystemClassRegistry::getInstance()->saveInstances(gameRef,  pm, quickSave))) {
-				pm->putDWORD(BaseEngine::instance().getRandomSource()->getSeed());
+				pm->putDWORD(WinterBaseEngine->getRandomSource()->getSeed());
 				if (DID_SUCCEED(ret = pm->saveFile(filename))) {
 					ConfMan.setInt("most_recent_saveslot", slot);
 					ConfMan.flushToDisk();

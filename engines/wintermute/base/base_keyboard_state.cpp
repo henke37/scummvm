@@ -29,6 +29,7 @@
 #include "engines/wintermute/base/base_keyboard_state.h"
 #include "engines/wintermute/base/scriptables/script_value.h"
 #include "engines/wintermute/base/scriptables/script_stack.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/system.h"
 #include "common/keyboard.h"
 
@@ -263,7 +264,7 @@ void BaseKeyboardState::init() {
 		_keyStates[i] = false;
 	}
 
-	if (BaseEngine::instance().getTargetExecutable() < WME_LITE) {
+	if (WinterBaseEngine->getTargetExecutable() < WME_LITE) {
 		_mapping = wmeOriginalMapping;
 		_mappingSize = ARRAYSIZE(wmeOriginalMapping);
 	} else {
@@ -338,12 +339,12 @@ bool BaseKeyboardState::scCallMethod(ScScript *script, ScStack *stack, ScStack *
 				warning("Unknown VKEY: %d", temp);
 			}
 
-			if (BaseEngine::instance().getTargetExecutable() < WME_LITE && temp == 16) {
+			if (WinterBaseEngine->getTargetExecutable() < WME_LITE && temp == 16) {
 				stack->pushBool(_keyStates[Common::KEYCODE_LSHIFT] || _keyStates[Common::KEYCODE_RSHIFT]);
 				return STATUS_OK;
 			}
 
-			if (BaseEngine::instance().getTargetExecutable() < WME_LITE && temp == 17) {
+			if (WinterBaseEngine->getTargetExecutable() < WME_LITE && temp == 17) {
 				stack->pushBool(_keyStates[Common::KEYCODE_LCTRL] || _keyStates[Common::KEYCODE_RCTRL]);
 				return STATUS_OK;
 			}
@@ -469,7 +470,7 @@ bool BaseKeyboardState::readKey(Common::Event *event) {
 		_currentCharCode = event->kbd.ascii;
 		_currentPrintable = true;
 #ifdef ENABLE_FOXTAIL
-		if (BaseEngine::instance().isFoxTail()) {
+		if (WinterBaseEngine->isFoxTail()) {
 			_currentCharCode = tolower(_currentCharCode);
 		}
 #endif
@@ -501,7 +502,7 @@ bool BaseKeyboardState::readKey(Common::Event *event) {
 			warning("Key pressed (%d '%c') is not recognized, ASCII returned (%d '%c').", event->kbd.keycode, event->kbd.keycode, event->kbd.ascii, event->kbd.ascii);
 		}
 
-		if (BaseEngine::instance().getTargetExecutable() < WME_LITE) {
+		if (WinterBaseEngine->getTargetExecutable() < WME_LITE) {
 			_currentPrintable = code == Common::KEYCODE_BACKSPACE ||
 								code == Common::KEYCODE_TAB ||
 								code == Common::KEYCODE_RETURN ||

@@ -33,6 +33,7 @@
 #include "engines/wintermute/base/scriptables/script_stack.h"
 #include "engines/wintermute/base/gfx/base_renderer.h"
 #include "engines/wintermute/ext/externals.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/memstream.h"
 
 #ifdef ENABLE_FOXTAIL
@@ -511,8 +512,8 @@ char *ScScript::getString() {
 #ifdef ENABLE_FOXTAIL
 //////////////////////////////////////////////////////////////////////////
 void ScScript::initOpcodesType() {
-	_opcodesType = BaseEngine::instance().isFoxTail(FOXTAIL_1_2_896, FOXTAIL_1_2_896) ? OPCODES_FOXTAIL_1_2_896 :
-	               BaseEngine::instance().isFoxTail(FOXTAIL_1_2_902, FOXTAIL_LATEST_VERSION) ? OPCODES_FOXTAIL_1_2_902 :
+	_opcodesType = WinterBaseEngine->isFoxTail(FOXTAIL_1_2_896, FOXTAIL_1_2_896) ? OPCODES_FOXTAIL_1_2_896 :
+	               WinterBaseEngine->isFoxTail(FOXTAIL_1_2_902, FOXTAIL_LATEST_VERSION) ? OPCODES_FOXTAIL_1_2_902 :
 	               OPCODES_UNCHANGED;
 }
 
@@ -658,7 +659,7 @@ bool ScScript::executeInstruction() {
 						_waitScript->copyParameters(_stack);
 					}
 #ifdef ENABLE_FOXTAIL
-				} else if (BaseEngine::instance().isFoxTail() && strcmp(methodName, "LoadItems") == 0 && strcmp(_threadEvent,"AfterLoad") == 0) {
+				} else if (WinterBaseEngine->isFoxTail() && strcmp(methodName, "LoadItems") == 0 && strcmp(_threadEvent, "AfterLoad") == 0) {
 					_stack->correctParams(0);
 					_gameRef->LOG(0, "Method '%s' is called in unbreakable mode of '%s' event and was ignored", methodName, _threadEvent);
 					_stack->pushNULL();

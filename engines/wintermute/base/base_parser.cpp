@@ -29,6 +29,7 @@
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/base/base_game.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 #include "common/str.h"
 #include "common/util.h"
 
@@ -122,7 +123,7 @@ int32 BaseParser::getCommand(char **buf, const TokenDesc *tokens, char **params)
 	if (!*buf) {
 		return PARSERR_TOKENNOTFOUND;
 	}
-	BaseEngine::instance().getGameRef()->miniUpdate();
+	WinterBaseEngine->getGameRef()->miniUpdate();
 	char *name;
 	return getObject(buf, tokens, &name, params);
 }

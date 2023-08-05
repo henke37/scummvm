@@ -623,7 +623,7 @@ bool BaseFontTT::initFont() {
 	}
 	_lineHeight = _font->getFontHeight();
 #ifdef ENABLE_FOXTAIL
-	if (BaseEngine::instance().isFoxTail(FOXTAIL_1_2_896, FOXTAIL_LATEST_VERSION)) {
+	if (WinterBaseEngine->isFoxTail(FOXTAIL_1_2_896, FOXTAIL_LATEST_VERSION)) {
 		_lineHeight -= 1;
 	}
 #endif

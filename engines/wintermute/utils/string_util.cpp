@@ -30,6 +30,7 @@
 #include "common/str-enc.h"
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/utils/string_util.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
@@ -87,7 +88,7 @@ Common::CodePage StringUtil::mapCodePage(TTextCharset charset) {
 		return Common::kWindows1257;
 
 	case CHARSET_DEFAULT:
-		switch (BaseEngine::instance().getLanguage()) {
+		switch (WinterBaseEngine->getLanguage()) {
 
 		//cp1250: Central Europe
 		case Common::CS_CZE:

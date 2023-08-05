@@ -1534,7 +1534,7 @@ bool BaseGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack
 		stack->pushString(desc.c_str());
 
 		BaseScriptable *obj;
-		if (BaseEngine::instance().isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
+		if (WinterBaseEngine->isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
 			stack->pushInt(2);
 			obj = makeSXArray(_gameRef, stack);
 		} else {
@@ -1744,7 +1744,7 @@ bool BaseGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack
 		// HACK: Corrosion fades screen to black while opening main menu
 		// Thus, we get black screenshots when saving game from in-game menus
 		// Let's take & keep screenshot before entering main menu
-		if (duration == 750 && BaseEngine::instance().getGameId() == "corrosion") {
+		if (duration == 750 && WinterBaseEngine->getGameId() == "corrosion") {
 			storeSaveThumbnail();
 		}
 
@@ -2292,7 +2292,7 @@ bool BaseGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack
 		stack->pushInt(2 * 320 + 1);
 
 		BaseScriptable *obj;
-		if (BaseEngine::instance().isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
+		if (WinterBaseEngine->isFoxTail(FOXTAIL_1_2_527, FOXTAIL_LATEST_VERSION)) {
 			stack->pushInt(2);
 			obj = makeSXArray(_gameRef, stack);
 		} else {
@@ -2926,19 +2926,19 @@ ScValue *BaseGame::scGetProperty(const Common::String &name) {
 	// Returns FoxTail engine version number as a dotted string
 	//////////////////////////////////////////////////////////////////////////
 	else if (name == "BuildVersion") {
-		if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_227) {
+		if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_227) {
 			_scValue->setString("1.2.227");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_230) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_230) {
 			_scValue->setString("1.2.230");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_304) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_304) {
 			_scValue->setString("1.2.304");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_362) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_362) {
 			_scValue->setString("1.2.362");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_527) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_527) {
 			_scValue->setString("1.2.527");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_896) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_896) {
 			_scValue->setString("1.2.896");
-		} else if (BaseEngine::instance().getTargetExecutable() == FOXTAIL_1_2_902) {
+		} else if (WinterBaseEngine->getTargetExecutable() == FOXTAIL_1_2_902) {
 			_scValue->setString("1.2.902");
 		} else {
 			_scValue->setString("UNKNOWN");
@@ -2953,7 +2953,7 @@ ScValue *BaseGame::scGetProperty(const Common::String &name) {
 	//////////////////////////////////////////////////////////////////////////
 	else if (name == "GameVersion") {
 		uint32 gameVersion = 0;
-		BaseFileManager *fileManager = BaseEngine::instance().getFileManager();
+		BaseFileManager *fileManager = WinterBaseEngine->getFileManager();
 		if (fileManager) {
 			gameVersion = fileManager->getPackageVersion("data.dcp");
 		}
@@ -3906,7 +3906,7 @@ bool BaseGame::persist(BasePersistenceManager *persistMgr) {
 	_renderer->persistSaveLoadImages(persistMgr);
 
 #ifdef ENABLE_WME3D
-	if (BaseEngine::instance().getFlags() & GF_3D) {
+	if (WinterBaseEngine->getFlags() & GF_3D) {
 		persistMgr->transferSint32(TMEMBER_INT(_maxShadowType));
 		persistMgr->transferSint32(TMEMBER(_editorResolutionWidth));
 		persistMgr->transferSint32(TMEMBER(_editorResolutionHeight));
@@ -4852,8 +4852,8 @@ Common::String BaseGame::readRegistryString(const Common::String &key, const Com
 	// Game specific hacks:
 	Common::String result = initValue;
 	// James Peris:
-	if (BaseEngine::instance().getGameId() == "jamesperis" && key == "Language") {
-		Common::Language language = BaseEngine::instance().getLanguage();
+	if (WinterBaseEngine->getGameId() == "jamesperis" && key == "Language") {
+		Common::Language language = WinterBaseEngine->getLanguage();
 		if (language == Common::EN_ANY) {
 			result = "english";
 		} else if (language == Common::ES_ESP) {

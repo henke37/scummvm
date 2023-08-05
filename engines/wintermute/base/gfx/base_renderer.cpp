@@ -34,6 +34,7 @@
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/platform_osystem.h"
 #include "engines/wintermute/base/base_persistence_manager.h"
+#include "engines/wintermute/wintermute.h"
 
 #ifdef ENABLE_WME3D
 #include "engines/wintermute/base/gfx/xmodel.h"
@@ -382,7 +383,7 @@ bool BaseRenderer::displayIndicator() {
 	}
 
 #ifdef ENABLE_FOXTAIL
-	if (BaseEngine::instance().isFoxTail()) {
+	if (WinterBaseEngine->isFoxTail()) {
 		_hasDrawnSaveLoadImage = false;
 		fill(0, 0, 0);
 		displaySaveloadLines();

@@ -31,9 +31,6 @@
 #include "engines/wintermute/wintermute.h"
 #include "engines/wintermute/system/sys_class_registry.h"
 #include "common/system.h"
-namespace Common {
-DECLARE_SINGLETON(Wintermute::BaseEngine);
-}
 
 namespace Wintermute {
 
@@ -48,14 +45,6 @@ BaseEngine::BaseEngine() {
 	_flags = 0;
 }
 
-void BaseEngine::init() {
-	_fileManager = new BaseFileManager(_language);
-	// Don't forget to register your random source
-	_rnd = new Common::RandomSource("Wintermute");
-	_classReg = new SystemClassRegistry();
-	_classReg->registerClasses();
-}
-
 BaseEngine::~BaseEngine() {
 	delete _fileManager;
 	delete _rnd;
@@ -63,12 +52,17 @@ BaseEngine::~BaseEngine() {
 }
 
 void BaseEngine::createInstance(const Common::String &targetName, const Common::String &gameId, Common::Language lang, WMETargetExecutable targetExecutable, uint32 flags) {
-	instance()._targetName = targetName;
-	instance()._gameId = gameId;
-	instance()._language = lang;
-	instance()._targetExecutable = targetExecutable;
-	instance()._flags = flags;
-	instance().init();
+	_targetName = targetName;
+	_gameId = gameId;
+	_language = lang;
+	_targetExecutable = targetExecutable;
+	_flags = flags;
+
+	_fileManager = new BaseFileManager(_language, false, flags);
+	// Don't forget to register your random source
+	_rnd = new Common::RandomSource("Wintermute");
+	_classReg = new SystemClassRegistry();
+	_classReg->registerClasses();
 }
 
 void BaseEngine::LOG(bool res, const char *fmt, ...) {
@@ -85,8 +79,8 @@ void BaseEngine::LOG(bool res, const char *fmt, ...) {
 	Common::vsprintf_s(buff, fmt, va);
 	va_end(va);
 
-	if (instance()._gameRef) {
-		instance()._gameRef->LOG(res, "%s", buff);
+	if (WinterBaseEngine->_gameRef) {
+		WinterBaseEngine->_gameRef->LOG(res, "%s", buff);
 	} else {
 		debugCN(kWintermuteDebugLog, "%02d:%02d:%02d: %s\n", hours, mins, secs, buff);
 	}
@@ -97,7 +91,7 @@ uint32 BaseEngine::randInt(int from, int to) {
 }
 
 BaseSoundMgr *BaseEngine::getSoundMgr() {
-	if (instance()._gameRef) {
+	if (WinterBaseEngine->_gameRef) {
 		return _gameRef->_soundMgr;
 	} else {
 		return nullptr;
@@ -105,24 +99,24 @@ BaseSoundMgr *BaseEngine::getSoundMgr() {
 }
 
 BaseRenderer *BaseEngine::getRenderer() {
-	if (instance()._gameRef) {
-		return instance()._gameRef->_renderer;
+	if (WinterBaseEngine->_gameRef) {
+		return WinterBaseEngine->_gameRef->_renderer;
 	} else {
 		return nullptr;
 	}
 }
 
 const Timer *BaseEngine::getTimer() {
-	if (instance()._gameRef) {
-		return instance()._gameRef->getTimer();
+	if (WinterBaseEngine->_gameRef) {
+		return WinterBaseEngine->_gameRef->getTimer();
 	} else {
 		return nullptr;
 	}
 }
 
 const Timer *BaseEngine::getLiveTimer() {
-	if (instance()._gameRef) {
-		return instance()._gameRef->getLiveTimer();
+	if (WinterBaseEngine->_gameRef) {
+		return WinterBaseEngine->_gameRef->getLiveTimer();
 	} else {
 		return nullptr;
 	}

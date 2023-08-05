@@ -102,7 +102,7 @@ public:
 	bool transferMatrix4(const char *name, Math::Matrix4 *val);
 	bool transferAngle(const char *name, Math::Angle *val);
 #endif
-	BasePersistenceManager(const Common::String &savePrefix = "", bool deleteSingleton = false);
+	BasePersistenceManager(const Common::String &savePrefix = "");
 	virtual ~BasePersistenceManager();
 	bool checkVersion(byte  verMajor, byte verMinor, byte verBuild);
 

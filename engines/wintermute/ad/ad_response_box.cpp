@@ -192,7 +192,7 @@ bool AdResponseBox::createButtons() {
 			}
 
 #ifdef ENABLE_FOXTAIL
-			if (BaseEngine::instance().isFoxTail()) {
+			if (WinterBaseEngine->isFoxTail()) {
 				btn->addScript("interface/scripts/dialogue_button.script");
 				btn->setWidth(120);
 				if (_fontHover == nullptr) {
@@ -516,7 +516,7 @@ bool AdResponseBox::display() {
 #ifdef ENABLE_FOXTAIL
 		// FoxTail's "HORIZONTAL=TRUE" display boxes are actual 2x3 display boxes
 		// Tests show that this hack was removed in FOXTAIL_1_2_362
-		if (_horizontal && BaseEngine::instance().isFoxTail(FOXTAIL_OLDEST_VERSION, FOXTAIL_1_2_304)) {
+		if (_horizontal && WinterBaseEngine->isFoxTail(FOXTAIL_OLDEST_VERSION, FOXTAIL_1_2_304)) {
 			if (i >= _scrollOffset + 6) {
 				scrollNeeded = true;
 				break;

@@ -54,13 +54,13 @@ namespace Wintermute {
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-BaseFileManager::BaseFileManager(Common::Language lang, bool detectionMode) {
+BaseFileManager::BaseFileManager(Common::Language lang, bool detectionMode, uint32 flags) {
 	_detectionMode = detectionMode;
 	_language = lang;
 	_resources = nullptr;
 	initResources();
 	initPaths();
-	registerPackages();
+	registerPackages(flags);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -191,11 +191,10 @@ bool BaseFileManager::registerPackages(const Common::FSList &fslist) {
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool BaseFileManager::registerPackages() {
+bool BaseFileManager::registerPackages(uint32 flags) {
 	debugC(kWintermuteDebugFileAccess | kWintermuteDebugLog, "Scanning packages");
 
 	// We need game flags to perform some game-specific hacks.
-	uint32 flags = BaseEngine::instance().getFlags();
 
 	// Register without using SearchMan, as otherwise the FSNode-based lookup in openPackage will fail
 	// and that has to be like that to support the detection-scheme.
@@ -382,7 +381,7 @@ bool BaseFileManager::hasFile(const Common::String &filename) {
 	Common::replace(backwardSlashesPath.begin(), backwardSlashesPath.end(), '/', '\\');
 
 	if (scumm_strnicmp(filename.c_str(), "savegame:", 9) == 0) {
-		BasePersistenceManager pm(BaseEngine::instance().getGameTargetName());
+		BasePersistenceManager pm(WinterBaseEngine->getGameTargetName());
 		if (filename.size() <= 9) {
 			return false;
 		}
@@ -466,7 +465,7 @@ Common::SeekableReadStream *BaseFileManager::openFileRaw(const Common::String &f
 	Common::SeekableReadStream *ret = nullptr;
 
 	if (scumm_strnicmp(filename.c_str(), "savegame:", 9) == 0) {
-		if (!BaseEngine::instance().getGameRef()) {
+		if (!WinterBaseEngine->getGameRef()) {
 			error("Attempt to load filename: %s without BaseEngine-object, this is unsupported", filename.c_str());
 		}
 		BaseSaveThumbFile *saveThumbFile = new BaseSaveThumbFile();
@@ -517,8 +516,8 @@ Common::WriteStream *BaseFileManager::openFileForWriteRaw(const Common::String &
 }
 
 BaseFileManager *BaseFileManager::getEngineInstance() {
-	if (BaseEngine::instance().getFileManager()) {
-		return BaseEngine::instance().getFileManager();
+	if (WinterBaseEngine->getFileManager()) {
+		return WinterBaseEngine->getFileManager();
 	}
 	return nullptr;
 }

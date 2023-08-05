@@ -32,6 +32,7 @@
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/base/base_game.h"
 #include "engines/wintermute/base/base_file_manager.h"
+#include "engines/wintermute/wintermute.h"
 #include "engines/wintermute/utils/utils.h"
 
 namespace Wintermute {
@@ -213,7 +214,7 @@ byte *ScEngine::getCompiledScript(const char *filename, uint32 *outSize, bool ig
 
 	uint32 size;
 
-	byte *buffer = BaseEngine::instance().getFileManager()->readWholeFile(filename, &size);
+	byte *buffer = WinterBaseEngine->getFileManager()->readWholeFile(filename, &size);
 	if (!buffer) {
 		_gameRef->LOG(0, "ScEngine::GetCompiledScript - error opening script '%s'", filename);
 		return nullptr;

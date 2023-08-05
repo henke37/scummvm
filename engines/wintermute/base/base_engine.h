@@ -29,7 +29,6 @@
 #define WINTERMUTE_BASE_ENGINE_H
 
 #include "common/str.h"
-#include "common/singleton.h"
 #include "common/random.h"
 #include "common/language.h"
 
@@ -44,8 +43,7 @@ class BaseSoundMgr;
 class BaseRenderer;
 class SystemClassRegistry;
 class Timer;
-class BaseEngine : public Common::Singleton<Wintermute::BaseEngine> {
-	void init();
+class BaseEngine {
 	BaseFileManager *_fileManager;
 	Common::String _gameId;
 	Common::String _targetName;
@@ -58,8 +56,8 @@ class BaseEngine : public Common::Singleton<Wintermute::BaseEngine> {
 	uint32 _flags;
 public:
 	BaseEngine();
-	~BaseEngine() override;
-	static void createInstance(const Common::String &targetName, const Common::String &gameId, Common::Language lang, WMETargetExecutable targetExecutable, uint32 flags);
+	~BaseEngine();
+	void createInstance(const Common::String &targetName, const Common::String &gameId, Common::Language lang, WMETargetExecutable targetExecutable, uint32 flags);
 
 	void setGameRef(BaseGame *gameRef) { _gameRef = gameRef; }
 

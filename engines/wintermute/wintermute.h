@@ -31,6 +31,7 @@ namespace Wintermute {
 
 class Console;
 class BaseGame;
+class BaseEngine;
 class SystemClassRegistry;
 class DebuggerController;
 
@@ -65,6 +66,9 @@ public:
 	bool canSaveGameStateCurrently() override;
 	// For detection-purposes:
 	static bool getGameInfo(const Common::FSList &fslist, Common::String &name, Common::String &caption);
+
+	BaseEngine *_baseEngine;
+
 private:
 	int init();
 	void deinit();
@@ -77,6 +81,8 @@ private:
 	friend class Console;
 	friend class DebuggerController;
 };
+
+#define WinterBaseEngine (((WintermuteEngine *)g_engine)->_baseEngine)
 
 } // End of namespace Wintermute
 

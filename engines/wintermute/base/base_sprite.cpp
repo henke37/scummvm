@@ -41,6 +41,7 @@
 #include "engines/wintermute/base/scriptables/script.h"
 #include "engines/wintermute/base/scriptables/script_stack.h"
 #include "engines/wintermute/detection.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
@@ -349,7 +350,7 @@ void BaseSprite::reset() {
 	} else {
 		_currentFrame = -1;
 	}
-	if (BaseEngine::instance().getTargetExecutable() >= WME_1_8_6) {
+	if (WinterBaseEngine->getTargetExecutable() >= WME_1_8_6) {
 		/*
 		* This was added in WME 1.8.6
 		*

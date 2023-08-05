@@ -1106,7 +1106,7 @@ bool BaseObject::persist(BasePersistenceManager *persistMgr) {
 	persistMgr->transferFloat(TMEMBER(_sFXParam4));
 
 #ifdef ENABLE_WME3D
-	if (BaseEngine::instance().getFlags() & GF_3D) {
+	if (WinterBaseEngine->getFlags() & GF_3D) {
 		persistMgr->transferAngle(TMEMBER(_angle));
 		persistMgr->transferPtr(TMEMBER(_xmodel));
 		persistMgr->transferPtr(TMEMBER(_shadowModel));

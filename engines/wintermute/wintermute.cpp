@@ -124,21 +124,21 @@ Common::Error WintermuteEngine::run() {
 }
 
 int WintermuteEngine::init() {
-	BaseEngine::createInstance(_targetName, _gameDescription->adDesc.gameId, _gameDescription->adDesc.language, _gameDescription->targetExecutable, _gameDescription->adDesc.flags);
-	BaseEngine &instance = BaseEngine::instance();
+	WinterBaseEngine = new BaseEngine();
+	_baseEngine->createInstance(_targetName, _gameDescription->adDesc.gameId, _gameDescription->adDesc.language, _gameDescription->targetExecutable, _gameDescription->adDesc.flags);
 
 	// check if unknown target is a 2.5D game
-	if (instance.getFlags() & ADGF_AUTOGENTARGET) {
+	if (_baseEngine->getFlags() & ADGF_AUTOGENTARGET) {
 		Common::ArchiveMemberList actors3d;
-		if (instance.getFileManager()->listMatchingPackageMembers(actors3d, "*.act3d")) {
+		if (_baseEngine->getFileManager()->listMatchingPackageMembers(actors3d, "*.act3d")) {
 			warning("Unknown 2.5D game detected");
-			instance.addFlags(GF_3D);
+			_baseEngine->addFlags(GF_3D);
 		}
 	}
 
 	#ifdef ENABLE_WME3D
-	if (instance.getFlags() & GF_3D) {
-		instance.getClassRegistry()->register3DClasses();
+	if (_baseEngine->getFlags() & GF_3D) {
+		_baseEngine->getClassRegistry()->register3DClasses();
 	}
 	#endif
 
@@ -195,10 +195,10 @@ int WintermuteEngine::init() {
 
 	#ifdef ENABLE_WME3D
 	Common::ArchiveMemberList actors3d;
-	_game->_playing3DGame = instance.getFlags() & GF_3D;
-	_game->_playing3DGame |= (BaseEngine::instance().getFileManager()->listMatchingPackageMembers(actors3d, "*.act3d") != 0);
+	_game->_playing3DGame = _baseEngine->getFlags() & GF_3D;
+	_game->_playing3DGame |= (_baseEngine->getFileManager()->listMatchingPackageMembers(actors3d, "*.act3d") != 0);
 	#endif
-	instance.setGameRef(_game);
+	_baseEngine->setGameRef(_game);
 	BasePlatform::initialize(this, _game, 0, nullptr);
 
 	_game->initConfManSettings();
@@ -327,17 +327,17 @@ int WintermuteEngine::messageLoop() {
 }
 
 void WintermuteEngine::deinit() {
-	BaseEngine::destroy();
+	delete _baseEngine;
 	BasePlatform::deinit();
 }
 
 Common::Error WintermuteEngine::loadGameState(int slot) {
-	BaseEngine::instance().getGameRef()->loadGame(slot);
+	_baseEngine->getGameRef()->loadGame(slot);
 	return Common::kNoError;
 }
 
 Common::Error WintermuteEngine::saveGameState(int slot, const Common::String &desc, bool isAutosave) {
-	BaseEngine::instance().getGameRef()->saveGame(slot, desc.c_str(), false);
+	_baseEngine->getGameRef()->saveGame(slot, desc.c_str(), false);
 	return Common::kNoError;
 }
 
@@ -354,7 +354,7 @@ bool WintermuteEngine::getGameInfo(const Common::FSList &fslist, Common::String 
 	caption = name = "(invalid)";
 	Common::SeekableReadStream *stream = nullptr;
 	// Quick-fix, instead of possibly breaking the persistence-system, let's just roll with it
-	BaseFileManager *fileMan = new BaseFileManager(Common::UNK_LANG, true);
+	BaseFileManager *fileMan = new BaseFileManager(Common::UNK_LANG, true, 0);
 	fileMan->registerPackages(fslist);
 	stream = fileMan->openFile("startup.settings", false, false);
 
@@ -450,7 +450,6 @@ bool WintermuteEngine::getGameInfo(const Common::FSList &fslist, Common::String 
 		delete stream;
 	}
 	delete fileMan;
-	BaseEngine::destroy();
 	return retVal;
 }
 

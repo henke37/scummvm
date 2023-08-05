@@ -66,6 +66,7 @@
 #include "engines/wintermute/video/video_player.h"
 #include "engines/wintermute/video/video_theora_player.h"
 #include "engines/wintermute/platform_osystem.h"
+#include "engines/wintermute/wintermute.h"
 
 #include "common/config-manager.h"
 #include "common/str.h"
@@ -451,7 +452,7 @@ bool AdGame::scCallMethod(ScScript *script, ScStack *stack, ScStack *thisStack, 
 
 		// HACK: We take corrosion screenshot before entering main menu
 		// Unused screenshots must be deleted, after main menu is closed
-		if (obj && BaseEngine::instance().getGameId() == "corrosion") {
+		if (obj && WinterBaseEngine->getGameId() == "corrosion") {
 			const char *mm = "interface\\system\\mainmenu.window";
 			const char *fn = obj->getFilename();
 			if (fn && strcmp(fn, mm) == 0) {
@@ -1599,7 +1600,7 @@ bool AdGame::scheduleChangeScene(const char *filename, bool fadeIn) {
 
 //////////////////////////////////////////////////////////////////////////
 bool AdGame::handleCustomActionStart(BaseGameCustomAction action) {
-	bool isCorrosion = BaseEngine::instance().getGameId() == "corrosion";
+	bool isCorrosion = WinterBaseEngine->getGameId() == "corrosion";
 
 	if (isCorrosion) {
 		// Corrosion Enhanced Edition contain city map screen, which is
@@ -2391,7 +2392,7 @@ bool AdGame::onMouseLeftUp() {
 	_mouseLeftDown = false;
 
 	bool handled;
-	if (BaseEngine::instance().getTargetExecutable() < WME_LITE) {
+	if (WinterBaseEngine->getTargetExecutable() < WME_LITE) {
 		handled = _state==GAME_RUNNING && DID_SUCCEED(applyEvent("LeftRelease"));
 	} else {
 		handled = DID_SUCCEED(applyEvent("LeftRelease"));

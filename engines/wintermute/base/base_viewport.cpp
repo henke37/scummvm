@@ -29,6 +29,7 @@
 #include "engines/wintermute/base/base_engine.h"
 #include "engines/wintermute/base/base_persistence_manager.h"
 #include "engines/wintermute/base/gfx/base_renderer.h"
+#include "engines/wintermute/wintermute.h"
 
 namespace Wintermute {
 
@@ -67,8 +68,8 @@ bool BaseViewport::setRect(int32 left, int32 top, int32 right, int32 bottom, boo
 	if (!noCheck) {
 		left = MAX<int32>(left, 0);
 		top = MAX<int32>(top, 0);
-		right = MIN(right, BaseEngine::instance().getRenderer()->getWidth());
-		bottom = MIN(bottom, BaseEngine::instance().getRenderer()->getHeight());
+		right = MIN(right, WinterBaseEngine->getRenderer()->getWidth());
+		bottom = MIN(bottom, WinterBaseEngine->getRenderer()->getHeight());
 	}
 
 	_rect.setRect(left, top, right, bottom);
