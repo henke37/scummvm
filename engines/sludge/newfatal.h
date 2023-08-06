@@ -24,12 +24,14 @@
 #include "common/str.h"
 #include "common/singleton.h"
 
+#include "engines/sludge/sludge.h"
+
 namespace Sludge {
 
-class FatalMsgManager : public Common::Singleton<Sludge::FatalMsgManager>{
+class FatalMsgManager {
 public:
 	FatalMsgManager();
-	~FatalMsgManager() override;
+	~FatalMsgManager();
 
 	void reset();
 
@@ -46,19 +48,19 @@ private:
 };
 
 inline bool hasFatal() {
-	return FatalMsgManager::instance().hasFatal();
+	return g_sludge->_fatalMan->hasFatal();
 }
 
 inline int fatal(const Common::String &str) {
-	return FatalMsgManager::instance().fatal(str);
+	return g_sludge->_fatalMan->fatal(str);
 }
 
 inline void setFatalInfo(const Common::String &userFunc, const Common::String &BIF) {
-	FatalMsgManager::instance().setFatalInfo(userFunc, BIF);
+	g_sludge->_fatalMan->setFatalInfo(userFunc, BIF);
 }
 
 inline void setResourceForFatal(int n) {
-	FatalMsgManager::instance().setResourceForFatal(n);
+	g_sludge->_fatalMan->setResourceForFatal(n);
 }
 
 int checkNew(const void *mem);
