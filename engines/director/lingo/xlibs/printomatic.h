@@ -51,6 +51,8 @@ void m_setLandscapeMode(int nargs);
 void m_doPageSetup(int nargs);
 void m_doJobSetup(int nargs);
 void m_setProgressMsg(int nargs);
+void m_setProgressPict(int nargs);
+void m_setDocumentName(int nargs);
 void m_printPreview(int nargs);
 void m_printPicts(int nargs);
 void m_print(int nargs);

@@ -133,7 +133,9 @@ static MethodProto xlibMethods[] = {
 	{ "SetLandscapeMode",		PrintOMaticXObj::m_setLandscapeMode,		1,	1,	400 },	// D4
 	{ "DoPageSetup",			PrintOMaticXObj::m_doPageSetup,				0,	0,	400 },	// D4
 	{ "DoJobSetup",				PrintOMaticXObj::m_doJobSetup,				0,	0,	400 },	// D4
+	{ "SetDocumentName",		PrintOMaticXObj::m_setDocumentName,			1,	1,	400 },	// D4
 	{ "SetProgressMsg",			PrintOMaticXObj::m_setProgressMsg,			1,	1,	400 },	// D4
+	{ "SetProgressPict",		PrintOMaticXObj::m_setProgressPict,			1,	1,	400 },	// D4
 	{ "PrintPreview",			PrintOMaticXObj::m_printPreview,			0,	0,	400 },	// D4
 	{ "PrintPicts",				PrintOMaticXObj::m_printPicts,				0,	1,	400 },	// D4
 	{ "Print",					PrintOMaticXObj::m_print,					0,	0,	400 },	// D4
@@ -189,7 +191,9 @@ void PrintOMaticXObj::m_setLandscapeMode(int nargs) {
 
 XOBJSTUB(PrintOMaticXObj::m_doPageSetup, 1)
 XOBJSTUB(PrintOMaticXObj::m_doJobSetup, 1)
+XOBJSTUBNR(PrintOMaticXObj::m_setDocumentName)
 XOBJSTUBNR(PrintOMaticXObj::m_setProgressMsg)
+XOBJSTUBNR(PrintOMaticXObj::m_setProgressPict)
 XOBJSTUB(PrintOMaticXObj::m_printPreview, 0)
 XOBJSTUBV(PrintOMaticXObj::m_printPicts)
 XOBJSTUBNR(PrintOMaticXObj::m_print)
