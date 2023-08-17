@@ -147,6 +147,14 @@ public:
 	}
 
 	/** Append an element to the end of the array. */
+	void push_back(T &&element) {
+		if (_size + 1 <= _capacity)
+			new ((void *)&_storage[_size++]) T(move(element));
+		else
+			insert(end(), move(element));
+	}
+
+	/** Append an element to the end of the array. */
 	void push_back(const Array<T> &array) {
 		if (_size + array.size() <= _capacity) {
 			uninitialized_copy(array.begin(), array.end(), end());
@@ -203,6 +211,12 @@ public:
 		insert_aux(_storage + idx, &element, &element + 1);
 	}
 
+	/** Insert an element into the array at the given position. */
+	void insert_at(size_type idx, T &&element) {
+		assert(idx <= _size);
+		insert(_storage + idx, Common::move(element));
+	}
+
 	/** Insert copies of all the elements from the given array into this array at the given position. */
 	void insert_at(size_type idx, const Array<T> &array) {
 		assert(idx <= _size);
@@ -214,6 +228,55 @@ public:
 	 */
 	void insert(iterator pos, const T &element) {
 		insert_aux(pos, &element, &element + 1);
+	}
+	
+	/**
+	 * Insert an element before @p pos.
+	 */
+	iterator insert(iterator pos, T &&value) {
+		assert(_storage <= pos && pos <= _storage + _size);
+		const size_type idx = pos - _storage;
+		if (_size + 1 > _capacity) {
+			T *const oldStorage = _storage;
+
+			// If there is not enough space, allocate more.
+			// Likewise, if this is a self-insert, we allocate new
+			// storage to avoid conflicts.
+			allocCapacity(roundUpCapacity(_size + 1));
+
+			// Move the data from the old storage till the position where
+			// we insert new data
+			Common::uninitialized_move(oldStorage, oldStorage + idx, _storage);
+			// Move the data we insert
+			new ((void *)(_storage + idx)) T(Common::move(value));
+			// Afterwards, move the old data from the position where we
+			// insert.
+			Common::uninitialized_move(oldStorage + idx, oldStorage + _size, _storage + idx + 1);
+
+			freeStorage(oldStorage, _size);
+		} else if (idx + 1 <= _size) {
+			// Make room for the new elements by shifting back
+			// existing ones.
+			// 1. Move a part of the data to the uninitialized area
+			Common::uninitialized_move(_storage + _size - 1, _storage + _size, _storage + _size);
+			// 2. Move a part of the data to the initialized area
+			move_backward(pos, _storage + _size - 1, _storage + _size);
+
+			// Insert the new elements.
+			*pos = Common::move(value);
+		} else {
+			// Move the old data from the position till the end to the new
+			// place.
+			Common::uninitialized_move(pos, _storage + _size, _storage + idx + 1);
+
+			// Insert the new data to the position inside the
+			// initialized space.
+			*pos = Common::move(value);
+		}
+
+		// Finally, update the internal state
+		_size++;
+		return pos;
 	}
 
 	/** Remove an element at the given position from the array and return the value of that element. */
@@ -286,7 +349,7 @@ public:
 
 	/** Erase the element at @p pos position and return an iterator pointing to the next element in the array. */
 	iterator erase(iterator pos) {
-		copy(pos + 1, _storage + _size, pos);
+		move(pos + 1, _storage + _size, pos);
 		_size--;
 		// We also need to destroy the last object properly here.
 		_storage[_size].~T();
@@ -295,7 +358,7 @@ public:
 
 	/** Erase the elements from @p first to @p last and return an iterator pointing to the next element in the array. */
 	iterator erase(iterator first, iterator last) {
-		copy(last, _storage + _size, first);
+		move(last, _storage + _size, first);
 
 		int count = (last - first);
 		_size -= count;
@@ -361,8 +424,8 @@ public:
 		allocCapacity(newCapacity);
 
 		if (oldStorage) {
-			// Copy old data
-			uninitialized_copy(oldStorage, oldStorage + _size, _storage);
+			// Move old data
+			uninitialized_move(oldStorage, oldStorage + _size, _storage);
 			freeStorage(oldStorage, _size);
 		}
 	}
@@ -469,30 +532,30 @@ protected:
 				// storage to avoid conflicts.
 				allocCapacity(roundUpCapacity(_size + n));
 
-				// Copy the data from the old storage till the position where
+				// Move the data from the old storage till the position where
 				// we insert new data
-				uninitialized_copy(oldStorage, oldStorage + idx, _storage);
-				// Copy the data we insert
+				uninitialized_move(oldStorage, oldStorage + idx, _storage);
+				// Move the data we insert
 				uninitialized_copy(first, last, _storage + idx);
-				// Afterwards, copy the old data from the position where we
+				// Afterwards, move the old data from the position where we
 				// insert.
-				uninitialized_copy(oldStorage + idx, oldStorage + _size, _storage + idx + n);
+				uninitialized_move(oldStorage + idx, oldStorage + _size, _storage + idx + n);
 
 				freeStorage(oldStorage, _size);
 			} else if (idx + n <= _size) {
 				// Make room for the new elements by shifting back
 				// existing ones.
 				// 1. Move a part of the data to the uninitialized area
-				uninitialized_copy(_storage + _size - n, _storage + _size, _storage + _size);
+				uninitialized_move(_storage + _size - n, _storage + _size, _storage + _size);
 				// 2. Move a part of the data to the initialized area
-				copy_backward(pos, _storage + _size - n, _storage + _size);
+				move_backward(pos, _storage + _size - n, _storage + _size);
 
 				// Insert the new elements.
 				copy(first, last, pos);
 			} else {
-				// Copy the old data from the position till the end to the new
+				// Move the old data from the position till the end to the new
 				// place.
-				uninitialized_copy(pos, _storage + _size, _storage + idx + n);
+				uninitialized_move(pos, _storage + _size, _storage + idx + n);
 
 				// Copy a part of the new data to the position inside the
 				// initialized space.

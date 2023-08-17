@@ -494,7 +494,7 @@ public:
 
 		if (oldStorage) {
 			// Copy old data
-			uninitialized_move(oldStorage, oldStorage + _size, _storage);
+			std::uninitialized_move(oldStorage, oldStorage + _size, _storage);
 			freeStorage(oldStorage, _size);
 		}
 	}
