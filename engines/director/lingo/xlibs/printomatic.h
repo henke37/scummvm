@@ -22,11 +22,82 @@
 #ifndef DIRECTOR_LINGO_XLIBS_PRINTOMATICXOBJ_H
 #define DIRECTOR_LINGO_XLIBS_PRINTOMATICXOBJ_H
 
+#include "common/array.h"
+#include "common/str.h"
+#include "common/rect.h"
+
+#include "graphics/managed_surface.h"
+
+#include "backends/printing/printman.h"
+
 namespace Director {
 
 class PrintOMaticXObject : public Object<PrintOMaticXObject> {
 public:
 	PrintOMaticXObject(ObjectType objType);
+
+	PrintOMaticXObject(const PrintOMaticXObject &);
+	void operator=(const PrintOMaticXObject &) = delete;
+
+	AbstractObject *clone() override;
+
+	Common::String docName;
+	PrintSettings *settings;
+
+	class Page {
+		public:
+			Page(){};
+			~Page(){};
+			Page(Page &&);
+			Page(const Page &) = delete;
+			Page &operator=(const Page &) = delete;
+			Page &operator=(Page &&);
+
+			//Takes ownership of the surface
+			void drawBitmap(Graphics::ManagedSurface *, const Common::Rect &);
+			void drawText(const Common::String &, Common::Point pos);
+			void drawLine(const Common::Point &start, const Common::Point &end);
+
+			class PageElement {
+			protected:
+				PageElement(){};
+			public:
+				virtual ~PageElement();
+				PageElement(const PageElement &) = delete;
+				PageElement &operator=(const PageElement &) = delete;
+
+				virtual void draw(PrintJob *job) const =0;
+			};
+
+			class BitmapElement : public PageElement {
+			public:
+				Graphics::ManagedSurface *bitmap;
+				Common::Rect drawArea;
+
+				void draw(PrintJob *job) const override;
+
+				BitmapElement(Graphics::ManagedSurface *bitmap, Common::Rect drawArea) : bitmap(bitmap), drawArea(drawArea) {}
+				~BitmapElement();
+			};
+
+			class TextElement : public PageElement {
+			public:
+				Common::String text;
+				Common::Point pos;
+
+				void draw(PrintJob *job) const override;
+
+				TextElement(const Common::String &text, Common::Point pos) : text(text), pos(pos) {}
+				~TextElement(){};
+			};
+
+			Common::Array<Common::ScopedPtr<PageElement> > elements;
+	};
+
+	Common::Array<Page> pages;
+	Page *currentPage;
+
+	private:
 };
 
 namespace PrintOMaticXObj {

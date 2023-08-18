@@ -104,11 +104,16 @@ IS     mRegister, serialNumber
 */
 
 #include "director/director.h"
+#include "director/window.h"
 #include "director/lingo/lingo.h"
 #include "director/lingo/lingo-object.h"
 #include "director/lingo/lingo-utils.h"
 #include "director/lingo/xlibs/printomatic.h"
 
+#include "common/rect.h"
+#include "graphics/managed_surface.h"
+
+#include "backends/printing/printman.h"
 
 namespace Director {
 
@@ -159,12 +164,33 @@ void PrintOMaticXObj::close(int type) {
 }
 
 
-PrintOMaticXObject::PrintOMaticXObject(ObjectType ObjectType) :Object<PrintOMaticXObject>("PrintOMaticXObj") {
+PrintOMaticXObject::PrintOMaticXObject(ObjectType ObjectType) : Object<PrintOMaticXObject>("PrintOMaticXObj"), currentPage(nullptr), settings(nullptr) {
 	_objType = ObjectType;
 }
 
+PrintOMaticXObject::PrintOMaticXObject(const PrintOMaticXObject &) : Object<PrintOMaticXObject>("PrintOMaticXObj") {
+	error("Can't clone PrintOMatic!");
+}
+
+AbstractObject *PrintOMaticXObject::clone() {
+	error("Can't clone PrintOMatic!");
+	return nullptr;
+}
+
 void PrintOMaticXObj::m_new(int nargs) {
+#ifdef USE_PRINTING
+
+	PrintingManager *pm = g_system->getPrintingManager();
+
+	if (!pm) {
+		g_lingo->push(Datum());
+		return;
+	}
+
 	g_lingo->push(g_lingo->_state->me);
+#else
+	g_lingo->push(Datum());
+#endif
 }
 
 XOBJSTUBNR(PrintOMaticXObj::m_dispose)
@@ -174,19 +200,69 @@ void PrintOMaticXObj::m_register(int nargs) {
 	warning("PrintOMaticXObj::m_register: Registered with serial \"%s\"", serialNumber.c_str());
 }
 
-XOBJSTUBNR(PrintOMaticXObj::m_reset)
-XOBJSTUB(PrintOMaticXObj::m_newPage, 0)
+void PrintOMaticXObj::m_reset(int nargs) {
+	PrintOMaticXObject *obj = (PrintOMaticXObject *)g_lingo->_state->me.u.obj;
+
+	obj->pages.clear();
+	obj->currentPage = nullptr;
+	obj->docName = "";
+
+	g_lingo->dropStack(nargs);
+}
+
+void PrintOMaticXObj::m_newPage(int nargs) {
+	PrintOMaticXObject *obj = (PrintOMaticXObject *)g_lingo->_state->me.u.obj;
+
+	obj->pages.push_back(PrintOMaticXObject::Page());
+	obj->currentPage = &obj->pages.back();
+
+	g_lingo->dropStack(nargs);
+	g_lingo->push(Datum((int)obj->pages.size()));
+}
+
 XOBJSTUBNR(PrintOMaticXObj::m_setPrintableMargins)
 XOBJSTUB(PrintOMaticXObj::m_getPageWidth, -1)
 XOBJSTUB(PrintOMaticXObj::m_getPageHeight, -1)
 XOBJSTUBV(PrintOMaticXObj::m_picture)
-XOBJSTUBV(PrintOMaticXObj::m_stagePicture)
+
+void PrintOMaticXObj::m_stagePicture(int nargs) {
+	PrintOMaticXObject *obj = (PrintOMaticXObject *)g_lingo->_state->me.u.obj;
+	
+	Graphics::ManagedSurface *wndsurf = g_director->getCurrentWindow()->getSurface();
+
+	Common::Rect drawArea;
+	Common::Rect clipArea;
+
+	if (nargs == 8) {
+		clipArea.bottom = g_lingo->pop().asInt();
+		clipArea.right = g_lingo->pop().asInt();
+		clipArea.top = g_lingo->pop().asInt();
+		clipArea.left = g_lingo->pop().asInt();
+	} else {
+		clipArea.right = wndsurf->w;
+		clipArea.bottom = wndsurf->h;
+	}
+
+	drawArea.bottom = g_lingo->pop().asInt();
+	drawArea.right = g_lingo->pop().asInt();
+	drawArea.top = g_lingo->pop().asInt();
+	drawArea.left = g_lingo->pop().asInt();
+
+	Graphics::ManagedSurface *snap = new Graphics::ManagedSurface(clipArea.width(), clipArea.height(), wndsurf->format);
+
+	snap->blitFrom(*wndsurf, clipArea, Common::Rect(0, 0, snap->w, snap->h));
+
+	obj->currentPage->drawBitmap(snap, drawArea);
+}
+
 XOBJSTUBV(PrintOMaticXObj::m_1bitStagePicture)
 
 void PrintOMaticXObj::m_setLandscapeMode(int nargs) {
-	// int trueOrFalse = g_lingo->pop.asInt()
+	PrintOMaticXObject *obj = (PrintOMaticXObject *)g_lingo->_state->me.u.obj;
+
+	obj->settings->setLandscapeOrientation(g_lingo->pop().asInt());
+
 	g_lingo->printSTUBWithArglist("PrintOMaticXObj::m_setLandscapeMode", nargs);
-	g_lingo->dropStack(nargs);
 }
 
 XOBJSTUB(PrintOMaticXObj::m_doPageSetup, 1)
@@ -196,6 +272,73 @@ XOBJSTUBNR(PrintOMaticXObj::m_setProgressMsg)
 XOBJSTUBNR(PrintOMaticXObj::m_setProgressPict)
 XOBJSTUB(PrintOMaticXObj::m_printPreview, 0)
 XOBJSTUBV(PrintOMaticXObj::m_printPicts)
-XOBJSTUBNR(PrintOMaticXObj::m_print)
+
+void PrintOMaticXObj::m_print(int nargs) {
+	PrintOMaticXObject *obj = (PrintOMaticXObject *)g_lingo->_state->me.u.obj;
+
+	g_lingo->dropStack(nargs);
+
+#ifdef USE_PRINTING
+
+	PrintingManager *pm = g_system->getPrintingManager();
+
+	if (!pm)
+		return;
+
+	auto lambda = [obj](PrintJob *job) -> void {
+		for (auto pageIt = obj->pages.begin(); pageIt != obj->pages.end(); ++pageIt) {
+			auto &page = *pageIt;
+
+			job->beginPage();
+
+			for (auto elmIt = page.elements.begin(); elmIt != page.elements.end(); ++elmIt) {
+				auto &elm = *elmIt;
+
+				elm->draw(job);
+			}
+
+			job->endPage();
+		}
+
+		job->endDoc();
+	};
+
+	PrintCallback cb = new Common::Functor1Lamb<PrintJob *, void, decltype(lambda)>(lambda);
+
+	pm->printCustom(cb, obj->docName);
+
+#endif
+}
+
+PrintOMaticXObject::Page::Page(Page &&old) : elements(Common::move(old.elements)) {
+}
+
+PrintOMaticXObject::Page &PrintOMaticXObject::Page::operator=(Page &&old) {
+	elements = Common::move(old.elements);
+	return *this;
+}
+
+void PrintOMaticXObject::Page::drawBitmap(Graphics::ManagedSurface *surf, const Common::Rect &area) {
+	this->elements.push_back(Common::ScopedPtr<PageElement>(new BitmapElement(surf, area)));
+}
+
+void PrintOMaticXObject::Page::drawText(const Common::String &text, Common::Point pos) {
+	this->elements.push_back(Common::ScopedPtr<PageElement>(new TextElement(text, pos)));
+}
+
+void PrintOMaticXObject::Page::BitmapElement::draw(PrintJob *job) const {
+	job->drawBitmap(*bitmap, drawArea);
+}
+
+PrintOMaticXObject::Page::BitmapElement::~BitmapElement() {
+	delete bitmap;
+}
+
+void PrintOMaticXObject::Page::TextElement::draw(PrintJob *job) const {
+	job->drawText(text, pos);
+}
+
+PrintOMaticXObject::Page::PageElement::~PageElement() {
+}
 
 } // End of namespace Director
