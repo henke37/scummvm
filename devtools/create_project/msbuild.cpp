@@ -339,6 +339,13 @@ void MSBuildProvider::outputProjectSettings(std::ofstream &project, const std::s
 			defines["SCUMMVM_EXPORT"]= "__declspec( dllexport )";
 		else
 			defines["SCUMMVM_EXPORT"]= "__declspec( dllimport )";
+
+		if (setup.featureEnabled("opengl")) {
+			defines["GLAD_API_CALL_EXPORT"] = "1";
+			
+			if (name == setup.projectName)
+				defines["GLAD_API_CALL_EXPORT_BUILD"] = "1";
+		}
 	} else
 		defines["SCUMMVM_EXPORT"]= " ";
 
