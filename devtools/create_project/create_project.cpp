@@ -1224,13 +1224,12 @@ bool getFeatureBuildState(const std::string &name, const FeatureList &features) 
 }
 
 BuildSetup removeFeatureFromSetup(BuildSetup setup, const std::string &feature) {
-	// TODO: disable feature instead of removing from setup
 	for (FeatureList::iterator i = setup.features.begin(); i != setup.features.end(); ++i) {
 		if (i->enable && feature == i->name) {
 			if (i->define && i->define[0]) {
 				setup.defines.erase(i->define);
 			}
-			setup.features.erase(i);
+			i->enable=false;
 			break;
 		}
 	}
