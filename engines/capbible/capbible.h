@@ -57,8 +57,8 @@ public:
 
 	Common::RandomSource randomizer;
 
-	bool canLoadGameStateCurrently() override;
-	bool canSaveGameStateCurrently() override;
+	bool canLoadGameStateCurrently(Common::U32String *msg = nullptr) override;
+	bool canSaveGameStateCurrently(Common::U32String *msg = nullptr) override;
 	int getAutosaveSlot() const override { return 99; }
 
 	Common::Error loadGameStream(Common::SeekableReadStream *stream) override;

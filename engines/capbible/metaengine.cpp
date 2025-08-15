@@ -27,7 +27,7 @@
 #include "capbible/capbible.h"
 #include "capbible/detection.h"
 
-class CapBibleMetaEngine : public AdvancedMetaEngine {
+class CapBibleMetaEngine : public AdvancedMetaEngine <ADGameDescription> {
 public:
 	const char *getName() const override {
 		return "capbible";

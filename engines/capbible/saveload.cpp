@@ -28,11 +28,11 @@
 
 namespace CapBible {
 
-bool CapBibleEngine::canLoadGameStateCurrently() {
+bool CapBibleEngine::canLoadGameStateCurrently(Common::U32String *msg) {
 	return true;
 }
 
-bool CapBibleEngine::canSaveGameStateCurrently() {
+bool CapBibleEngine::canSaveGameStateCurrently(Common::U32String *msg) {
 	return true;
 }
 

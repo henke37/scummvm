@@ -28,7 +28,8 @@
 #include "common/savefile.h"
 #include "common/system.h"
 #include "common/textconsole.h"
-#include "common/unzip.h"
+#include <common/compression/unzip.h>
+#include "common/path.h"
 
 #include "engines/util.h"
 

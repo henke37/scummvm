@@ -26,10 +26,6 @@
 
 namespace CapBible {
 
-struct CapBibleGameDescription {
-	ADGameDescription desc;
-};
-
 } // End of namespace CapBible
 
 #endif // CAPBIBLE_DETECTION_H

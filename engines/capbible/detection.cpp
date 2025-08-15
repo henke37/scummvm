@@ -22,6 +22,7 @@
 #include "base/plugins.h"
 
 #include "engines/advancedDetector.h"
+#include "engines/game.h"
 
 #include "common/gui_options.h"
 #include "common/file.h"
@@ -29,53 +30,50 @@
 
 #include "capbible/detection.h"
 
-static const PlainGameDescriptor capbibleGames[] = {
-	{"domeofdarkness", "Captain Bible in Dome of Darkness"},
-	{nullptr, nullptr}
-};
-
 namespace CapBible {
 
-static const CapBibleGameDescription gameDescriptions[] = {
+	static const PlainGameDescriptor gameIds[] = {
+		{"domeofdarkness", "Captain Bible in Dome of Darkness"},
+		{nullptr, nullptr}
+	};
+
+	static const ADGameDescription gameDescriptions[] = {
 	// English
 	{
-		{
-			"domeofdarkness",
-			"",
-			AD_ENTRY2s("cb.exe", "64e43d07e24e103d126c6b7c012fcc10", 64299, "dd1.dat", "ada87cd9a3b0d792fc50339e8e6c3459", 1866068),
-			Common::EN_ANY,
-			Common::kPlatformDOS,
-			ADGF_UNSTABLE,
-			GUIO5(GUIO_NOSPEECH, GUIO_MIDIPCSPK, GUIO_MIDIADLIB, GUIO_MIDIMT32, GUIO_MIDIGM)
-		},
+		"domeofdarkness",
+		"",
+		AD_ENTRY2s("cb.exe", "64e43d07e24e103d126c6b7c012fcc10", 64299, "dd1.dat", "ada87cd9a3b0d792fc50339e8e6c3459", 1866068),
+		Common::EN_ANY,
+		Common::kPlatformDOS,
+		ADGF_UNSTABLE,
+		GUIO5(GUIO_NOSPEECH, GUIO_MIDIPCSPK, GUIO_MIDIADLIB, GUIO_MIDIMT32, GUIO_MIDIGM)
+		
 	},
 	{
-		{
-			"domeofdarkness",
-			"Special Edition",
-			AD_ENTRY2s("cbse.exe", "3c37e1c44f318385c81cffeda24fac53", 64251, "cbse.dat", "ecfebe47b7a901d3b557cf3a575cfd57", 738241),
-			Common::EN_ANY,
-			Common::kPlatformDOS,
-			ADGF_UNSTABLE | ADGF_DEMO,
-			GUIO5(GUIO_NOSPEECH, GUIO_MIDIPCSPK, GUIO_MIDIADLIB, GUIO_MIDIMT32, GUIO_MIDIGM)
-		},
+		"domeofdarkness",
+		"Special Edition",
+		AD_ENTRY2s("cbse.exe", "3c37e1c44f318385c81cffeda24fac53", 64251, "cbse.dat", "ecfebe47b7a901d3b557cf3a575cfd57", 738241),
+		Common::EN_ANY,
+		Common::kPlatformDOS,
+		ADGF_UNSTABLE | ADGF_DEMO,
+		GUIO5(GUIO_NOSPEECH, GUIO_MIDIPCSPK, GUIO_MIDIADLIB, GUIO_MIDIMT32, GUIO_MIDIGM)
 	},
-	{ AD_TABLE_END_MARKER }
+	AD_TABLE_END_MARKER
 };
 
 } // End of namespace CapBible
 
-class CapBibleMetaEngineDetection : public AdvancedMetaEngineDetection {
+class CapBibleMetaEngineDetection : public AdvancedMetaEngineDetection<ADGameDescription> {
 public:
-	CapBibleMetaEngineDetection() : AdvancedMetaEngineDetection(CapBible::gameDescriptions, sizeof(CapBible::CapBibleGameDescription), capbibleGames) {
+	CapBibleMetaEngineDetection() : AdvancedMetaEngineDetection(CapBible::gameDescriptions, CapBible::gameIds) {
 	}
 
-	const char *getEngineId() const override {
-		return "capbible";
+	const char *getEngineName() const override {
+		return "Captain Bible";
 	}
 
 	const char *getName() const override {
-		return "Captain Bible";
+		return "capbible";
 	}
 
 	const char *getOriginalCopyright() const override {

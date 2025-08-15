@@ -30,9 +30,9 @@
 #include "capbible/mainarchive.h"
 
 namespace CapBible {
-MainArchive::MainArchive(Common::String fileName) {
+MainArchive::MainArchive(const Common::Path &fileName) {
 	if (!_archiveFile.open(fileName)) {
-		error("Failed to open %s", fileName.c_str());
+		error("Failed to open %s", fileName.toString().c_str());
 	}
 
 	readTOC();
@@ -57,7 +57,7 @@ void MainArchive::readTOC() {
 }
 
 bool MainArchive::hasFile(const Common::Path &path) const {
-	return _fileEntries.contains(path.rawString());
+	return _fileEntries.contains(path.baseName());
 }
 int MainArchive::listMembers(Common::ArchiveMemberList &list) const {
 	int addC = 0;
@@ -67,7 +67,7 @@ int MainArchive::listMembers(Common::ArchiveMemberList &list) const {
 	return addC;
 }
 const Common::ArchiveMemberPtr MainArchive::getMember(const Common::Path &path) const {
-	return _fileEntries.getValOrDefault(path.rawString());
+	return _fileEntries.getValOrDefault(path.baseName());
 }
 Common::SeekableReadStream *MainArchive::createReadStreamForMember(const Common::Path &path) const {
 	Common::ArchiveMemberPtr entry = getMember(path);
@@ -76,10 +76,15 @@ Common::SeekableReadStream *MainArchive::createReadStreamForMember(const Common:
 
 	return entry->createReadStream();
 }
-Common::String MainArchiveMember::getName() const {
+Common::String MainArchiveMember::getFileName() const {
 	if (_extension.empty())
 		return _baseName;
 	return _baseName + "." + _extension;
+}
+Common::String MainArchiveMember::getName() const { return getFileName(); }
+
+Common::Path MainArchiveMember::getPathInArchive() const {
+	return Common::Path(Common::String(_archive->_archiveFile.getName()) + "/" + getFileName());
 }
 
 Common::SeekableReadStream *MainArchiveMember::createReadStream() const {
@@ -87,5 +92,8 @@ Common::SeekableReadStream *MainArchiveMember::createReadStream() const {
 	_archive->_archiveFile.seek(_offset, SEEK_SET);
 	_archive->_archiveFile.read(buff, _compressedSize);
 	return new Common::MemoryReadStream(buff, _compressedSize, DisposeAfterUse::YES);
+}
+Common::SeekableReadStream *MainArchiveMember::createReadStreamForAltStream(Common::AltStreamType altStreamType) const {
+	return nullptr;
 }
 } // End of namespace CapBible

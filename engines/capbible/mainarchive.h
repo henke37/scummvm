@@ -33,7 +33,7 @@ namespace CapBible {
 
 class MainArchive : public Common::Archive {
 public:
-	MainArchive(Common::String fileName);
+	MainArchive(const Common::Path &fileName);
 	~MainArchive();
 	bool hasFile(const Common::Path &path) const override;
 	int listMembers(Common::ArchiveMemberList &list) const override;
@@ -54,9 +54,12 @@ private:
 class MainArchiveMember : public Common::ArchiveMember {
 public:
 	Common::SeekableReadStream *createReadStream() const override;
+	Common::SeekableReadStream *createReadStreamForAltStream(Common::AltStreamType altStreamType) const override;
 	Common::String getName() const override;
+	Common::Path getPathInArchive() const override;
+	Common::String getFileName(void) const;
 
-private:
+	private:
 	MainArchiveMember(MainArchive *archive) : _archive(archive) {}
 
 	MainArchive *_archive;

@@ -34,11 +34,10 @@ Music::Music() : _trackData(nullptr) {
 
 	MidiDriver::DeviceHandle dev = MidiDriver::detectDevice(MDT_MIDI | MDT_ADLIB | MDT_PCSPK | MDT_PREFER_MT32);
 	MusicType musType = MidiDriver::getMusicType(dev);
-	bool nativeMT32 = (musType == MT_MT32) || ConfMan.getBool("native_mt32");
 	bool isDemo = CapBibleEngine::instance()->isDemo();
 
 	if (musType == MT_ADLIB) {
-		_driver = Audio::MidiDriver_Miles_AdLib_create("", Common::String(isDemo ? "cbsedrv/" : "drivers/")+"FAT.OPL");
+		_driver = Audio::MidiDriver_Miles_AdLib_create("", Common::Path(isDemo ? "cbsedrv/FAT.OPL" : "drivers/FAT.OPL"));
 	} else if (musType == MT_PCSPK) {
 	} else if (musType == MT_GM || musType == MT_MT32) {
 		_driver = Audio::MidiDriver_Miles_MIDI_create(musType, "");
@@ -70,7 +69,7 @@ void Music::playSong(Common::String fileName) {
 
 	delete _trackData;
 
-	trackFile.open(fileName);
+	trackFile.open(Common::Path(fileName));
 	uint32 buffSize = trackFile.size();
 	_trackData = (byte *)malloc(buffSize);
 	trackFile.read(_trackData, buffSize);

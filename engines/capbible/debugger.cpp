@@ -46,7 +46,7 @@ bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	for (Common::ArchiveMemberList::const_iterator itr = fileList.begin(); itr != fileList.end(); ++itr) {
 		Common::DumpFile dump;
 		Common::ArchiveMemberPtr entry=*itr;
-		dump.open("mainarch/" + entry->getName(), true);
+		dump.open(Common::Path("mainarch/" + entry->getName()), true);
 		Common::SeekableReadStream *stream = entry->createReadStream();
 		dump.writeStream(stream);
 		delete stream;
