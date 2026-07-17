@@ -22,6 +22,9 @@
 #ifndef CAPBIBLE_DETECTION_H
 #define CAPBIBLE_DETECTION_H
 
+#define GAMEOPTION_NOMATURE GUIO_GAMEOPTIONS1
+#define GAMEOPTION_NOCOMBAT GUIO_GAMEOPTIONS2
+
 #include "engines/advancedDetector.h"
 
 namespace CapBible {

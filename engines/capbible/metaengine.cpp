@@ -23,9 +23,38 @@
 
 #include "common/savefile.h"
 #include "common/system.h"
+#include "common/translation.h"
 
 #include "capbible/capbible.h"
 #include "capbible/detection.h"
+
+namespace CapBible {
+static const ADExtraGuiOptionsMap optionsList[] = {
+	{
+		GAMEOPTION_NOMATURE,
+		{
+			_s("No Mature Content"),
+			_s("Disables mature content"),
+			 "no_mature",
+			 false,
+			 0,
+			 0
+		 }
+	},
+	{
+		GAMEOPTION_NOCOMBAT,
+		{
+			_s("No Combat"),
+			_s("Disables combat and other forms of faith loss"),
+			 "no_combat",
+			 false,
+			 0,
+			 0
+		 }
+	},
+	AD_EXTRA_GUI_OPTIONS_TERMINATOR
+};
+} // End of namespace CapBible
 
 class CapBibleMetaEngine : public AdvancedMetaEngine <ADGameDescription> {
 public:
@@ -35,6 +64,10 @@ public:
 
 	bool hasFeature(MetaEngineFeature f) const override;
 	Common::Error createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const override;
+
+	const ADExtraGuiOptionsMap *getAdvancedExtraGuiOptions() const override {
+		return CapBible::optionsList;
+	}
 };
 
 bool CapBibleMetaEngine::hasFeature(MetaEngineFeature f) const {
