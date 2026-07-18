@@ -1,2 +1,3 @@
-# add_engine [name] [desc] [build-by-default] [subengines] [base games] [deps]
-add_engine capbible "Captain Bible" no ""
+# This file is included from the main "configure" script
+# add_engine [name] [desc] [build-by-default] [subengines] [base games] [deps] [components]
+add_engine capbible "Captain Bible" no "" "capbible" "" "midi"
