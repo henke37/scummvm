@@ -30,6 +30,48 @@
 #include "capbible/mainarchive.h"
 
 namespace CapBible {
+
+	class Decompressor {
+	public:
+		Decompressor(Common::SeekableReadStream *src, byte *dst, size_t compressedSize, size_t decompressedSize) : _src(src), _dst(dst), _compressedSize(compressedSize), _decompressedSize(decompressedSize) {
+			_prefixes = new int16[prefixCount];
+			_suffixes = new byte[suffixCount];
+			_suffixChain = new int16[maxChainLength];
+		}
+
+		~Decompressor() {
+			delete[] _prefixes;
+			delete[] _suffixes;
+			delete[] _suffixChain;
+		}
+
+		void decompress();
+
+		void mainLoop();
+
+	private:
+
+		constexpr static int prefixCount = 0x1001;
+		constexpr static int suffixCount = 0x1001;
+		constexpr static int maxCode = 0x100;
+		constexpr static int maxChainLength = 0x1000;
+		
+		Common::SeekableReadStream *_src;
+		byte *_dst;
+		size_t _outputPos;
+		size_t _compressedSize;
+		size_t _decompressedSize;
+		int16 *_prefixes;
+		byte *_suffixes;
+
+		int _nextCode;
+
+		int16 *_suffixChain;
+
+		int getPlaneCount();
+		void writeToken(int16 token);
+	};
+
 MainArchive::MainArchive(const Common::Path &fileName) {
 	if (!_archiveFile.open(fileName)) {
 		error("Failed to open %s", fileName.toString().c_str());
@@ -88,12 +130,104 @@ Common::Path MainArchiveMember::getPathInArchive() const {
 }
 
 Common::SeekableReadStream *MainArchiveMember::createReadStream() const {
-	byte *buff = (byte*)malloc(_compressedSize);
 	_archive->_archiveFile.seek(_offset, SEEK_SET);
-	_archive->_archiveFile.read(buff, _compressedSize);
-	return new Common::MemoryReadStream(buff, _compressedSize, DisposeAfterUse::YES);
+
+	auto sig = _archive->_archiveFile.readUint16LE();
+	assert(sig == 0x4347);
+
+	if (this->_compressionType == 1) {
+		byte *decompressedBuff = (byte*)malloc(_decompressedSize);
+		Decompressor dec(&_archive->_archiveFile, decompressedBuff, _compressedSize, _decompressedSize);
+		dec.decompress();
+		return new Common::MemoryReadStream(decompressedBuff, _decompressedSize, DisposeAfterUse::YES);
+	} else {
+		byte *buff = (byte *)malloc(_compressedSize);
+		_archive->_archiveFile.read(buff, _compressedSize);
+		return new Common::MemoryReadStream(buff, _decompressedSize, DisposeAfterUse::YES);
+	}
+
 }
 Common::SeekableReadStream *MainArchiveMember::createReadStreamForAltStream(Common::AltStreamType altStreamType) const {
 	return nullptr;
+}
+
+void Decompressor::decompress() {
+	for (int i = 0; i < 0x1001; i++)
+		_prefixes[i] = -1;
+
+	for (int i = 0; i < 0x100; i++)
+		_suffixes[i] = (uint8_t)i;
+
+	_outputPos = 0;
+
+	while (_outputPos < _decompressedSize) {
+		mainLoop();
+	}
+}
+
+void Decompressor::mainLoop() {
+	uint8_t first_code = _src->readByte();
+	_prefixes[0x100] = first_code;
+	_dst[_outputPos++] = first_code;
+
+	uint8_t planeBytes[8];
+	int planeCount = 0;
+	int planeBit = 8;
+
+	for (_nextCode = 0x101; _nextCode < 0x1001 && _outputPos < _decompressedSize; ++_nextCode) {
+
+		if (planeBit == 8) {
+			planeCount = getPlaneCount();
+
+			for (int i = 0; i < planeCount; i++) {
+				planeBytes[i] = _src->readByte();
+				assert(!_src->err());
+			}
+			planeBit = 0;
+		}
+
+		uint16_t code = _src->readByte();
+
+		for (int bit = 0; bit < planeCount; bit++) {
+			code |= (planeBytes[bit] & 1) << (8 + bit);
+			planeBytes[bit] >>= 1;
+		}
+
+		planeBit++;
+		assert(code < _nextCode);
+		_prefixes[_nextCode] = (int16_t)code;
+
+		writeToken(code);
+	}
+}
+
+int Decompressor::getPlaneCount() {
+	int code_limit = maxCode;
+	int planeCount = 0;
+
+	while (_nextCode > code_limit) {
+		planeCount++;
+		code_limit <<= 1;
+	}
+	return planeCount;
+}
+
+void Decompressor::writeToken(int16 code) {
+	uint16_t cursor = code;
+	int chainLength = 0;
+
+	while (_prefixes[cursor] != -1) {
+		_suffixChain[chainLength++] = cursor;
+		cursor = (uint16_t)_prefixes[cursor];
+	}
+
+	byte first_character = _suffixes[cursor];
+	_suffixes[_nextCode - 1] = first_character;
+
+	_dst[_outputPos++] = first_character;
+
+	for (int i = chainLength - 1; i >= 0; i--) {
+		_dst[_outputPos++] = _suffixes[_suffixChain[i]];
+	}
 }
 } // End of namespace CapBible
