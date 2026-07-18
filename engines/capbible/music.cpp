@@ -61,17 +61,17 @@ Music::~Music() {
 
 	_driver->close();
 	delete _driver;
-	delete _trackData;
+	delete[] _trackData;
 }
 
 void Music::playSong(Common::String fileName) {
 	Common::File trackFile;
 
-	delete _trackData;
+	delete[] _trackData;
 
 	trackFile.open(Common::Path(fileName));
 	uint32 buffSize = trackFile.size();
-	_trackData = (byte *)malloc(buffSize);
+	_trackData = new byte[buffSize];
 	trackFile.read(_trackData, buffSize);
 
 	_parser->loadMusic(_trackData, buffSize);
