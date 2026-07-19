@@ -31,12 +31,14 @@
 #include "capbible/mainarchive.h"
 #include "capbible/music.h"
 #include "debugger.h"
+#include "verseBank.h"
 
 namespace CapBible {
 Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
 	registerCmd("dumpMainArchive", WRAP_METHOD(Debugger,cmdDumpMainArch));
 	registerCmd("giveItem", WRAP_METHOD(Debugger,cmdGiveItem));
 	registerCmd("playMusic", WRAP_METHOD(Debugger,cmdPlayMusic));
+	registerCmd("dumpVerseBank", WRAP_METHOD(Debugger, cmdDumpVerseBank));
 }
 bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	Common::Archive *arch = _engine->_mainArchive;
@@ -98,5 +100,29 @@ bool Debugger::cmdPlayMusic(int argc, const char **argv) {
 	}
 	_engine->_music->playSong(argv[1]);
 	return false;
+}
+bool Debugger::cmdDumpVerseBank(int argc, const char **argv) {
+	if (argc < 2) {
+		this->debugPrintf("VerseBank file required\n");
+		return true;
+	}
+
+	int dumpFlags;
+
+	if (argc < 3) {
+		dumpFlags = 0x1F;//dump all, except internal flags
+	} else {
+		dumpFlags = strtol(argv[2], nullptr, 16);
+		if (dumpFlags == 0) {
+			this->debugPrintf("Bad dump flags: %s\n", argv[2]);
+			return true;
+		}
+	}
+
+	VerseBank verseBank(argv[1]);
+
+	//TODO: actually do the dump
+
+	return true;
 }
 } // End of namespace CapBible

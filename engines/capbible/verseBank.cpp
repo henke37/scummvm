@@ -19,30 +19,41 @@
  *
  */
 
-#ifndef CAPBIBLE_DEBUGGER_H
-#define CAPBIBLE_DEBUGGER_H
+#include "common/file.h"
 
-#include "capbible/capbible.h"
-#include "gui/debugger.h"
-
-namespace Common {
-class SeekableReadStream;
-}
+#include "capbible/verseBank.h"
 
 namespace CapBible {
 
-class Debugger : public GUI::Debugger {
-public:
-	Debugger(CapBibleEngine *eng);
+	VerseBank::VerseBank(const Common::Path &path) {
+		Common::File file;
+		file.open(path);
+		assert(file.isOpen());
 
-private:
-	CapBibleEngine *_engine;
+		for (;;) {
+			Verse verse;
+			verse.verseNumber=file.readByte();
+			if (verse.verseNumber == 0)
+				break;
+			verse.quoteRecordsStartOffset = file.readUint16LE();
+			//TODO deal with text encoding
+			verse.heading = file.readString('|');
+			verse.quote = file.readString(0);
 
-	bool cmdDumpMainArch(int argc, const char **argv);
-	bool cmdGiveItem(int argc, const char **argv);
-	bool cmdPlayMusic(int argc, const char **argv);
-	bool cmdDumpVerseBank(int argc, const char **argv);
-};
-} // End of namespace CapBible
+			_verses.push_back(verse);
+		}
 
-#endif
+	}
+
+	VerseBank::~VerseBank() {
+	}
+
+	const VerseBank::Verse &VerseBank::getVerse(byte verseNumber) const {
+		for (uint32 i = 0; i < _verses.size(); ++i) {
+			if (_verses[i].verseNumber == verseNumber)
+				return _verses[i];
+		}
+		error("VerseBank::getVerse: verse %d not found", verseNumber);
+	}
+	
+} // namespace CapBible

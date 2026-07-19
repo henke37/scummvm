@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	debugger.o \
 	saveload.o \
 	music.o \
+	verseBank.o \
 	capbible.o
 
 # This module can be built as a plugin

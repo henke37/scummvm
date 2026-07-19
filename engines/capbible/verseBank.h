@@ -19,30 +19,31 @@
  *
  */
 
-#ifndef CAPBIBLE_DEBUGGER_H
-#define CAPBIBLE_DEBUGGER_H
+#ifndef CAPBIBLE_VERSEBANK_H
+#define CAPBIBLE_VERSEBANK_H
 
-#include "capbible/capbible.h"
-#include "gui/debugger.h"
-
-namespace Common {
-class SeekableReadStream;
-}
+#include "common/str.h"
 
 namespace CapBible {
-
-class Debugger : public GUI::Debugger {
+class VerseBank {
 public:
-	Debugger(CapBibleEngine *eng);
+	VerseBank(const Common::Path &path);
+	~VerseBank();
+
+	struct Verse {
+		byte verseNumber;
+		uint16 quoteRecordsStartOffset;
+		Common::String heading;
+		Common::String quote;
+
+		bool isMature() const { return verseNumber >= 0xE0; }
+	};
+
+	const Verse &getVerse(byte verseNumber) const;
 
 private:
-	CapBibleEngine *_engine;
-
-	bool cmdDumpMainArch(int argc, const char **argv);
-	bool cmdGiveItem(int argc, const char **argv);
-	bool cmdPlayMusic(int argc, const char **argv);
-	bool cmdDumpVerseBank(int argc, const char **argv);
+	Common::Array<Verse> _verses;
 };
-} // End of namespace CapBible
+} // namespace CapBible
 
-#endif
+#endif // CAPBIBLE_VERSEBANK_H
