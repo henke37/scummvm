@@ -19,31 +19,41 @@
  *
  */
 
-#ifndef CAPBIBLE_DEBUGGER_H
-#define CAPBIBLE_DEBUGGER_H
+#ifndef CAPBIBLE_ART_H
+#define CAPBIBLE_ART_H
 
-#include "capbible/capbible.h"
-#include "gui/debugger.h"
-
-namespace Common {
-class SeekableReadStream;
-}
+#include "common/noncopyable.h"
+#include "common/array.h"
+#include "common/path.h"
+#include "graphics/managed_surface.h"
 
 namespace CapBible {
-
-class Debugger : public GUI::Debugger {
+class Art {
 public:
-	Debugger(CapBibleEngine *eng);
+	Art(const Common::Path &path);
+	~Art() = default;
+
+	class Frame {
+	private:
+		Frame(int16 xOffset, int16 yOffset);
+		friend class Art;
+	public:
+		Frame(const Frame &frame) = delete;
+		Frame(Frame &&frame) = default;
+		~Frame() = default;
+
+		Frame &operator=(const Frame & frame) = delete;
+		Frame &operator=(Frame && frame) = default;
+
+		int16 xOffset;
+		int16 yOffset;
+		Graphics::ManagedSurface surface;
+	};
 
 private:
-	CapBibleEngine *_engine;
-
-	bool cmdDumpMainArch(int argc, const char **argv);
-	bool cmdGiveItem(int argc, const char **argv);
-	bool cmdPlayMusic(int argc, const char **argv);
-	bool cmdDumpVerseBank(int argc, const char **argv);
-	bool cmdTestArtLoad(int argc, const char **argv);
+	Common::Array<Frame> _frames;
 };
-} // End of namespace CapBible
 
-#endif
+} // namespace CapBible
+
+#endif // CAPBIBLE_ART_H

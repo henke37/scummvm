@@ -32,6 +32,7 @@
 #include "capbible/music.h"
 #include "debugger.h"
 #include "verseBank.h"
+#include "art.h"
 
 namespace CapBible {
 Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
@@ -39,6 +40,8 @@ Debugger::Debugger(CapBibleEngine *eng) : _engine(eng) {
 	registerCmd("giveItem", WRAP_METHOD(Debugger,cmdGiveItem));
 	registerCmd("playMusic", WRAP_METHOD(Debugger,cmdPlayMusic));
 	registerCmd("dumpVerseBank", WRAP_METHOD(Debugger, cmdDumpVerseBank));
+
+	registerCmd("testArtLoad", WRAP_METHOD(Debugger, cmdTestArtLoad));
 }
 bool Debugger::cmdDumpMainArch(int argc, const char **argv) {
 	Common::Archive *arch = _engine->_mainArchive;
@@ -123,6 +126,15 @@ bool Debugger::cmdDumpVerseBank(int argc, const char **argv) {
 
 	//TODO: actually do the dump
 
+	return true;
+}
+
+bool Debugger::cmdTestArtLoad(int argc, const char **argv) {
+	if (argc < 2) {
+		this->debugPrintf("Art file required\n");
+		return true;
+	}
+	Art art(argv[1]);
 	return true;
 }
 } // End of namespace CapBible
