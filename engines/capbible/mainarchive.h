@@ -57,7 +57,7 @@ public:
 	Common::SeekableReadStream *createReadStreamForAltStream(Common::AltStreamType altStreamType) const override;
 	Common::String getName() const override;
 	Common::Path getPathInArchive() const override;
-	Common::String getFileName(void) const;
+	Common::String getFileName(void) const override;
 
 	private:
 	MainArchiveMember(MainArchive *archive) : _archive(archive) {}

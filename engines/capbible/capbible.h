@@ -44,6 +44,8 @@ namespace CapBible {
 class MainArchive;
 class Debugger;
 class Music;
+class Scene;
+class Thread;
 
 enum {
 	GAME_SCREEN_WIDTH = 320,
@@ -82,10 +84,46 @@ protected:
 private:
 	MainArchive *_mainArchive;
 	Debugger *_debugger;
+    Scene *_scene;
 
 	void syncGameStream(Common::Serializer &s);
+    Common::Error newScene(const char *path);
 
 	friend class Debugger;
+};
+
+class Scene {
+public:
+    Scene(Common::Array<byte> script);
+    ~Scene();
+    void step();
+
+    Common::Array<byte> script;
+
+private:
+    Common::Array<Thread> _threads;
+};
+
+enum ThreadState {
+    tsActive,
+    tsSuspended,
+    tsStopped,
+};
+
+class Thread {
+public:
+    Thread(Scene *scene);
+    ~Thread();
+    void step();
+
+    ThreadState state;
+
+private:
+    Common::String readString();
+    byte readByte();
+    uint16 readUint16LE();
+    Scene *_scene;
+    uint32 _pc;
 };
 
 } // End of namespace CapBible
