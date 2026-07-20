@@ -23,6 +23,7 @@
 #define CAPBIBLE_VERSEBANK_H
 
 #include "common/str.h"
+#include "common/path.h"
 
 namespace CapBible {
 class VerseBank {
