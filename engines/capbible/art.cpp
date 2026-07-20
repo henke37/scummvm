@@ -55,6 +55,8 @@ Art::Art(const Common::Path &path) {
 
 	} while (file.pos() < frameRecords[0].dataOffset);
 
+	_frames.reserve(frameRecords.size());
+
 	// load the frames
 	for (uint32 i = 0; i < frameRecords.size(); ++i) {
 		const ArtFrameRecord &frameRecord = frameRecords[i];
